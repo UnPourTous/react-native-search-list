@@ -4,10 +4,9 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  NativeModules
 } from 'react-native'
-
-let UIManager = require('NativeModules').UIManager
 
 let noop = () => {}
 let returnTrue = () => true
@@ -39,7 +38,7 @@ export default class SectionList extends Component {
     let ev = e.nativeEvent
     let rect = {width: 1, height: 1, x: ev.locationX, y: ev.locationY}
 
-    UIManager.measureViewsInRect(rect, e.target, noop, (frames) => {
+    NativeModules.UIManager.measureViewsInRect(rect, e.target, noop, (frames) => {
       if (frames.length) {
         let index = frames[0].index
         if (this.lastSelectedIndex !== index) {

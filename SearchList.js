@@ -75,12 +75,10 @@ export default class SearchList extends Component {
   }
 
   static getSectionData (dataBlob, sectionID) {
-    console.log('blob:' + dataBlob + 'sectionID: ' + sectionID)
     return dataBlob[sectionID]
   }
 
   static getRowData (dataBlob, sectionID, rowID) {
-    console.log('blob:' + dataBlob + 'sectionID: ' + sectionID + 'rowID: ' + rowID)
     return dataBlob[sectionID + ':' + rowID]
   }
 

@@ -43,5 +43,8 @@
   "homepage": "https://github.com/UnPourTous/react-native-search-list#readme",
   "dependencies": {
     "js-pinyin": "^0.1.9"
+  },
+  "peerDependency": {
+    "react-native": ">= 0.17"
   }
 }

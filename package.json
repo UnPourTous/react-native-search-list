@@ -1,0 +1,47 @@
+{
+  "name": "react-native-search-list",
+  "version": "1.0.1",
+  "description": "react native component for both Android and iOS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-android": "cd example; react-native run-android; cd -",
+    "run-ios": "cd example; react-native run-ios; cd -"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "haywoodfu",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-jest": "18.0.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react-native": "1.9.1",
+    "eslint": "^3.16.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-config-standard-jsx": "^4.0.1",
+    "eslint-plugin-angular": "^2.3.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^6.10.3",
+    "eslint-plugin-standard": "^2.3.1",
+    "standard": "^9.0.0",
+    "standard-jsx": "^8.0.0",
+    "standard-react": "^4.0.0"
+  },
+  "directories": {
+    "example": "example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnPourTous/react-native-search-list.git"
+  },
+  "bugs": {
+    "url": "https://github.com/UnPourTous/react-native-search-list/issues"
+  },
+  "homepage": "https://github.com/UnPourTous/react-native-search-list#readme",
+  "dependencies": {
+    "js-pinyin": "^0.1.9"
+  }
+}

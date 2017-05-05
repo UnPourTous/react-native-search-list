@@ -50,7 +50,7 @@ export default class example extends Component {
         justifyContent: 'flex-start',
         marginTop: 50
       }}>
-        <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}>No Result For<Text
+        <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}> No Result For <Text
           style={{color: '#171a23', fontSize: 18}}>{searchStr}</Text></Text>
         <Text style={{color: '#979797', fontSize: 18, alignItems: 'center', paddingTop: 10}}>Please search again</Text>
       </View>
@@ -90,7 +90,6 @@ export default class example extends Component {
           renderSeparator={this.renderSeparator.bind(this)}
           title='Search List'
           searchPlaceHolder='Search'
-          textColor='#d9b555'
         />
       </View>
     )

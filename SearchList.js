@@ -287,7 +287,8 @@ export default class SearchList extends Component {
       })
       if (tempResult.length === 0) {
         this.setState({
-          isEmpty: true
+          isEmpty: true,
+          isSearching: true
         })
       } else {
         this.orderResultList(tempResult)

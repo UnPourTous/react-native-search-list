@@ -19,16 +19,12 @@
     "babel-preset-react-native": "1.9.1",
     "eslint": "^3.16.1",
     "eslint-config-standard": "^6.2.1",
-    "eslint-config-standard-jsx": "^4.0.1",
     "eslint-plugin-angular": "^2.3.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^6.10.3",
-    "eslint-plugin-standard": "^2.3.1",
-    "standard": "^9.0.0",
-    "standard-jsx": "^8.0.0",
-    "standard-react": "^4.0.0"
+    "eslint-plugin-standard": "^2.3.1"
   },
   "directories": {
     "example": "example"
@@ -42,7 +38,8 @@
   },
   "homepage": "https://github.com/UnPourTous/react-native-search-list#readme",
   "dependencies": {
-    "js-pinyin": "^0.1.9"
+    "js-pinyin": "^0.1.9",
+    "md5": "^2.2.1"
   },
   "peerDependency": {
     "react-native": ">= 0.17"

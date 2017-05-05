@@ -92,7 +92,7 @@ export default class CustomToolbar extends Component {
         </View>
       </CustomTouchable> : <View style={styles.actionItem} />
     let title = this.props.title ? <View style={[styles.titleView, {marginTop: marginTopPx + 10}]}>
-      <Text style={styles.title} numberOfLines={1}>
+      <Text style={[styles.title, {color: this.props.textColor ? this.props.textColor : 'white'}]} numberOfLines={1}>
         {this.props.title}
       </Text>
     </View> : null
@@ -151,7 +151,6 @@ let styles = StyleSheet.create({
   },
   title: {
     flexGrow: 1,
-    color: '#d9b555',
     fontSize: 18
   },
   count: {

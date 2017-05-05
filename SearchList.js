@@ -18,7 +18,6 @@ import {
 
 const {State: TextInputState} = TextInput
 
-import { Actions } from 'react-native-router-flux'
 import React, { Component } from 'react'
 
 import {
@@ -31,6 +30,8 @@ import SearchBar from './components/SearchBar.js'
 
 import pinyin from 'js-pinyin'
 
+import md5 from 'md5'
+
 import CustomToolbar from './components/CustomToolbar'
 
 import CustomTouchable from './components/CustomTouchable'
@@ -41,7 +42,7 @@ const statusBarSize = Platform.OS === 'ios' ? 10 : 0
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 const searchBarHeight = 0
-const topOffset = -64
+const topOffset = 0
 
 export default class SearchList extends Component {
   constructor (props) {
@@ -87,16 +88,12 @@ export default class SearchList extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps && this.props.data !== nextProps.data) {
-      this.tmpSource = Array.from(nextProps.data)
-      this.initList(this.tmpSource)
-    }
+
   }
 
   componentDidMount () {
-    Actions.refresh({
-      hideNavBar: true
-    })
+    this.tmpSource = Array.from(this.props.data ? this.props.data : [])
+    this.initList(this.tmpSource)
 
     pinyin.setOptions({checkPolyphone: false, charCase: 2})
   }
@@ -197,7 +194,9 @@ export default class SearchList extends Component {
           if (handler) {
             item.searchHandler = handler
           }
-
+          if (!item.searchKey) {
+            item.searchKey = md5(item.searchStr)
+          }
         }
       }
     })
@@ -406,18 +405,22 @@ export default class SearchList extends Component {
   renderSeparator (sectionID,
                    rowID,
                    adjacentRowHighlighted) {
-    let style = styles.rowSeparator
-    if (adjacentRowHighlighted) {
-      style = [style, styles.rowSeparatorHide]
+    if (this.props.renderSeparator) {
+      return this.props.renderSeparator(sectionID, rowID, adjacentRowHighlighted)
+    } else {
+      let style = styles.rowSeparator
+      if (adjacentRowHighlighted) {
+        style = [style, styles.rowSeparatorHide]
+      }
+      return (
+        <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
+          <View style={{
+            height: 1 / PixelRatio.get(),
+            backgroundColor: '#efefef'
+          }}/>
+        </View>
+      )
     }
-    return (
-      <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
-        <View style={{
-          height: 1 / PixelRatio.get(),
-          backgroundColor: '#efefef'
-        }}/>
-      </View>
-    )
   }
 
   renderFooter () {
@@ -446,7 +449,7 @@ export default class SearchList extends Component {
   }
 
   onClickBack () {
-    Actions.pop()
+    this.props.onClickBack && this.props.onClickBack()
   }
 
   onClickCancel() {
@@ -533,6 +536,8 @@ export default class SearchList extends Component {
         style={styles.toolbar}
         backgroundColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
         title={this.props.title}
+        hideBack={this.props.onClickBack ? false : true}
+        textColor={this.props.textColor}
         onClickBack={this.onClickBack.bind(this)}/>
 
     let mask = null
@@ -566,6 +571,8 @@ export default class SearchList extends Component {
                        onFocus={this.onFocus.bind(this)}
                        onBlur={this.onBlur.bind(this)}
                        onClickCancel={this.onClickCancel.bind(this)}
+                       cancelTitle={this.props.cancelTitle}
+                       textColor={this.props.textColor}
                        ref='searchBar'/>
           </Animated.View>
           <View style={styles.listContainer}>
@@ -628,7 +635,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: deviceHeight,
+    height: deviceHeight + 164,
     width: deviceWidth,
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     zIndex: 999

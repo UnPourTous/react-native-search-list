@@ -14,7 +14,7 @@ import {
 
 import React, { Component } from 'react'
 
-const buttonWidth = 50
+const buttonWidth = 70
 
 export default class SearchBar extends Component {
   constructor (props) {
@@ -130,7 +130,7 @@ export default class SearchBar extends Component {
                 paddingRight: 5,
                 borderRadius: 5
               }}>
-                <Text style={{color: '#d9b555'}} numberOfLines={1}>取消</Text>
+                <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}} numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
               </View>
             </TouchableWithoutFeedback>
           </Animated.View>

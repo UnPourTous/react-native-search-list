@@ -88,7 +88,10 @@ export default class SearchList extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-
+    if (nextProps && this.props.data !== nextProps.data) {
+      this.tmpSource = Array.from(nextProps.data)
+      this.initList(this.tmpSource)
+    }
   }
 
   componentDidMount () {

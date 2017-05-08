@@ -1,6 +1,6 @@
 {
   "name": "@unpourtous/react-native-search-list",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "react native component for search list view",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,11 @@
     "run-ios": "cd example; react-native run-ios; cd -"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "search list",
+    "pinyin",
+    "animation",
+    "alphabetic"
   ],
   "author": "haywood",
   "license": "MIT",

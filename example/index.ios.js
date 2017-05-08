@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import SearchList from 'react-native-search-list'
 
+const cellheight = 40
 export default class example extends Component {
   constructor (props) {
     super(props)
@@ -35,7 +36,7 @@ export default class example extends Component {
              highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void,
              isSearching: bool) {
     return (
-      <View key={rowID} style={{flex: 1, marginLeft: 40, height: 40, justifyContent: 'center'}}>
+      <View key={rowID} style={{flex: 1, marginLeft: 40, height: cellheight, justifyContent: 'center'}}>
         <Text>{item.searchStr}</Text>
       </View>
     )
@@ -61,18 +62,18 @@ export default class example extends Component {
                    rowID,
                    adjacentRowHighlighted) {
 
-      let style = {backgroundColor: '#fff', paddingLeft: 25}
-      if (adjacentRowHighlighted) {
-        style = [style, {opacity: 0.0}]
-      }
-      return (
-        <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
-          <View style={{
-            height: 1 / PixelRatio.get(),
-            backgroundColor: 'gray'
-          }}/>
-        </View>
-      )
+    let style = {backgroundColor: '#fff', paddingLeft: 25}
+    if (adjacentRowHighlighted) {
+      style = [style, {opacity: 0.0}]
+    }
+    return (
+      <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
+        <View style={{
+          height: 1 / PixelRatio.get(),
+          backgroundColor: 'gray'
+        }}/>
+      </View>
+    )
   }
 
   render () {
@@ -88,6 +89,7 @@ export default class example extends Component {
           renderRow={this.renderRow.bind(this)}
           emptyContent={this.emptyContent.bind(this)}
           renderSeparator={this.renderSeparator.bind(this)}
+          cellHeight={cellheight}
           title='Search List'
           searchPlaceHolder='Search'
         />

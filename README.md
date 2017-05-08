@@ -6,7 +6,7 @@
 
 A component for ListView can search items, support chinese alphabetical<br>
 
-<img src='https://github.com/UnPourTous/react-native-search-list/blob/master/screenshots/react-native-search-list-demo.gif' />
+<img src='https://github.com/UnPourTous/react-native-search-list/blob/master/screenshots/react-native-search-list-demo.gif?raw=true' />
 
 ## Installation
 

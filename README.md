@@ -160,5 +160,9 @@ the alphabetical section view content
 type: `function`
 
 
+## Thanks
+* [js-pinyin](https://github.com/waterchestnut/pinyin)
+* [md5](https://github.com/pvorb/node-md5)
+
 ## License
 This library is distributed under MIT Licence.

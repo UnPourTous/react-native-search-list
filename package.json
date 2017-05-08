@@ -1,7 +1,7 @@
 {
-  "name": "react-native-search-list",
-  "version": "1.0.1",
-  "description": "react native component for both Android and iOS",
+  "name": "@unpourtous/react-native-search-list",
+  "version": "1.0.2",
+  "description": "react native component for search list view",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
   "keywords": [
     "react-native"
   ],
-  "author": "haywoodfu",
+  "author": "haywood",
   "license": "MIT",
   "devDependencies": {
     "babel-jest": "18.0.0",

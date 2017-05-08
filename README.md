@@ -1,4 +1,4 @@
-# seed project for UnPourTous rn component
+# A component for ListView can search items, support chinese alphabetical
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
@@ -10,14 +10,14 @@ A component for ListView can search items, support chinese alphabetical<br>
 
 ## Installation
 
-`$ npm install react-native-search-list --save`
+`$ npm install @unpourtous/react-native-search-list --save`
 
 ## Usage
 
 To Use SearchList, need a array of object as data source,and each object has searchStr property:
 
 ```js
-import SearchList from 'react-native-search-list';
+import SearchList from '@unpourtous/react-native-search-list';
 const cellHeight=40
 
   renderRow (item: Object,

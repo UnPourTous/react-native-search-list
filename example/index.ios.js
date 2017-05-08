@@ -11,7 +11,7 @@ import {
   Text,
   PixelRatio
 } from 'react-native'
-import SearchList from 'react-native-search-list'
+import SearchList from '@unpourtous/react-native-search-list'
 
 const cellheight = 40
 export default class example extends Component {

@@ -25,6 +25,7 @@ import {
   sTrim,
   containsChinese
 } from './validator/Validator'
+import ReactNative from 'react-native'
 
 import SearchBar from './components/SearchBar.js'
 
@@ -43,8 +44,33 @@ const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 const searchBarHeight = 0
 const topOffset = 0
+const defaultSectionHeight = 24
+const defaultCellHeight = 0
 
 export default class SearchList extends Component {
+
+  static propTypes = {
+    data: React.PropTypes.array.isRequired,
+    renderRow: React.PropTypes.func.isRequired,
+    cellHeight: React.PropTypes.number.isRequired,
+
+    hideSectionList: React.PropTypes.bool,
+    sectionHeaderHeight: React.PropTypes.number,
+    topOffset: React.PropTypes.number,
+    searchBarBgColor: React.PropTypes.string,
+    title: React.PropTypes.string,
+    textColor: React.PropTypes.string,
+    cancelTitle: React.PropTypes.string,
+
+    sortFunc: React.PropTypes.func,
+    resultSortFunc: React.PropTypes.func,
+    renderSeparator: React.PropTypes.func,
+    renderSectionHeader: React.PropTypes.func,
+    onClickBack: React.PropTypes.func,
+    onScrollToSection: React.PropTypes.func,
+    renderAlphaSection: React.PropTypes.func,
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -135,18 +161,11 @@ export default class SearchList extends Component {
     }
 
     srcList.sort(this.props.sortFunc ? this.props.sortFunc : function (a, b) {
-      if (a.lastTransTime && b.lastTransTime) {
-        if (b.lastTransTime > a.lastTransTime) { // 转账时间为第一排序
-          return 1
-        } else if (b.lastTransTime < a.lastTransTime) {
-          return -1
-        }
-      }
       if (!isCharacter(b.orderIndex)) {
         return -1
       } else if (!isCharacter(a.orderIndex)) {
         return 1
-      } else if (b.orderIndex > a.orderIndex) { // 首字母为第二排序
+      } else if (b.orderIndex > a.orderIndex) {
         return -1
       } else if (b.orderIndex < a.orderIndex) {
         return 1
@@ -210,6 +229,8 @@ export default class SearchList extends Component {
     if (!srcList) {
       return
     }
+    let cellCount = 0
+    let sectionCount = 0
     let friendWithSection = {}
     this.sectionIDs = []
     this.rowIds = [[]]
@@ -236,6 +257,7 @@ export default class SearchList extends Component {
         if (!friendWithSection[orderIndex]) {
           friendWithSection[orderIndex] = orderIndex
           this.sectionIDs.push(orderIndex)
+          sectionCount++
         }
 
         // rows组装
@@ -250,6 +272,7 @@ export default class SearchList extends Component {
         let tRows = this.rowIds[sectionIndex]
         if (tRows) {
           tRows.push(item.searchKey)
+          cellCount++
         }
 
         // 3. 实际数据加入friendWithSection
@@ -306,13 +329,9 @@ export default class SearchList extends Component {
       return
     }
 
-    searchResultList.sort(function (a, b) {
-      if (b.lastTransTime > a.lastTransTime) { // 转账时间为第一排序
-        return 1
-      } else if (b.lastTransTime < a.lastTransTime) {
-        return -1
-      } else if (b.macher && a.macher) {
-        if (b.macher.machStart < a.macher.machStart) { // 人物匹配
+    searchResultList.sort(this.props.resultSortFunc ? this.props.resultSortFunc : function (a, b) {
+      if (b.macher && a.macher) {
+        if (b.macher.machStart < a.macher.machStart) { 
           return 1
         } else if (b.macher.machStart > a.macher.machStart) {
           return -1
@@ -394,7 +413,7 @@ export default class SearchList extends Component {
         <View />)
     } else {
       return (
-        <View style={styles.sectionHeader}>
+        <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight || defaultSectionHeight}]}>
           <Text style={styles.sectionTitle}>{sectionID}</Text>
         </View>)
     }
@@ -438,7 +457,9 @@ export default class SearchList extends Component {
     if (this.props.renderRow) {
       return this.props.renderRow(item, sectionID, rowID, highlightRowFunc, this.state.isSearching)
     } else {
-      return <View />
+      return <View style={{flex: 1, height: this.props.cellHeight || defaultCellHeight}}>
+        <Text>{item && item.searchStr ? item.searchStr : ''}</Text>
+      </View>
     }
   }
 
@@ -456,7 +477,7 @@ export default class SearchList extends Component {
     this.props.onClickBack && this.props.onClickBack()
   }
 
-  onClickCancel() {
+  onClickCancel () {
     this.search('')
     this.showBar()
   }
@@ -508,8 +529,8 @@ export default class SearchList extends Component {
     let headerHeight = this.props.headerHeight || 0
     y += headerHeight
 
-    let cellHeight = 65
-    let sectionHeaderHeight = 24
+    let cellHeight = this.props.cellHeight || defaultCellHeight
+    let sectionHeaderHeight = this.props.sectionHeaderHeight || defaultSectionHeight
     let index = this.sectionIDs.indexOf(section)
 
     let numcells = 0
@@ -519,8 +540,6 @@ export default class SearchList extends Component {
 
     sectionHeaderHeight = index * sectionHeaderHeight
     y += numcells * cellHeight + sectionHeaderHeight
-    let maxY = this.totalHeight - this.containerHeight + headerHeight
-    y = y > maxY ? maxY : y
 
     this.refs.searchListView.scrollTo({x: 0, y: y, animated: false})
 
@@ -530,7 +549,7 @@ export default class SearchList extends Component {
   render () {
 
     let sectionList = !this.props.hideSectionList ? <SectionList
-      style={{top: this.props.topOffset ? this.props.topOffset : topOffset}}
+      style={{top: this.props.topOffset ? this.props.topOffset : 0}}
       onSectionSelect={this.scrollToSection.bind(this)}
       sections={this.sectionIDs}
       renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)}/> : null
@@ -547,18 +566,21 @@ export default class SearchList extends Component {
     let mask = null
     if (this.state.isSearching && !this.searchStr) {
       mask =
-        <CustomTouchable onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)' style={styles.maskStyle}>
+        <CustomTouchable onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
+                         style={styles.maskStyle}>
           <View style={styles.maskStyle}/>
         </CustomTouchable>
     }
 
     return (
-      <View style={[{
-        top: this.props.topOffset ? this.props.topOffset : topOffset,
-        height: deviceHeight + 64,
-        width: deviceWidth,
-        backgroundColor: '#efefef'
-      }, this.props.style]}>
+      <View
+        ref='view'
+        style={[{
+          top: this.props.topOffset ? this.props.topOffset : topOffset,
+          height: deviceHeight + 64,
+          width: deviceWidth,
+          backgroundColor: '#efefef'
+        }, this.props.style]}>
         <Animated.View style={{
           flex: 1,
           transform: [

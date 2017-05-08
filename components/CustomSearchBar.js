@@ -16,7 +16,7 @@ import React, { Component } from 'react'
 
 const buttonWidth = 70
 
-export default class SearchBar extends Component {
+export default class CustomSearchBar extends Component {
   constructor (props) {
     super(props)
     this.state = {

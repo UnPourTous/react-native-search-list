@@ -27,7 +27,7 @@ import {
 } from './validator/Validator'
 import ReactNative from 'react-native'
 
-import SearchBar from './components/SearchBar.js'
+import CustomSearchBar from './components/CustomSearchBar.js'
 
 import pinyin from 'js-pinyin'
 
@@ -592,7 +592,7 @@ export default class SearchList extends Component {
             backgroundColor: this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23',
             paddingTop: this.state._searchBarAnimatedValue
           }}>
-            <SearchBar placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
+            <CustomSearchBar placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
                        onChange={this.search.bind(this)}
                        onFocus={this.onFocus.bind(this)}
                        onBlur={this.onBlur.bind(this)}

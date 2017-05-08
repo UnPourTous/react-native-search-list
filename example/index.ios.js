@@ -23,10 +23,12 @@ export default class example extends Component {
         {'searchStr': 'B1'},
         {'searchStr': 'A2'},
         {'searchStr': 'C1'},
-        {'searchStr': 'B2'},
-        {'searchStr': 'C2'},
-        {'searchStr': 'D1'},
-        {'searchStr': 'D2'}]
+        {'searchStr': 'Linder'},
+        {'searchStr': '林林'},
+        {'searchStr': '王五'},
+        {'searchStr': '张三'},
+        {'searchStr': '张二'},
+        {'searchStr': '李四'}]
     }
   }
 
@@ -58,24 +60,6 @@ export default class example extends Component {
     )
   }
 
-  renderSeparator (sectionID,
-                   rowID,
-                   adjacentRowHighlighted) {
-
-    let style = {backgroundColor: '#fff', paddingLeft: 25}
-    if (adjacentRowHighlighted) {
-      style = [style, {opacity: 0.0}]
-    }
-    return (
-      <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
-        <View style={{
-          height: 1 / PixelRatio.get(),
-          backgroundColor: 'gray'
-        }}/>
-      </View>
-    )
-  }
-
   render () {
     return (
       <View style={{
@@ -88,7 +72,6 @@ export default class example extends Component {
           data={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
           emptyContent={this.emptyContent.bind(this)}
-          renderSeparator={this.renderSeparator.bind(this)}
           cellHeight={cellheight}
           title='Search List'
           searchPlaceHolder='Search'

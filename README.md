@@ -1,10 +1,10 @@
-# A component for ListView can search items, support chinese alphabetical
+# A searchable ListView which supports Chinese PinYin and alphabetical index.
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 ### React Native Search List
 
-A component for ListView can search items, support chinese alphabetical<br>
+A searchable ListView which supports Chinese PinYin and alphabetical index.
 
 <img src='https://github.com/UnPourTous/react-native-search-list/blob/master/screenshots/react-native-search-list-demo.gif?raw=true' />
 

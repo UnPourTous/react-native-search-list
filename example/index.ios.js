@@ -75,6 +75,12 @@ export default class example extends Component {
           cellHeight={cellheight}
           title='Search List'
           searchPlaceHolder='Search'
+          customSearchBarStyle={{
+            fontSize: 14
+          }}
+          activeSearchBarColor='#fff'
+          showActiveSearchIcon
+          searchBarActiveColor='#171a23'
         />
       </View>
     )

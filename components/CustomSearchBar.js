@@ -80,19 +80,30 @@ export default class CustomSearchBar extends Component {
       <TouchableWithoutFeedback onPress={() => this.refs.input.focus()}>
         <View
           style={[this.props.style, {flexDirection: 'row', padding: 8, height: 44, backgroundColor: '#171a23'}]}>
+          {this.props.showActiveSearchIcon && !this.state.isShowHolder && <Image
+            style={{
+              position: 'absolute',
+              width: 12,
+              height: 12,
+              top: 16,
+              left: 18,
+              zIndex: 2
+            }}
+            source={require('../images/icon-search.png')}/>
+          }
           <TextInput onFocus={this.onFocus.bind(this)}
                      onBlur={this.onBlur.bind(this)}
                      ref='input'
-                     style={{
+                     style={[{
                        flex: 1,
-                       color: '#979797',
+                       color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797' ,
                        padding: 0,
                        height: 28,
-                       paddingLeft: 8,
+                       paddingLeft: this.props.showActiveSearchIcon && !this.state.isShowHolder ? 30 : 8,
                        paddingRight: 8,
                        borderRadius: 5,
-                       backgroundColor: '#2f3139'
-                     }}
+                       backgroundColor: this.props.activeSearchBarColor && !this.state.isShowHolder ? this.props.activeSearchBarColor : '#2f3139'
+                     }, this.props.customSearchBarStyle]}
                      onChangeText={this.onChange.bind(this)}
                      value={this.state.value}
                      underlineColorAndroid='transparent'

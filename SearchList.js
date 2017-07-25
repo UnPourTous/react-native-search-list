@@ -69,6 +69,7 @@ export default class SearchList extends Component {
     onClickBack: React.PropTypes.func,
     onScrollToSection: React.PropTypes.func,
     renderAlphaSection: React.PropTypes.func,
+    showActiveSearchIcon: React.PropTypes.bool
   }
 
   constructor (props) {
@@ -331,7 +332,7 @@ export default class SearchList extends Component {
 
     searchResultList.sort(this.props.resultSortFunc ? this.props.resultSortFunc : function (a, b) {
       if (b.macher && a.macher) {
-        if (b.macher.machStart < a.macher.machStart) { 
+        if (b.macher.machStart < a.macher.machStart) {
           return 1
         } else if (b.macher.machStart > a.macher.machStart) {
           return -1
@@ -593,13 +594,17 @@ export default class SearchList extends Component {
             paddingTop: this.state._searchBarAnimatedValue
           }}>
             <CustomSearchBar placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
-                       onChange={this.search.bind(this)}
-                       onFocus={this.onFocus.bind(this)}
-                       onBlur={this.onBlur.bind(this)}
-                       onClickCancel={this.onClickCancel.bind(this)}
-                       cancelTitle={this.props.cancelTitle}
-                       textColor={this.props.textColor}
-                       ref='searchBar'/>
+                             onChange={this.search.bind(this)}
+                             onFocus={this.onFocus.bind(this)}
+                             onBlur={this.onBlur.bind(this)}
+                             onClickCancel={this.onClickCancel.bind(this)}
+                             cancelTitle={this.props.cancelTitle}
+                             textColor={this.props.textColor}
+                             customSearchBarStyle={this.props.customSearchBarStyle}
+                             activeSearchBarColor={this.props.activeSearchBarColor}
+                             showActiveSearchIcon={this.props.showActiveSearchIcon}
+                             searchBarActiveColor={this.props.searchBarActiveColor}
+                             ref='searchBar'/>
           </Animated.View>
           <View style={styles.listContainer}>
             {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr) :
@@ -670,4 +675,3 @@ const styles = StyleSheet.create({
     marginVertical: 40
   }
 })
-

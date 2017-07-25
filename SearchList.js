@@ -283,7 +283,7 @@ export default class SearchList extends Component {
     })
     this.setState({
       isSearching: false,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(friendWithSection, this.sectionIDs, this.rowIds)
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(friendWithSection, (this.sectionIDs || this.sectionIDs.length === 0) ? [''] : this.sectionIDs, this.rowIds)
     })
   }
 

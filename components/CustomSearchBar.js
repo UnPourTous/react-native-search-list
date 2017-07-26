@@ -64,10 +64,9 @@ export default class CustomSearchBar extends Component {
       duration: 300,
       toValue: toVal
     }).start()
-
   }
 
-  cancelSearch() {
+  cancelSearch () {
     this.refs.input.clear()
     this.refs.input.blur()
     this.setState({isShowHolder: true})
@@ -89,25 +88,26 @@ export default class CustomSearchBar extends Component {
               left: 18,
               zIndex: 2
             }}
-            source={require('../images/icon-search.png')}/>
+            source={require('../images/icon-search.png')} />
           }
-          <TextInput onFocus={this.onFocus.bind(this)}
-                     onBlur={this.onBlur.bind(this)}
-                     ref='input'
-                     style={[{
-                       flex: 1,
-                       color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797' ,
-                       padding: 0,
-                       height: 28,
-                       paddingLeft: this.props.showActiveSearchIcon && !this.state.isShowHolder ? 30 : 8,
-                       paddingRight: 8,
-                       borderRadius: 5,
-                       backgroundColor: this.props.activeSearchBarColor && !this.state.isShowHolder ? this.props.activeSearchBarColor : '#2f3139'
-                     }, this.props.customSearchBarStyle]}
-                     onChangeText={this.onChange.bind(this)}
-                     value={this.state.value}
-                     underlineColorAndroid='transparent'
-                     returnKeyType='search'/>
+          <TextInput
+            onFocus={this.onFocus.bind(this)}
+            onBlur={this.onBlur.bind(this)}
+            ref='input'
+            style={[{
+              flex: 1,
+              color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
+              padding: 0,
+              height: 28,
+              paddingLeft: this.props.showActiveSearchIcon && !this.state.isShowHolder ? 30 : 8,
+              paddingRight: 8,
+              borderRadius: 5,
+              backgroundColor: this.props.activeSearchBarColor && !this.state.isShowHolder ? this.props.activeSearchBarColor : '#2f3139'
+            }, this.props.customSearchBarStyle]}
+            onChangeText={this.onChange.bind(this)}
+            value={this.state.value}
+            underlineColorAndroid='transparent'
+            returnKeyType='search' />
           {this.state.isShowHolder && !this.state.value ? <View style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -118,7 +118,7 @@ export default class CustomSearchBar extends Component {
             right: 0
           }}>
             <Image style={{width: 12, height: 12, marginRight: 5}}
-                   source={require('../images/icon-search.png')}/>
+              source={require('../images/icon-search.png')} />
             <Text style={{
               color: '#979797',
               fontSize: 14,

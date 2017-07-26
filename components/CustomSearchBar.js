@@ -64,10 +64,9 @@ export default class CustomSearchBar extends Component {
       duration: 300,
       toValue: toVal
     }).start()
-
   }
 
-  cancelSearch() {
+  cancelSearch () {
     this.refs.input.clear()
     this.refs.input.blur()
     this.setState({isShowHolder: true})
@@ -96,7 +95,7 @@ export default class CustomSearchBar extends Component {
                      ref='input'
                      style={[{
                        flex: 1,
-                       color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797' ,
+                       color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
                        padding: 0,
                        height: 28,
                        paddingLeft: this.props.showActiveSearchIcon && !this.state.isShowHolder ? 30 : 8,

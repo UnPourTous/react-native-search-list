@@ -3,7 +3,7 @@ import {
 } from 'react-native'
 import React, { Component } from 'react'
 
-export default class WeTouchable extends Component {
+export default class CustomTouchable extends Component {
   static defaultProps = {
     activeOpacity: 0.7
   }
@@ -12,7 +12,7 @@ export default class WeTouchable extends Component {
     return (
       <TouchableOpacity
         {...this.props}
-        activeOpacity={WeTouchable.defaultProps.activeOpacity}>
+        activeOpacity={CustomTouchable.defaultProps.activeOpacity}>
         {this.props.children}
       </TouchableOpacity>
     )

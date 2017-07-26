@@ -1,15 +1,13 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
- * @flow
  */
 
 import React, { Component } from 'react'
 import {
   AppRegistry,
   View,
-  Text,
-  PixelRatio
+  Text
 } from 'react-native'
 import SearchList from '@unpourtous/react-native-search-list'
 
@@ -32,11 +30,7 @@ export default class example extends Component {
     }
   }
 
-  renderRow (item: Object,
-             sectionID: number | string,
-             rowID: number | string,
-             highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void,
-             isSearching: bool) {
+  renderRow (item, sectionID, rowID, highlightRowFunc, isSearching) {
     return (
       <View key={rowID} style={{flex: 1, marginLeft: 40, height: cellheight, justifyContent: 'center'}}>
         <Text>{item.searchStr}</Text>
@@ -66,7 +60,7 @@ export default class example extends Component {
         flex: 1,
         backgroundColor: '#efefef',
         flexDirection: 'column',
-        justifyContent: 'flex-start',
+        justifyContent: 'flex-start'
       }}>
         <SearchList
           data={this.state.dataSource}

@@ -7,8 +7,6 @@ import {
   Text,
   View,
   Image,
-  TouchableNativeFeedback,
-  TouchableHighlight,
   Dimensions
 } from 'react-native'
 

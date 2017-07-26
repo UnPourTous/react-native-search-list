@@ -12,8 +12,7 @@ import {
   Platform,
   Dimensions,
   Animated,
-  TextInput,
-  UIManager
+  TextInput
 } from 'react-native'
 
 const {State: TextInputState} = TextInput
@@ -25,7 +24,6 @@ import {
   sTrim,
   containsChinese
 } from './validator/Validator'
-import ReactNative from 'react-native'
 
 import CustomSearchBar from './components/CustomSearchBar.js'
 
@@ -230,8 +228,6 @@ export default class SearchList extends Component {
     if (!srcList) {
       return
     }
-    let cellCount = 0
-    let sectionCount = 0
     let friendWithSection = {}
     this.sectionIDs = []
     this.rowIds = [[]]
@@ -258,7 +254,6 @@ export default class SearchList extends Component {
         if (!friendWithSection[orderIndex]) {
           friendWithSection[orderIndex] = orderIndex
           this.sectionIDs.push(orderIndex)
-          sectionCount++
         }
 
         // rows组装
@@ -273,7 +268,6 @@ export default class SearchList extends Component {
         let tRows = this.rowIds[sectionIndex]
         if (tRows) {
           tRows.push(item.searchKey)
-          cellCount++
         }
 
         // 3. 实际数据加入friendWithSection
@@ -317,7 +311,6 @@ export default class SearchList extends Component {
       } else {
         this.orderResultList(tempResult)
       }
-
     } else {
       // 重置为原来的列表
       this.parseList(this.tmpSource)
@@ -441,14 +434,14 @@ export default class SearchList extends Component {
           <View style={{
             height: 1 / PixelRatio.get(),
             backgroundColor: '#efefef'
-          }}/>
+          }} />
         </View>
       )
     }
   }
 
   renderFooter () {
-    return <View style={styles.scrollSpinner}/>
+    return <View style={styles.scrollSpinner} />
   }
 
   renderRow (item,
@@ -548,28 +541,27 @@ export default class SearchList extends Component {
   }
 
   render () {
-
     let sectionList = !this.props.hideSectionList ? <SectionList
       style={{top: this.props.topOffset ? this.props.topOffset : 0}}
       onSectionSelect={this.scrollToSection.bind(this)}
       sections={this.sectionIDs}
-      renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)}/> : null
+      renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)} /> : null
 
     let toolbar =
       <CustomToolbar
         style={styles.toolbar}
         backgroundColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
         title={this.props.title}
-        hideBack={this.props.onClickBack ? false : true}
+        hideBack={!this.props.onClickBack}
         textColor={this.props.textColor}
-        onClickBack={this.onClickBack.bind(this)}/>
+        onClickBack={this.onClickBack.bind(this)} />
 
     let mask = null
     if (this.state.isSearching && !this.searchStr) {
       mask =
         <CustomTouchable onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
-                         style={styles.maskStyle}>
-          <View style={styles.maskStyle}/>
+          style={styles.maskStyle}>
+          <View style={styles.maskStyle} />
         </CustomTouchable>
     }
 
@@ -594,21 +586,21 @@ export default class SearchList extends Component {
             paddingTop: this.state._searchBarAnimatedValue
           }}>
             <CustomSearchBar placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
-                             onChange={this.search.bind(this)}
-                             onFocus={this.onFocus.bind(this)}
-                             onBlur={this.onBlur.bind(this)}
-                             onClickCancel={this.onClickCancel.bind(this)}
-                             cancelTitle={this.props.cancelTitle}
-                             textColor={this.props.textColor}
-                             customSearchBarStyle={this.props.customSearchBarStyle}
-                             activeSearchBarColor={this.props.activeSearchBarColor}
-                             showActiveSearchIcon={this.props.showActiveSearchIcon}
-                             searchBarActiveColor={this.props.searchBarActiveColor}
-                             ref='searchBar'/>
+              onChange={this.search.bind(this)}
+              onFocus={this.onFocus.bind(this)}
+              onBlur={this.onBlur.bind(this)}
+              onClickCancel={this.onClickCancel.bind(this)}
+              cancelTitle={this.props.cancelTitle}
+              textColor={this.props.textColor}
+              customSearchBarStyle={this.props.customSearchBarStyle}
+              activeSearchBarColor={this.props.activeSearchBarColor}
+              showActiveSearchIcon={this.props.showActiveSearchIcon}
+              searchBarActiveColor={this.props.searchBarActiveColor}
+              ref='searchBar' />
           </Animated.View>
           <View style={styles.listContainer}>
-            {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr) :
-              <ListView
+            {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
+              : <ListView
                 ref='searchListView'
                 dataSource={this.state.dataSource}
                 renderRow={this.renderRow.bind(this)}
@@ -618,7 +610,7 @@ export default class SearchList extends Component {
                 renderSeparator={this.props.renderSeparator ? this.props.renderSeparator : this.renderSeparator.bind(this)}
                 renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
                 renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
-                enableEmptySections/>}
+                enableEmptySections />}
             {this.state.isSearching ? null : sectionList}
           </View>
         </Animated.View>

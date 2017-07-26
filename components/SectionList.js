@@ -12,7 +12,6 @@ let noop = () => {}
 let returnTrue = () => true
 
 export default class SectionList extends Component {
-
   constructor (props, context) {
     super(props, context)
 

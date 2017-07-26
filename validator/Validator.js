@@ -12,7 +12,7 @@ export const isValidInput = (name) => {
   if (name === undefined) {
     return false
   }
-  return /(^[0-9a-zA-Z\u4e00-\u9fa5]+$)/.test(name);
+  return /(^[0-9a-zA-Z\u4e00-\u9fa5]+$)/.test(name)
 }
 
 export const isValidCardNo = (cardNo) => {

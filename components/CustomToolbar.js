@@ -105,7 +105,6 @@ export default class CustomToolbar extends Component {
       </View>
     )
   }
-
 }
 
 let styles = StyleSheet.create({

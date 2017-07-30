@@ -78,6 +78,9 @@ export default class example extends Component {
           customSearchBarStyle={{
             fontSize: 14
           }}
+          onClickBack={() => {}}
+          leftButtonStyle={{justifyContent: 'flex-start'}}
+          backIconStyle={{width: 8.5, height: 17}}
           activeSearchBarColor='#fff'
           showActiveSearchIcon
           searchBarActiveColor='#171a23'

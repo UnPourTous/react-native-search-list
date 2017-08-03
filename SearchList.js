@@ -414,9 +414,7 @@ export default class SearchList extends Component {
   }
 
   renderAlphaSection (sectionData, sectionID) {
-    return (
-      <Text style={{color: '#171a23', fontSize: 11}}>{sectionID}</Text>
-    )
+    return (<Text style={{ color: '#171a23', fontSize: 11, width: 36 }}>{sectionID}</Text>))
   }
 
   renderSeparator (sectionID,

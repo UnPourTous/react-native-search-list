@@ -76,9 +76,9 @@ export default class CustomToolbar extends Component {
       <View style={{flex: 1}} />
     </View>
       : <CustomTouchable onPress={this._onPressBackButton.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'>
-        <View style={[styles.actionItem, {marginTop: marginTopPx}]}>
+        <View style={[styles.actionItem, this.props.leftButtonStyle, {marginTop: marginTopPx}]}>
           <Image
-            style={styles.backIcon}
+            style={[styles.backIcon, this.props.backIconStyle]}
             source={require('../images/icon-back.png')}
             resizeMode='cover' />
         </View>

@@ -17,6 +17,10 @@ import React, { Component } from 'react'
 const buttonWidth = 70
 
 export default class CustomSearchBar extends Component {
+  static propTypes = {
+    showActiveSearchIcon: React.PropTypes.bool,
+    isShowHolder: React.PropTypes.bool, // 是否显示搜索图标
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -43,10 +47,7 @@ export default class CustomSearchBar extends Component {
     if (this.props.onFocus) {
       this.props.onFocus()
     }
-    if (this.state.isShowHolder) {
-      this.setState({isShowHolder: false})
-      this.searchingAnimation(true)
-    }
+    this.searchingAnimation(true)
   }
 
   searchingAnimation (isSearching) {
@@ -63,13 +64,15 @@ export default class CustomSearchBar extends Component {
     Animated.timing(this.state.animatedValue, {
       duration: 300,
       toValue: toVal
-    }).start()
+    }).start(() => {
+      this.setState({isShowHolder: !isSearching})
+    })
+
   }
 
-  cancelSearch () {
+  cancelSearch() {
     this.refs.input.clear()
     this.refs.input.blur()
-    this.setState({isShowHolder: true})
     this.searchingAnimation(false)
     this.props.onClickCancel && this.props.onClickCancel()
   }
@@ -79,18 +82,32 @@ export default class CustomSearchBar extends Component {
       <TouchableWithoutFeedback onPress={() => this.refs.input.focus()}>
         <View
           style={[this.props.style, {flexDirection: 'row', padding: 8, height: 44, backgroundColor: '#171a23'}]}>
-          {this.props.showActiveSearchIcon && !this.state.isShowHolder && <Image
+          <Image
             style={{
               position: 'absolute',
               width: 12,
               height: 12,
               top: 16,
               left: 18,
-              zIndex: 2
+              zIndex: 2,
+              opacity: !this.state.isShowHolder ? 1 : 0
             }}
-            source={require('../images/icon-search.png')} />
-          }
-          <TextInput
+            source={require('../images/icon-search.png')}/>
+          
+          {/* Android上, 下面这样写会见鬼，有时候隐藏不掉，还会影响到其他元素 */}
+          {/*{!this.state.isShowHolder ? <Image*/}
+            {/*style={{*/}
+              {/*position: 'absolute',*/}
+              {/*backgroundColor: 'red',*/}
+              {/*width: 12,*/}
+              {/*height: 12,*/}
+              {/*top: 16,*/}
+              {/*left: 18,*/}
+              {/*zIndex: 2*/}
+            {/*}}*/}
+            {/*source={require('../images/icon-search.png')}/> : null*/}
+          {/*}*/}
+          <TextInput 
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
             ref='input'
@@ -108,14 +125,15 @@ export default class CustomSearchBar extends Component {
             value={this.state.value}
             underlineColorAndroid='transparent'
             returnKeyType='search' />
-          {this.state.isShowHolder && !this.state.value ? <View style={{
+          <View style={{
             flexDirection: 'row',
             alignItems: 'center',
             height: 44,
             position: 'absolute',
             justifyContent: 'center',
             left: 0,
-            right: 0
+            right: 0,
+            opacity: (this.state.isShowHolder && !this.state.value) ? 1 : 0
           }}>
             <Image style={{width: 12, height: 12, marginRight: 5}}
               source={require('../images/icon-search.png')} />
@@ -124,8 +142,7 @@ export default class CustomSearchBar extends Component {
               fontSize: 14,
               backgroundColor: 'rgba(0, 0, 0, 0)'
             }}>{this.props.placeholder}</Text>
-          </View> : null
-          }
+          </View>
           <Animated.View style={{
             backgroundColor: '#171a23',
             width: this.state.animatedValue

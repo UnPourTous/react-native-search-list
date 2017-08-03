@@ -67,7 +67,9 @@ export default class SearchList extends Component {
     onClickBack: React.PropTypes.func,
     onScrollToSection: React.PropTypes.func,
     renderAlphaSection: React.PropTypes.func,
-    showActiveSearchIcon: React.PropTypes.bool
+    showActiveSearchIcon: React.PropTypes.bool,
+    leftButtonStyle: React.PropTypes.object,
+    backIconStyle: React.PropTypes.object
   }
 
   constructor (props) {
@@ -552,6 +554,8 @@ export default class SearchList extends Component {
         title={this.props.title}
         hideBack={!this.props.onClickBack}
         textColor={this.props.textColor}
+        leftButtonStyle={this.props.leftButtonStyle}
+        backIconStyle={this.props.backIconStyle}
         onClickBack={this.onClickBack.bind(this)} />
 
     let mask = null

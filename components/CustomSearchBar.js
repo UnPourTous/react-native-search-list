@@ -70,7 +70,7 @@ export default class CustomSearchBar extends Component {
 
   }
 
-  cancelSearch() {
+  cancelSearch () {
     this.refs.input.clear()
     this.refs.input.blur()
     this.searchingAnimation(false)
@@ -93,7 +93,7 @@ export default class CustomSearchBar extends Component {
               opacity: !this.state.isShowHolder ? 1 : 0
             }}
             source={require('../images/icon-search.png')}/>
-          
+
           {/* Android上, 下面这样写会见鬼，有时候隐藏不掉，还会影响到其他元素 */}
           {/*{!this.state.isShowHolder ? <Image*/}
             {/*style={{*/}
@@ -107,7 +107,7 @@ export default class CustomSearchBar extends Component {
             {/*}}*/}
             {/*source={require('../images/icon-search.png')}/> : null*/}
           {/*}*/}
-          <TextInput 
+          <TextInput
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
             ref='input'

@@ -16,6 +16,9 @@ let statusBarSize = (Platform.OS === 'ios' ? 10 : 0)
 let deviceWidth = Dimensions.get('window').width
 
 export default class CustomToolbar extends Component {
+  static propTypes = {
+    backIcon: React.PropTypes.number
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -79,7 +82,7 @@ export default class CustomToolbar extends Component {
         <View style={[styles.actionItem, this.props.leftButtonStyle, {marginTop: marginTopPx}]}>
           <Image
             style={[styles.backIcon, this.props.backIconStyle]}
-            source={require('../images/icon-back.png')}
+            source={this.props.backIcon || require('../images/icon-back.png')}
             resizeMode='cover' />
         </View>
       </CustomTouchable>

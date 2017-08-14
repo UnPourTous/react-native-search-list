@@ -69,6 +69,7 @@ export default class SearchList extends Component {
     renderAlphaSection: React.PropTypes.func,
     showActiveSearchIcon: React.PropTypes.bool,
     leftButtonStyle: React.PropTypes.object,
+    backIcon: React.PropTypes.number,
     backIconStyle: React.PropTypes.object
   }
 
@@ -555,6 +556,7 @@ export default class SearchList extends Component {
         hideBack={!this.props.onClickBack}
         textColor={this.props.textColor}
         leftButtonStyle={this.props.leftButtonStyle}
+        backIcon={this.props.backIcon}
         backIconStyle={this.props.backIconStyle}
         onClickBack={this.onClickBack.bind(this)} />
 

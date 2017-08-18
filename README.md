@@ -163,6 +163,7 @@ type: `function`
 ## Thanks
 * [js-pinyin](https://github.com/waterchestnut/pinyin)
 * [md5](https://github.com/pvorb/node-md5)
+* [react-native-selectablesectionlistview](https://github.com/johanneslumpe/react-native-selectablesectionlistview)
 
 ## License
 This library is distributed under MIT Licence.

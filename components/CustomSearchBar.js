@@ -19,7 +19,7 @@ const buttonWidth = 70
 export default class CustomSearchBar extends Component {
   static propTypes = {
     showActiveSearchIcon: React.PropTypes.bool,
-    isShowHolder: React.PropTypes.bool, // 是否显示搜索图标
+    isShowHolder: React.PropTypes.bool // 是否显示搜索图标
   }
   constructor (props) {
     super(props)
@@ -67,7 +67,6 @@ export default class CustomSearchBar extends Component {
     }).start(() => {
       this.setState({isShowHolder: !isSearching})
     })
-
   }
 
   cancelSearch () {
@@ -92,21 +91,21 @@ export default class CustomSearchBar extends Component {
               zIndex: 2,
               opacity: !this.state.isShowHolder ? 1 : 0
             }}
-            source={require('../images/icon-search.png')}/>
+            source={require('../images/icon-search.png')} />
 
           {/* Android上, 下面这样写会见鬼，有时候隐藏不掉，还会影响到其他元素 */}
-          {/*{!this.state.isShowHolder ? <Image*/}
-            {/*style={{*/}
-              {/*position: 'absolute',*/}
-              {/*backgroundColor: 'red',*/}
-              {/*width: 12,*/}
-              {/*height: 12,*/}
-              {/*top: 16,*/}
-              {/*left: 18,*/}
-              {/*zIndex: 2*/}
-            {/*}}*/}
-            {/*source={require('../images/icon-search.png')}/> : null*/}
-          {/*}*/}
+          {/* {!this.state.isShowHolder ? <Image */}
+          {/* style={{ */}
+          {/* position: 'absolute', */}
+          {/* backgroundColor: 'red', */}
+          {/* width: 12, */}
+          {/* height: 12, */}
+          {/* top: 16, */}
+          {/* left: 18, */}
+          {/* zIndex: 2 */}
+          {/* }} */}
+          {/* source={require('../images/icon-search.png')}/> : null */}
+          {/* } */}
           <TextInput
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}

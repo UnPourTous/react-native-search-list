@@ -71,7 +71,7 @@ export default class SearchList extends Component {
     leftButtonStyle: React.PropTypes.object,
     backIcon: React.PropTypes.number,
     backIconStyle: React.PropTypes.object,
-    beforeHeader: React.PropTypes.element
+    renderComponentAboveHeader: React.PropTypes.func
   }
 
   constructor (props) {
@@ -461,18 +461,11 @@ export default class SearchList extends Component {
 
   onFocus () {
     if (!this.state.isSearching) {
-      if (this.props.beforeHeader) {
-        this.state._hideBeforeHeader = true
-      }
-
       this.hideBar()
     }
   }
 
   onBlur () {
-    if (this.props.beforeHeader) {
-      this.state._hideBeforeHeader = false
-    }
     // this.cancelSearch()
   }
 
@@ -483,9 +476,6 @@ export default class SearchList extends Component {
   onClickCancel () {
     this.search('')
     this.showBar()
-    if (this.props.beforeHeader) {
-      this.state._hideBeforeHeader = false
-    }
   }
 
   cancelSearch () {
@@ -613,7 +603,7 @@ export default class SearchList extends Component {
               searchBarActiveColor={this.props.searchBarActiveColor}
               ref='searchBar' />
           </Animated.View>
-          {this.props.beforeHeader && !this.state._hideBeforeHeader ? this.props.beforeHeader : null}
+          {(!this.state.isSearching && this.props.renderComponentAboveHeader) ? (this.props.renderComponentAboveHeader()) : null}
           <View style={styles.listContainer}>
             {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
               : <ListView

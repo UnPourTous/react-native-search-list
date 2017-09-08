@@ -70,7 +70,8 @@ export default class SearchList extends Component {
     showActiveSearchIcon: React.PropTypes.bool,
     leftButtonStyle: React.PropTypes.object,
     backIcon: React.PropTypes.number,
-    backIconStyle: React.PropTypes.object
+    backIconStyle: React.PropTypes.object,
+    renderComponentAboveHeader: React.PropTypes.func
   }
 
   constructor (props) {
@@ -602,6 +603,7 @@ export default class SearchList extends Component {
               searchBarActiveColor={this.props.searchBarActiveColor}
               ref='searchBar' />
           </Animated.View>
+          {(!this.state.isSearching && this.props.renderComponentAboveHeader) ? (this.props.renderComponentAboveHeader()) : null}
           <View style={styles.listContainer}>
             {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
               : <ListView

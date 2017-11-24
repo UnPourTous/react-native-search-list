@@ -110,7 +110,7 @@ export default class CustomToolbar extends Component {
 }
 
 CustomToolbar.propTypes = {
-  backIcon: React.PropTypes.number
+  backIcon: PropTypes.number
 }
 
 let styles = StyleSheet.create({

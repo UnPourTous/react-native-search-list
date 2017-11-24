@@ -14,14 +14,12 @@ import {
 
 import React, { Component } from 'react'
 
+import PropTypes from 'prop-types'
+
 const buttonWidth = 70
 
 export default class CustomSearchBar extends Component {
-  static propTypes = {
-    showActiveSearchIcon: React.PropTypes.bool,
-    isShowHolder: React.PropTypes.bool // 是否显示搜索图标
-  }
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       value: props.value,
@@ -30,27 +28,27 @@ export default class CustomSearchBar extends Component {
     }
   }
 
-  onChange (str) {
+  onChange(str) {
     if (this.props.onChange) {
       this.props.onChange(str)
     }
-    this.setState({str})
+    this.setState({ str })
   }
 
-  onBlur () {
+  onBlur() {
     if (this.props.onBlur) {
       this.props.onBlur()
     }
   }
 
-  onFocus () {
+  onFocus() {
     if (this.props.onFocus) {
       this.props.onFocus()
     }
     this.searchingAnimation(true)
   }
 
-  searchingAnimation (isSearching) {
+  searchingAnimation(isSearching) {
     let toVal = 0
 
     if (isSearching) {
@@ -65,22 +63,22 @@ export default class CustomSearchBar extends Component {
       duration: 300,
       toValue: toVal
     }).start(() => {
-      this.setState({isShowHolder: !isSearching})
+      this.setState({ isShowHolder: !isSearching })
     })
   }
 
-  cancelSearch () {
+  cancelSearch() {
     this.refs.input.clear()
     this.refs.input.blur()
     this.searchingAnimation(false)
     this.props.onClickCancel && this.props.onClickCancel()
   }
 
-  render () {
+  render() {
     return (
       <TouchableWithoutFeedback onPress={() => this.refs.input.focus()}>
         <View
-          style={[this.props.style, {flexDirection: 'row', padding: 8, height: 44, backgroundColor: '#171a23'}]}>
+          style={[this.props.style, { flexDirection: 'row', padding: 8, height: 44, backgroundColor: '#171a23' }]}>
           <Image
             style={{
               position: 'absolute',
@@ -134,7 +132,7 @@ export default class CustomSearchBar extends Component {
             right: 0,
             opacity: (this.state.isShowHolder && !this.state.value) ? 1 : 0
           }}>
-            <Image style={{width: 12, height: 12, marginRight: 5}}
+            <Image style={{ width: 12, height: 12, marginRight: 5 }}
               source={require('../images/icon-search.png')} />
             <Text style={{
               color: '#979797',
@@ -157,7 +155,7 @@ export default class CustomSearchBar extends Component {
                 paddingRight: 5,
                 borderRadius: 5
               }}>
-                <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}} numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
+                <Text style={{ color: this.props.textColor ? this.props.textColor : 'white' }} numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
               </View>
             </TouchableWithoutFeedback>
           </Animated.View>
@@ -165,4 +163,9 @@ export default class CustomSearchBar extends Component {
       </TouchableWithoutFeedback>
     )
   };
+}
+
+CustomSearchBar.propTypes = {
+  showActiveSearchIcon: React.PropTypes.bool,
+  isShowHolder: React.PropTypes.bool // 是否显示搜索图标
 }

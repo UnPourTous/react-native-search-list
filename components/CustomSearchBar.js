@@ -166,6 +166,6 @@ export default class CustomSearchBar extends Component {
 }
 
 CustomSearchBar.propTypes = {
-  showActiveSearchIcon: React.PropTypes.bool,
-  isShowHolder: React.PropTypes.bool // 是否显示搜索图标
+  showActiveSearchIcon: PropTypes.bool,
+  isShowHolder: PropTypes.bool // 是否显示搜索图标
 }

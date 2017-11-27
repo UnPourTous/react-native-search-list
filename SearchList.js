@@ -607,7 +607,7 @@ export default class SearchList extends Component {
           {(!this.state.isSearching && this.props.renderComponentAboveHeader) ? (this.props.renderComponentAboveHeader()) : null}
           <View style={styles.listContainer}>
             {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
-              : (this.state.dataSource && this.state.dataSource.length > 0 ? <ListView
+              : (this.props.data && this.props.data.length > 0 ? <ListView
                 ref='searchListView'
                 dataSource={this.state.dataSource}
                 renderRow={this.renderRow.bind(this)}

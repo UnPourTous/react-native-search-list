@@ -71,7 +71,8 @@ export default class SearchList extends Component {
     leftButtonStyle: React.PropTypes.object,
     backIcon: React.PropTypes.number,
     backIconStyle: React.PropTypes.object,
-    renderComponentAboveHeader: React.PropTypes.func
+    renderComponentAboveHeader: React.PropTypes.func,
+    renderEmpty: React.PropTypes.func
   }
 
   constructor (props) {
@@ -606,7 +607,7 @@ export default class SearchList extends Component {
           {(!this.state.isSearching && this.props.renderComponentAboveHeader) ? (this.props.renderComponentAboveHeader()) : null}
           <View style={styles.listContainer}>
             {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
-              : <ListView
+              : (this.state.dataSource && this.state.dataSource.length > 0 ? <ListView
                 ref='searchListView'
                 dataSource={this.state.dataSource}
                 renderRow={this.renderRow.bind(this)}
@@ -616,7 +617,7 @@ export default class SearchList extends Component {
                 renderSeparator={this.props.renderSeparator ? this.props.renderSeparator : this.renderSeparator.bind(this)}
                 renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
                 renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
-                enableEmptySections />}
+                enableEmptySections /> : (this.props.renderEmpty && this.props.renderEmpty()))}
             {this.state.isSearching ? null : sectionList}
           </View>
         </Animated.View>

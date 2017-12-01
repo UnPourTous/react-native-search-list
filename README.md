@@ -203,6 +203,11 @@ the alphabetical section view content
 
 type: `function`
 
+### `renderHeader`
+renderHeader for the internal ListView
+
+type: `function`
+
 
 ## Thanks
 * [js-pinyin](https://github.com/waterchestnut/pinyin)

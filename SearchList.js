@@ -419,7 +419,7 @@ export default class SearchList extends Component {
   }
 
   renderAlphaSection (sectionData, sectionID) {
-    return (<Text style={{ color: '#171a23', fontSize: 11, width: 36 }}>{sectionID}</Text>)
+    return (<Text style={{ color: '#171a23', fontSize: 11, width: 36, height: 14}}>{sectionID}</Text>)
   }
 
   renderSeparator (sectionID,
@@ -605,9 +605,15 @@ export default class SearchList extends Component {
               ref='searchBar' />
           </Animated.View>
           {(!this.state.isSearching && this.props.renderComponentAboveHeader) ? (this.props.renderComponentAboveHeader()) : null}
-          <View style={styles.listContainer}>
+          <View
+            shouldRasterizeIOS
+            renderToHardwareTextureAndroid
+            style={styles.listContainer}>
             {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
               : (this.props.data && this.props.data.length > 0 ? <ListView
+                initialListSize={15}
+                pageSize={10}
+                onEndReachedThreshold={30}
                 ref='searchListView'
                 dataSource={this.state.dataSource}
                 renderRow={this.renderRow.bind(this)}
@@ -617,6 +623,7 @@ export default class SearchList extends Component {
                 renderSeparator={this.props.renderSeparator ? this.props.renderSeparator : this.renderSeparator.bind(this)}
                 renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
                 renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
+                renderHeader={this.props.renderHeader && this.props.renderHeader}
                 enableEmptySections /> : (this.props.renderEmpty && this.props.renderEmpty()))}
             {this.state.isSearching ? null : sectionList}
           </View>

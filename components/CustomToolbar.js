@@ -18,7 +18,8 @@ let statusBarSize = (Platform.OS === 'ios' ? 10 : 0)
 let deviceWidth = Dimensions.get('window').width
 
 export default class CustomToolbar extends Component {
-  constructor(props) {
+
+  constructor (props) {
     super(props)
     this.state = {
       isLoading: true,
@@ -28,13 +29,13 @@ export default class CustomToolbar extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     this.setState({
       rightBtnFunc: nextProps.rightBtnClick
     })
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.rightBtnClick) {
       this.setState({
         rightBtnFunc: this.props.rightBtnClick
@@ -48,7 +49,7 @@ export default class CustomToolbar extends Component {
     }
   }
 
-  _onPressBackButton() {
+  _onPressBackButton () {
     if (this.props.onClickBack) {
       this.props.onClickBack()
     }
@@ -57,13 +58,13 @@ export default class CustomToolbar extends Component {
     }
   }
 
-  _onPressRightButton() {
+  _onPressRightButton () {
     if (this.state.rightBtnFunc) {
       this.state.rightBtnFunc()
     }
   }
 
-  render() {
+  render () {
     let marginTopPx = 0
     if (Platform.OS === 'android') {
     } else {
@@ -71,14 +72,14 @@ export default class CustomToolbar extends Component {
     }
     // 这里使用的是直接打到原生包里的图片，后续需要优化
     let rightContent = this.props.rightBtnIcon ? <Image style={styles.backIcon}
-      source={{ uri: this.props.rightBtnIcon }}
+      source={{uri: this.props.rightBtnIcon}}
       resizeMode='cover' />
-      : <Text style={{ color: 'white', fontSize: 17, marginRight: 20 }}>{this.props.rightBtnTitle}</Text>
+      : <Text style={{color: 'white', fontSize: 17, marginRight: 20}}>{this.props.rightBtnTitle}</Text>
     let backBtn = this.props.hideBack ? <View style={styles.actionItem}>
-      <View style={{ flex: 1 }} />
+      <View style={{flex: 1}} />
     </View>
       : <CustomTouchable onPress={this._onPressBackButton.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'>
-        <View style={[styles.actionItem, this.props.leftButtonStyle, { marginTop: marginTopPx }]}>
+        <View style={[styles.actionItem, this.props.leftButtonStyle, {marginTop: marginTopPx}]}>
           <Image
             style={[styles.backIcon, this.props.backIconStyle]}
             source={this.props.backIcon || require('../images/icon-back.png')}
@@ -91,14 +92,14 @@ export default class CustomToolbar extends Component {
           {rightContent}
         </View>
       </CustomTouchable> : <View style={styles.actionItem} />
-    let title = this.props.title ? <View style={[styles.titleView, { marginTop: marginTopPx + 10 }]}>
-      <Text style={[styles.title, { color: this.props.textColor ? this.props.textColor : 'white' }]} numberOfLines={1}>
+    let title = this.props.title ? <View style={[styles.titleView, {marginTop: marginTopPx + 10}]}>
+      <Text style={[styles.title, {color: this.props.textColor ? this.props.textColor : 'white'}]} numberOfLines={1}>
         {this.props.title}
       </Text>
     </View> : null
     return (
       <View {...this.props}>
-        <View style={[styles.actionsContainer, { backgroundColor: this.state.titleBackgroundColor }]}>
+        <View style={[styles.actionsContainer, {backgroundColor: this.state.titleBackgroundColor}]}>
           {backBtn}
           {title}
           {rightBtn}

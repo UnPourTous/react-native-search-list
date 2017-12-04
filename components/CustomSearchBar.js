@@ -14,13 +14,12 @@ import {
 
 import React, { Component } from 'react'
 
+import PropTypes from 'prop-types'
+
 const buttonWidth = 70
 
 export default class CustomSearchBar extends Component {
-  static propTypes = {
-    showActiveSearchIcon: React.PropTypes.bool,
-    isShowHolder: React.PropTypes.bool // 是否显示搜索图标
-  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -165,4 +164,9 @@ export default class CustomSearchBar extends Component {
       </TouchableWithoutFeedback>
     )
   };
+}
+
+CustomSearchBar.propTypes = {
+  showActiveSearchIcon: PropTypes.bool,
+  isShowHolder: PropTypes.bool // 是否显示搜索图标
 }

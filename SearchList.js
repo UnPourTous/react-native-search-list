@@ -37,6 +37,8 @@ import CustomTouchable from './components/CustomTouchable'
 
 import SectionList from './components/SectionList'
 
+import PropTypes from 'prop-types';
+
 const statusBarSize = Platform.OS === 'ios' ? 10 : 0
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -46,34 +48,6 @@ const defaultSectionHeight = 24
 const defaultCellHeight = 0
 
 export default class SearchList extends Component {
-
-  static propTypes = {
-    data: React.PropTypes.array.isRequired,
-    renderRow: React.PropTypes.func.isRequired,
-    cellHeight: React.PropTypes.number.isRequired,
-
-    hideSectionList: React.PropTypes.bool,
-    sectionHeaderHeight: React.PropTypes.number,
-    topOffset: React.PropTypes.number,
-    searchBarBgColor: React.PropTypes.string,
-    title: React.PropTypes.string,
-    textColor: React.PropTypes.string,
-    cancelTitle: React.PropTypes.string,
-
-    sortFunc: React.PropTypes.func,
-    resultSortFunc: React.PropTypes.func,
-    renderSeparator: React.PropTypes.func,
-    renderSectionHeader: React.PropTypes.func,
-    onClickBack: React.PropTypes.func,
-    onScrollToSection: React.PropTypes.func,
-    renderAlphaSection: React.PropTypes.func,
-    showActiveSearchIcon: React.PropTypes.bool,
-    leftButtonStyle: React.PropTypes.object,
-    backIcon: React.PropTypes.number,
-    backIconStyle: React.PropTypes.object,
-    renderComponentAboveHeader: React.PropTypes.func,
-    renderEmpty: React.PropTypes.func
-  }
 
   constructor (props) {
     super(props)
@@ -632,6 +606,33 @@ export default class SearchList extends Component {
       </View>
     )
   }
+}
+
+SearchList.propTypes = {
+  data: PropTypes.array.isRequired,
+  renderRow: PropTypes.func.isRequired,
+  cellHeight: PropTypes.number.isRequired,
+
+  hideSectionList: PropTypes.bool,
+  sectionHeaderHeight: PropTypes.number,
+  topOffset: PropTypes.number,
+  searchBarBgColor: PropTypes.string,
+  title: PropTypes.string,
+  textColor: PropTypes.string,
+  cancelTitle: PropTypes.string,
+
+  sortFunc: PropTypes.func,
+  resultSortFunc: PropTypes.func,
+  renderSeparator: PropTypes.func,
+  renderSectionHeader: PropTypes.func,
+  onClickBack: PropTypes.func,
+  onScrollToSection: PropTypes.func,
+  renderAlphaSection: PropTypes.func,
+  showActiveSearchIcon: PropTypes.bool,
+  leftButtonStyle: PropTypes.object,
+  backIcon: PropTypes.number,
+  backIconStyle: PropTypes.object,
+  renderComponentAboveHeader: PropTypes.func
 }
 
 const styles = StyleSheet.create({

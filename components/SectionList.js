@@ -10,6 +10,7 @@ import {
 
 let noop = () => {}
 let returnTrue = () => true
+const itemHeight = 14
 
 export default class SectionList extends Component {
   constructor (props, context) {
@@ -38,9 +39,8 @@ export default class SectionList extends Component {
     let rect = {width: 1, height: 1, x: ev.locationX, y: ev.locationY}
 
     console.log(ev.locationX, ev.locationY)
-    if (this.sectionListContentArea && this.props.sections && this.props.sections.length) {
-      const height = this.sectionListContentArea.height
-      const itemHeight = height / this.props.sections.length
+    if (this.props.sections && this.props.sections.length) {
+      // const height = this.sectionListContentArea.height
       const index = Math.floor(ev.locationY / itemHeight)
       if (this.lastSelectedIndex !== index) {
         this.lastSelectedIndex = index
@@ -86,7 +86,7 @@ export default class SectionList extends Component {
       >
         <View
           onLayout={(e) => {
-            if (!this.sectionListContentArea)  {
+            if (!this.sectionListContentArea && e.nativeEvent.layout)  {
               this.sectionListContentArea = e.nativeEvent.layout
             }
           }}
@@ -119,7 +119,8 @@ let styles = StyleSheet.create({
   },
 
   item: {
-    padding: 0
+    padding: 0,
+    height: itemHeight
   },
 
   text: {

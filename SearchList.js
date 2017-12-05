@@ -587,6 +587,7 @@ export default class SearchList extends Component {
         }, this.props.style]}>
         <Animated.View style={{
           flex: 1,
+          backgroundColor: '#171a23',
           transform: [
             {translateY: this.state._navBarAnimatedValue}
           ]
@@ -643,7 +644,8 @@ const styles = StyleSheet.create({
   listContainer: {
     flexDirection: 'row',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#fff'
   },
   rowSeparator: {
     backgroundColor: '#fff',

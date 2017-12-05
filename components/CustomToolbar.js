@@ -7,7 +7,8 @@ import {
   Text,
   View,
   Image,
-  Dimensions
+  Dimensions,
+  Animated
 } from 'react-native'
 
 import CustomTouchable from './CustomTouchable'
@@ -42,9 +43,9 @@ export default class CustomToolbar extends Component {
       })
     }
 
-    if (this.props.backgroundColor) {
+    if (this.props.searchBarBgColor) {
       this.setState({
-        titleBackgroundColor: this.props.backgroundColor
+        titleBackgroundColor: this.props.searchBarBgColor
       })
     }
   }
@@ -98,14 +99,18 @@ export default class CustomToolbar extends Component {
       </Text>
     </View> : null
     return (
-      <View {...this.props}>
+      <Animated.View
+        {...this.props}
+        shouldRasterizeIOS
+        renderToHardwareTextureAndroid
+      >
         <View style={[styles.actionsContainer, {backgroundColor: this.state.titleBackgroundColor}]}>
           {backBtn}
           {title}
           {rightBtn}
         </View>
 
-      </View>
+      </Animated.View>
     )
   }
 }

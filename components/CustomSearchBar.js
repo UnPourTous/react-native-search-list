@@ -93,19 +93,6 @@ export default class CustomSearchBar extends Component {
             }}
             source={require('../images/icon-search.png')} />
 
-          {/* Android上, 下面这样写会见鬼，有时候隐藏不掉，还会影响到其他元素 */}
-          {/* {!this.state.isShowHolder ? <Image */}
-          {/* style={{ */}
-          {/* position: 'absolute', */}
-          {/* backgroundColor: 'red', */}
-          {/* width: 12, */}
-          {/* height: 12, */}
-          {/* top: 16, */}
-          {/* left: 18, */}
-          {/* zIndex: 2 */}
-          {/* }} */}
-          {/* source={require('../images/icon-search.png')}/> : null */}
-          {/* } */}
           <TextInput
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
@@ -113,9 +100,8 @@ export default class CustomSearchBar extends Component {
             style={[{
               flex: 1,
               color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
-              padding: 0,
               height: 28,
-              paddingLeft: this.props.showActiveSearchIcon && !this.state.isShowHolder ? 30 : 8,
+              paddingLeft: 30,
               paddingRight: 8,
               borderRadius: 5,
               backgroundColor: this.props.activeSearchBarColor && !this.state.isShowHolder ? this.props.activeSearchBarColor : '#2f3139'
@@ -147,16 +133,20 @@ export default class CustomSearchBar extends Component {
             width: this.state.animatedValue
           }}>
             <TouchableWithoutFeedback onPress={this.cancelSearch.bind(this)}>
-              <View style={{
-                flex: 1,
-                height: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 10,
-                paddingLeft: 5,
-                paddingRight: 5,
-                borderRadius: 5
-              }}>
+              <View
+                style={{
+                  flex: 1,
+                  height: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: 10,
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  borderRadius: 5
+                }}
+                shouldRasterizeIOS
+                renderToHardwareTextureAndroid
+              >
                 <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}} numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
               </View>
             </TouchableWithoutFeedback>

@@ -552,8 +552,13 @@ export default class SearchList extends Component {
 
     let toolbar =
       <CustomToolbar
-        style={styles.toolbar}
-        backgroundColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
+        style={[styles.toolbar, {
+          opacity: this.state._navBarAnimatedValue.interpolate({
+            inputRange: [-this.navBarYOffset, 1],
+            outputRange: [0, 1]
+          })
+        }]}
+        searchBarBgColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
         title={this.props.title}
         hideBack={!this.props.onClickBack}
         textColor={this.props.textColor}

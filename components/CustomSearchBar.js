@@ -93,24 +93,35 @@ export default class CustomSearchBar extends Component {
             }}
             source={require('../images/icon-search.png')} />
 
-          <TextInput
-            onFocus={this.onFocus.bind(this)}
-            onBlur={this.onBlur.bind(this)}
-            ref='input'
-            style={[{
-              flex: 1,
-              color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
-              height: 28,
-              paddingLeft: 30,
-              paddingRight: 8,
-              borderRadius: 5,
-              backgroundColor: this.props.activeSearchBarColor && !this.state.isShowHolder ? this.props.activeSearchBarColor : '#2f3139'
-            }, this.props.customSearchBarStyle]}
-            onChangeText={this.onChange.bind(this)}
-            value={this.state.value}
-            underlineColorAndroid='transparent'
-            returnKeyType='search' />
-          <View style={{
+          <Animated.View style={{
+            width: this.state.inputLength,
+            backgroundColor: this.state.animatedValue.interpolate({
+              inputRange: [0, 70],
+              outputRange: ['#2f3139', this.props.activeSearchBarColor]
+            }),
+            height: 28,
+            borderRadius: 5,
+            flex: 1,
+          }}>
+            <TextInput
+              onFocus={this.onFocus.bind(this)}
+              onBlur={this.onBlur.bind(this)}
+              ref='input'
+              style={[{
+                flex: 1,
+                color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
+                height: 28,
+                padding: 0,
+                paddingLeft: 30,
+                paddingRight: 8,
+                borderRadius: 5,
+              }, this.props.customSearchBarStyle]}
+              onChangeText={this.onChange.bind(this)}
+              value={this.state.value}
+              underlineColorAndroid='transparent'
+              returnKeyType='search' />
+          </Animated.View>
+          <Animated.View style={{
             flexDirection: 'row',
             alignItems: 'center',
             height: 44,
@@ -118,7 +129,10 @@ export default class CustomSearchBar extends Component {
             justifyContent: 'center',
             left: 0,
             right: 0,
-            opacity: (this.state.isShowHolder && !this.state.value) ? 1 : 0
+            opacity: this.state.animatedValue.interpolate({
+              inputRange: [0, 70],
+              outputRange: [!this.state.value ? 1 : 0, 0]
+            })
           }}>
             <Image style={{width: 12, height: 12, marginRight: 5}}
               source={require('../images/icon-search.png')} />
@@ -127,7 +141,7 @@ export default class CustomSearchBar extends Component {
               fontSize: 14,
               backgroundColor: 'rgba(0, 0, 0, 0)'
             }}>{this.props.placeholder}</Text>
-          </View>
+          </Animated.View>
           <Animated.View style={{
             backgroundColor: '#171a23',
             width: this.state.animatedValue

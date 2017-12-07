@@ -475,7 +475,6 @@ export default class SearchList extends Component {
   }
 
   onClickCancel () {
-    this.search('')
     this.showBar()
   }
 
@@ -484,8 +483,6 @@ export default class SearchList extends Component {
   }
 
   showBar () {
-    this.setState({isSearching: false, isEmpty: false})
-
     TextInputState.blurTextInput(TextInputState.currentlyFocusedField())
 
     this.state._navBarAnimatedValue.setValue(-1 * this.navBarYOffset)
@@ -499,11 +496,13 @@ export default class SearchList extends Component {
         duration: 300,
         toValue: searchBarHeight
       })
-    ]).start()
+    ]).start(() => {
+      this.search('')
+      this.setState({isSearching: false, isEmpty: false})
+    })
   }
 
   hideBar () {
-    this.setState({isSearching: true})
     this.state._navBarAnimatedValue.setValue(0)
     this.state._searchBarAnimatedValue.setValue(searchBarHeight)
     Animated.parallel([
@@ -515,7 +514,9 @@ export default class SearchList extends Component {
         duration: 300,
         toValue: this.searchBarHeightPlus + searchBarHeight
       })
-    ]).start()
+    ]).start(() => {
+      this.setState({isSearching: true})
+    })
   }
 
   scrollToSection (section) {

@@ -13,13 +13,13 @@ import {
 
 import CustomTouchable from './CustomTouchable'
 
+import PropTypes from 'prop-types'
+
 let statusBarSize = (Platform.OS === 'ios' ? 10 : 0)
 let deviceWidth = Dimensions.get('window').width
 
 export default class CustomToolbar extends Component {
-  static propTypes = {
-    backIcon: React.PropTypes.number
-  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -113,6 +113,10 @@ export default class CustomToolbar extends Component {
       </Animated.View>
     )
   }
+}
+
+CustomToolbar.propTypes = {
+  backIcon: PropTypes.number
 }
 
 let styles = StyleSheet.create({

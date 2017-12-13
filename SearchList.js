@@ -9,8 +9,6 @@ import {
   StyleSheet,
   ListView,
   PixelRatio,
-  Platform,
-  Dimensions,
   Animated,
   TextInput
 } from 'react-native'
@@ -37,14 +35,12 @@ import CustomTouchable from './components/CustomTouchable'
 
 import SectionList from './components/SectionList'
 
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+import Theme from './components/Theme'
 
-const statusBarSize = Platform.OS === 'ios' ? 10 : 0
-const deviceWidth = Dimensions.get('window').width
-const deviceHeight = Dimensions.get('window').height
 const searchBarHeight = 0
 const topOffset = 0
-const defaultSectionHeight = 24
+const defaultSectionHeight = Theme.size.sectionHeaderHeight
 const defaultCellHeight = 0
 
 export default class SearchList extends Component {
@@ -71,8 +67,7 @@ export default class SearchList extends Component {
       _navBarAnimatedValue: new Animated.Value(0),
       _searchBarAnimatedValue: new Animated.Value(searchBarHeight)
     }
-    this.navBarYOffset = 48 + statusBarSize
-    this.searchBarHeightPlus = 10
+    this.navBarYOffset = Theme.size.toolbarHeight
     this.searchStr = ''
     this.sectionIDs = []
     this.rowIDs = [[]]
@@ -269,7 +264,6 @@ export default class SearchList extends Component {
       input = sTrim(input)
       let inputLower = input.toLowerCase()
       let tempResult = []
-      // 匹配历史转账姓名
       this.tmpSource.forEach((item, idx, array) => {
         if (item) {
           // 全局匹配字符
@@ -393,7 +387,7 @@ export default class SearchList extends Component {
   }
 
   renderAlphaSection (sectionData, sectionID) {
-    return (<Text style={{ color: '#171a23', fontSize: 11, width: 36, height: 14}}>{sectionID}</Text>)
+    return (<Text style={{color: '#171a23', fontSize: 11, width: 36, height: 14}}>{sectionID}</Text>)
   }
 
   renderSeparator (sectionID,
@@ -460,14 +454,14 @@ export default class SearchList extends Component {
     TextInputState.blurTextInput(TextInputState.currentlyFocusedField())
 
     this.state._navBarAnimatedValue.setValue(-1 * this.navBarYOffset)
-    this.state._searchBarAnimatedValue.setValue(this.searchBarHeightPlus + searchBarHeight)
+    this.state._searchBarAnimatedValue.setValue(searchBarHeight)
     Animated.parallel([
       Animated.timing(this.state._navBarAnimatedValue, {
-        duration: 300,
+        duration: Theme.duration.toggleSearchBar,
         toValue: 0
       }),
       Animated.timing(this.state._searchBarAnimatedValue, {
-        duration: 300,
+        duration: Theme.duration.toggleSearchBar,
         toValue: searchBarHeight
       })
     ]).start(() => {
@@ -481,12 +475,12 @@ export default class SearchList extends Component {
     this.state._searchBarAnimatedValue.setValue(searchBarHeight)
     Animated.parallel([
       Animated.timing(this.state._navBarAnimatedValue, {
-        duration: 300,
+        duration: Theme.duration.toggleSearchBar,
         toValue: -1 * this.navBarYOffset
       }),
       Animated.timing(this.state._searchBarAnimatedValue, {
-        duration: 300,
-        toValue: this.searchBarHeightPlus + searchBarHeight
+        duration: Theme.duration.toggleSearchBar,
+        toValue: searchBarHeight
       })
     ]).start(() => {
       this.setState({isSearching: true})
@@ -533,7 +527,7 @@ export default class SearchList extends Component {
             outputRange: [0, 1]
           })
         }]}
-        searchBarBgColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
+        // searchBarBgColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
         title={this.props.title}
         hideBack={!this.props.onClickBack}
         textColor={this.props.textColor}
@@ -556,23 +550,24 @@ export default class SearchList extends Component {
         ref='view'
         style={[{
           top: this.props.topOffset ? this.props.topOffset : topOffset,
-          height: deviceHeight + 64,
-          width: deviceWidth,
-          backgroundColor: '#efefef'
+          height: Theme.size.windowHeight + Theme.size.toolbarHeight,
+          width: Theme.size.windowWidth,
+          backgroundColor: 'red'
         }, this.props.style]}>
         <Animated.View style={{
           flex: 1,
-          backgroundColor: '#171a23',
+          // backgroundColor: '#171a23',
           transform: [
             {translateY: this.state._navBarAnimatedValue}
           ]
         }}>
           {toolbar}
           <Animated.View style={{
-            backgroundColor: this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23',
+            // backgroundColor: this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23',
             paddingTop: this.state._searchBarAnimatedValue
           }}>
-            <CustomSearchBar placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
+            <CustomSearchBar
+              placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
               onChange={this.search.bind(this)}
               onFocus={this.onFocus.bind(this)}
               onBlur={this.onBlur.bind(this)}
@@ -658,7 +653,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     flex: 1,
-    height: 24,
+    height: Theme.size.sectionHeaderHeight,
     justifyContent: 'center',
     paddingLeft: 25,
     backgroundColor: '#efefef'
@@ -673,7 +668,7 @@ const styles = StyleSheet.create({
     marginVertical: 1
   },
   toolbar: {
-    height: 56 + statusBarSize
+    height: Theme.size.toolbarHeight + Theme.size.statusBarHeight
   },
   maskStyle: {
     position: 'absolute',
@@ -681,9 +676,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: deviceHeight + 164,
-    width: deviceWidth,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    height: Theme.size.windowHeight + 164,
+    width: Theme.size.windowWidth,
+    backgroundColor: Theme.color.maskColor,
     zIndex: 999
   },
   scrollSpinner: {

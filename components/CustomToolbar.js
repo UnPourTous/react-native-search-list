@@ -1,5 +1,3 @@
-'use strict'
-
 import React, { Component } from 'react'
 import {
   Platform,
@@ -127,7 +125,7 @@ let styles = StyleSheet.create({
     paddingTop: statusBarSize,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#171a23'
+    // backgroundColor: '#171a23'
   },
   backIcon: {
     width: 20,

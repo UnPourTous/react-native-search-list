@@ -4,11 +4,9 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
-  StyleSheet,
-  NativeModules
+  StyleSheet
 } from 'react-native'
 
-let noop = () => {}
 let returnTrue = () => true
 const itemHeight = 14
 
@@ -36,26 +34,14 @@ export default class SectionList extends Component {
 
   detectAndScrollToSection (e) {
     let ev = e.nativeEvent
-    let rect = {width: 1, height: 1, x: ev.locationX, y: ev.locationY}
 
-    console.log(ev.locationX, ev.locationY)
     if (this.props.sections && this.props.sections.length) {
-      // const height = this.sectionListContentArea.height
       const index = Math.floor(ev.locationY / itemHeight)
       if (this.lastSelectedIndex !== index) {
         this.lastSelectedIndex = index
         this.onSectionSelect(this.props.sections[index], true)
       }
     }
-    // NativeModules.UIManager.measureViewsInRect(rect, e.target, noop, (frames) => {
-    //   if (frames.length) {
-    //     let index = frames[0].index
-    //     if (this.lastSelectedIndex !== index) {
-    //       this.lastSelectedIndex = index
-    //       this.onSectionSelect(this.props.sections[index], true)
-    //     }
-    //   }
-    // })
   }
 
   render () {
@@ -86,7 +72,7 @@ export default class SectionList extends Component {
       >
         <View
           onLayout={(e) => {
-            if (!this.sectionListContentArea && e.nativeEvent.layout)  {
+            if (!this.sectionListContentArea && e.nativeEvent.layout) {
               this.sectionListContentArea = e.nativeEvent.layout
             }
           }}

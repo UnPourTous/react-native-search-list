@@ -143,7 +143,8 @@ export default class CustomSearchBar extends Component {
           </Animated.View>
           <Animated.View style={{
             backgroundColor: '#171a23',
-            width: this.state.animatedValue
+            width: this.state.animatedValue,
+            overflow: 'hidden'
           }}>
             <TouchableWithoutFeedback onPress={this.cancelSearch.bind(this)}>
               <View

@@ -124,7 +124,7 @@ let styles = StyleSheet.create({
     width: deviceWidth,
     paddingTop: statusBarSize,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
     // backgroundColor: '#171a23'
   },
   backIcon: {

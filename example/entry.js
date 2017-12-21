@@ -11,7 +11,7 @@ import {
   Text,
   View
 } from 'react-native'
-import SearchList from '@unpourtous/react-native-search-list/SearchList'
+import SearchList from '@unpourtous/react-native-search-list'
 import demoList from './data'
 
 const cellheight = 40

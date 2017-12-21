@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   Animated
 } from 'react-native'
-
 import React, { Component } from 'react'
 
 import PropTypes from 'prop-types'
@@ -125,7 +124,7 @@ export default class CustomSearchBar extends Component {
             onChangeText={this.onChange.bind(this)}
             value={this.state.value}
             underlineColorAndroid='transparent'
-            returnKeyType='search' />
+            returnKeyType='search'/>
 
           <Animated.View
             pointerEvents='none'
@@ -152,7 +151,7 @@ export default class CustomSearchBar extends Component {
                 top: 0,
                 bottom: 0
               }}
-              source={require('../images/icon-search.png')} />
+              source={require('../images/icon-search.png')}/>
           </Animated.View>
 
           <Animated.View
@@ -174,7 +173,7 @@ export default class CustomSearchBar extends Component {
             }}>
             <Image
               style={{width: 12, height: 12, marginRight: 5}}
-              source={require('../images/icon-search.png')} />
+              source={require('../images/icon-search.png')}/>
             <Text style={{
               color: '#979797',
               fontSize: 14,
@@ -200,7 +199,8 @@ export default class CustomSearchBar extends Component {
               shouldRasterizeIOS
               renderToHardwareTextureAndroid
             >
-              <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}} numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
+              <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}}
+                    numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

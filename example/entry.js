@@ -31,7 +31,23 @@ export default class example extends Component {
     )
   }
 
-  emptyContent (searchStr) {
+  // render empty view when datasource is empty
+  renderEmpty () {
+    return (
+      <View style={{
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        marginTop: 50
+      }}>
+        <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}> No Content </Text>
+      </View>
+    )
+  }
+
+  // render empty result view when search result is empty
+  renderEmptyResult (searchStr) {
     return (
       <View style={{
         flex: 1,
@@ -59,7 +75,8 @@ export default class example extends Component {
         <SearchList
           data={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
-          emptyContent={this.emptyContent.bind(this)}
+          renderEmptyResult={this.renderEmptyResult.bind(this)}
+          renderEmpty={this.renderEmpty.bind(this)}
           cellHeight={cellheight}
           title='Search List'
           searchPlaceHolder='Search'

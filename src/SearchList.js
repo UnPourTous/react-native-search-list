@@ -2,7 +2,6 @@
  * Created by haywoodfu on 17/4/16.
  */
 
-'use strict'
 import {
   View,
   Text,
@@ -13,43 +12,34 @@ import {
   TextInput
 } from 'react-native'
 
-const {State: TextInputState} = TextInput
-
 import React, { Component } from 'react'
 
 import {
   isCharacter,
   sTrim,
   containsChinese
-} from './validator/Validator'
+} from './utils/utils'
 
-import CustomSearchBar from './components/CustomSearchBar.js'
-
+import SearchBar from './components/SearchBar'
 import pinyin from 'js-pinyin'
-
 import md5 from 'md5'
-
-import CustomToolbar from './components/CustomToolbar'
-
-import CustomTouchable from './components/CustomTouchable'
-
-import SectionList from './components/SectionList'
-
+import Toolbar from './components/Toolbar'
+import Touchable from './utils/Touchable'
+import SectionIndex from './components/SectionIndex'
 import PropTypes from 'prop-types'
 import Theme from './components/Theme'
 
+const {State: TextInputState} = TextInput
 const searchBarHeight = 0
-const topOffset = 0
 const defaultSectionHeight = Theme.size.sectionHeaderHeight
 const defaultCellHeight = 0
 
 export default class SearchList extends Component {
-
   constructor (props) {
     super(props)
     this.state = {
       isSearching: false,
-      isEmpty: false,
+      isEmptyResult: false,
       dataSource: new ListView.DataSource({
         getSectionData: SearchList.getSectionData,
         getRowData: SearchList.getRowData,
@@ -64,8 +54,8 @@ export default class SearchList extends Component {
         },
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2
       }),
-      _navBarAnimatedValue: new Animated.Value(0),
-      _searchBarAnimatedValue: new Animated.Value(searchBarHeight)
+
+      animatedValue: new Animated.Value(0)
     }
     this.navBarYOffset = Theme.size.toolbarHeight
     this.searchStr = ''
@@ -278,7 +268,7 @@ export default class SearchList extends Component {
       })
       if (tempResult.length === 0) {
         this.setState({
-          isEmpty: true,
+          isEmptyResult: true,
           isSearching: true
         })
       } else {
@@ -292,7 +282,7 @@ export default class SearchList extends Component {
 
   orderResultList (searchResultList) {
     if (!searchResultList) {
-      this.setState({isEmpty: true, isSearching: true})
+      this.setState({isEmptyResult: true, isSearching: true})
       return
     }
 
@@ -317,7 +307,7 @@ export default class SearchList extends Component {
       searchResultWithSection[':' + result.searchKey] = result
     })
     this.setState({
-      isEmpty: false,
+      isEmptyResult: false,
       isSearching: true,
       dataSource: this.state.dataSource.cloneWithRowsAndSections(searchResultWithSection, [''], this.rowIds)
     })
@@ -405,14 +395,14 @@ export default class SearchList extends Component {
           <View style={{
             height: 1 / PixelRatio.get(),
             backgroundColor: '#efefef'
-          }} />
+          }}/>
         </View>
       )
     }
   }
 
   renderFooter () {
-    return <View style={styles.scrollSpinner} />
+    return <View style={styles.scrollSpinner}/>
   }
 
   renderRow (item,
@@ -428,9 +418,28 @@ export default class SearchList extends Component {
     }
   }
 
+  enterSearchState () {
+    this.setState({isSearching: true})
+    Animated.timing(this.state.animatedValue, {
+      duration: Theme.duration.toggleSearchBar,
+      toValue: 1
+    }).start(() => {
+    })
+  }
+
+  exitSearchState () {
+    Animated.timing(this.state.animatedValue, {
+      duration: Theme.duration.toggleSearchBar,
+      toValue: 0
+    }).start(() => {
+      this.search('')
+      this.setState({isSearching: false, isEmptyResult: false})
+    })
+  }
+
   onFocus () {
     if (!this.state.isSearching) {
-      this.hideBar()
+      this.enterSearchState()
     }
   }
 
@@ -443,57 +452,18 @@ export default class SearchList extends Component {
   }
 
   onClickCancel () {
-    this.showBar()
+    this.exitSearchState()
   }
 
   cancelSearch () {
     this.refs.searchBar && this.refs.searchBar.cancelSearch && this.refs.searchBar.cancelSearch()
   }
 
-  showBar () {
-    TextInputState.blurTextInput(TextInputState.currentlyFocusedField())
-
-    this.state._navBarAnimatedValue.setValue(-1 * this.navBarYOffset)
-    this.state._searchBarAnimatedValue.setValue(searchBarHeight)
-    Animated.parallel([
-      Animated.timing(this.state._navBarAnimatedValue, {
-        duration: Theme.duration.toggleSearchBar,
-        toValue: 0
-      }),
-      Animated.timing(this.state._searchBarAnimatedValue, {
-        duration: Theme.duration.toggleSearchBar,
-        toValue: searchBarHeight
-      })
-    ]).start(() => {
-      this.search('')
-      this.setState({isSearching: false, isEmpty: false})
-    })
-  }
-
-  hideBar () {
-    this.state._navBarAnimatedValue.setValue(0)
-    this.state._searchBarAnimatedValue.setValue(searchBarHeight)
-    Animated.parallel([
-      Animated.timing(this.state._navBarAnimatedValue, {
-        duration: Theme.duration.toggleSearchBar,
-        toValue: -1 * this.navBarYOffset
-      }),
-      Animated.timing(this.state._searchBarAnimatedValue, {
-        duration: Theme.duration.toggleSearchBar,
-        toValue: searchBarHeight
-      })
-    ]).start(() => {
-      this.setState({isSearching: true})
-    })
-  }
-
   scrollToSection (section) {
     if (!this.sectionIDs || this.sectionIDs.length === 0) {
       return
     }
-    let y = 0
-    let headerHeight = this.props.headerHeight || 0
-    y += headerHeight
+    let y = this.props.headerHeight || 0
 
     let cellHeight = this.props.cellHeight || defaultCellHeight
     let sectionHeaderHeight = this.props.sectionHeaderHeight || defaultSectionHeight
@@ -513,100 +483,152 @@ export default class SearchList extends Component {
   }
 
   render () {
-    let sectionList = !this.props.hideSectionList ? <SectionList
-      style={{top: this.props.topOffset ? this.props.topOffset : 0}}
-      onSectionSelect={this.scrollToSection.bind(this)}
-      sections={this.sectionIDs}
-      renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)} /> : null
-
-    let toolbar =
-      <CustomToolbar
-        style={[styles.toolbar, {
-          opacity: this.state._navBarAnimatedValue.interpolate({
-            inputRange: [-this.navBarYOffset, 1],
-            outputRange: [0, 1]
-          })
-        }]}
-        // searchBarBgColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
-        title={this.props.title}
-        hideBack={!this.props.onClickBack}
-        textColor={this.props.textColor}
-        leftButtonStyle={this.props.leftButtonStyle}
-        backIcon={this.props.backIcon}
-        backIconStyle={this.props.backIconStyle}
-        onClickBack={this.onClickBack.bind(this)} />
-
-    let mask = null
-    if (this.state.isSearching && !this.searchStr) {
-      mask =
-        <CustomTouchable onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
-          style={styles.maskStyle}>
-          <View style={styles.maskStyle} />
-        </CustomTouchable>
-    }
-
     return (
-      <View
+      <Animated.View
         ref='view'
         style={[{
-          top: this.props.topOffset ? this.props.topOffset : topOffset,
           height: Theme.size.windowHeight + Theme.size.toolbarHeight,
           width: Theme.size.windowWidth,
-          backgroundColor: 'red'
-        }, this.props.style]}>
-        <Animated.View style={{
-          flex: 1,
-          // backgroundColor: '#171a23',
           transform: [
-            {translateY: this.state._navBarAnimatedValue}
+            {
+              translateY: this.state.animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, -Theme.size.toolbarHeight]
+              })
+            }
           ]
+        }, this.props.style]}>
+        <View style={{
+          flex: 1,
+          backgroundColor: '#171a23'
         }}>
-          {toolbar}
-          <Animated.View style={{
-            // backgroundColor: this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23',
-            paddingTop: this.state._searchBarAnimatedValue
-          }}>
-            <CustomSearchBar
-              placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
-              onChange={this.search.bind(this)}
-              onFocus={this.onFocus.bind(this)}
-              onBlur={this.onBlur.bind(this)}
-              onClickCancel={this.onClickCancel.bind(this)}
-              cancelTitle={this.props.cancelTitle}
-              textColor={this.props.textColor}
-              customSearchBarStyle={this.props.customSearchBarStyle}
-              activeSearchBarColor={this.props.activeSearchBarColor}
-              showActiveSearchIcon={this.props.showActiveSearchIcon}
-              searchBarActiveColor={this.props.searchBarActiveColor}
-              ref='searchBar' />
-          </Animated.View>
-          {(!this.state.isSearching && this.props.renderComponentAboveHeader) ? (this.props.renderComponentAboveHeader()) : null}
+          <Toolbar
+            style={[styles.toolbar, {
+              opacity: this.state.animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0]
+              })
+            }]}
+            // searchBarBgColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
+            title={this.props.title}
+            hideBack={!this.props.onClickBack}
+            textColor={this.props.textColor}
+            leftButtonStyle={this.props.leftButtonStyle}
+            backIcon={this.props.backIcon}
+            backIconStyle={this.props.backIconStyle}
+            onClickBack={this.onClickBack.bind(this)}/>
+          <SearchBar
+            placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
+            onChange={this.search.bind(this)}
+            onFocus={this.onFocus.bind(this)}
+            onBlur={this.onBlur.bind(this)}
+            onClickCancel={this.onClickCancel.bind(this)}
+            cancelTitle={this.props.cancelTitle}
+            textColor={this.props.textColor}
+            customSearchBarStyle={this.props.customSearchBarStyle}
+            activeSearchBarColor={this.props.activeSearchBarColor}
+            showActiveSearchIcon={this.props.showActiveSearchIcon}
+            searchBarActiveColor={this.props.searchBarActiveColor}
+            ref='searchBar'/>
+          {this._renderStickHeader()}
+
           <View
             shouldRasterizeIOS
             renderToHardwareTextureAndroid
             style={styles.listContainer}>
-            {this.state.isSearching && this.state.isEmpty && this.props.emptyContent ? this.props.emptyContent(this.searchStr)
-              : (this.props.data && this.props.data.length > 0 ? <ListView
-                initialListSize={15}
-                pageSize={10}
-                onEndReachedThreshold={30}
-                ref='searchListView'
-                dataSource={this.state.dataSource}
-                renderRow={this.renderRow.bind(this)}
-                keyboardDismissMode='on-drag'
-                keyboardShouldPersistTaps='always'
-                showsVerticalScrollIndicator
-                renderSeparator={this.props.renderSeparator ? this.props.renderSeparator : this.renderSeparator.bind(this)}
-                renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
-                renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
-                renderHeader={this.props.renderHeader && this.props.renderHeader}
-                enableEmptySections /> : (this.props.renderEmpty && this.props.renderEmpty()))}
-            {this.state.isSearching ? null : sectionList}
+            {this._renderSearchBody.bind(this)()}
+            {this._renderSecetionIndex.bind(this)()}
           </View>
-        </Animated.View>
-        {mask}
-      </View>
+        </View>
+        {this._renderMask.bind(this)()}
+      </Animated.View>
     )
+  }
+
+  _renderSearchBody () {
+    const {isSearching, isEmptyResult} = this.state
+    const {renderEmptyResult, renderEmpty, data} = this.props
+
+    if (isSearching && isEmptyResult && renderEmptyResult) {
+      return renderEmptyResult(this.searchStr)
+    } else {
+      if (data && data.length > 0) {
+        return (
+          <ListView
+            initialListSize={15}
+            pageSize={10}
+            onEndReachedThreshold={30}
+            ref='searchListView'
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}
+            keyboardDismissMode='on-drag'
+            keyboardShouldPersistTaps='always'
+            showsVerticalScrollIndicator
+            renderSeparator={this.props.renderSeparator ? this.props.renderSeparator : this.renderSeparator.bind(this)}
+            renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
+            renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
+            renderHeader={this.props.renderHeader && this.props.renderHeader}
+            enableEmptySections/>
+        )
+      } else {
+        if (renderEmpty) {
+          return renderEmpty()
+        }
+      }
+    }
+  }
+
+  _renderStickHeader () {
+    const {renderStickHeader} = this.props
+    const {isSearching} = this.state
+    if (!isSearching && renderStickHeader) {
+      return renderStickHeader()
+    }
+  }
+
+  _renderMask () {
+    const {isSearching} = this.state
+    if (isSearching && !this.searchStr) {
+      return (
+        <Touchable
+          onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
+          style={[styles.maskStyle, {
+          }]}>
+          <Animated.View
+            style={[styles.maskStyle]}/>
+        </Touchable>
+      )
+    }
+  }
+
+  _renderSecetionIndex () {
+    // TODO
+    const {hideSectionList} = this.props
+    if (hideSectionList) {
+      return null
+    } else {
+      return (
+        <View style={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          bottom: Theme.size.toolbarHeight,
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}>
+          <SectionIndex
+            style={{
+              opacity: this.state.animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0]
+              })
+            }}
+            onSectionSelect={this.scrollToSection.bind(this)}
+            sections={this.sectionIDs}
+            renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)}/>
+        </View>
+      )
+    }
   }
 }
 
@@ -617,7 +639,6 @@ SearchList.propTypes = {
 
   hideSectionList: PropTypes.bool,
   sectionHeaderHeight: PropTypes.number,
-  topOffset: PropTypes.number,
   searchBarBgColor: PropTypes.string,
   title: PropTypes.string,
   textColor: PropTypes.string,
@@ -672,12 +693,10 @@ const styles = StyleSheet.create({
   },
   maskStyle: {
     position: 'absolute',
-    top: -50,
+    top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    height: Theme.size.windowHeight + 164,
-    width: Theme.size.windowWidth,
     backgroundColor: Theme.color.maskColor,
     zIndex: 999
   },

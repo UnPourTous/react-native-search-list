@@ -8,7 +8,8 @@ import {
   Image,
   TextInput,
   TouchableWithoutFeedback,
-  Animated
+  Animated,
+  StyleSheet
 } from 'react-native'
 import React, { Component } from 'react'
 
@@ -24,7 +25,6 @@ const searchBarHorizontalPadding = 8
 // width for the left search icon
 const searchIconWidth = 30
 export default class CustomSearchBar extends Component {
-
   constructor (props) {
     super(props)
     this.state = {
@@ -112,69 +112,43 @@ export default class CustomSearchBar extends Component {
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
             ref='input'
-            style={[{
-              flex: 1,
+            style={[styles.searchTextInputStyle, {
               color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
-              height: 28,
-              padding: 0,
-              paddingLeft: searchIconWidth,
-              paddingRight: 8,
-              borderRadius: 5
-            }, this.props.customSearchBarStyle]}
+            }, this.props.searchTextInputStyle]}
             onChangeText={this.onChange.bind(this)}
             value={this.state.value}
             underlineColorAndroid='transparent'
-            returnKeyType='search'/>
+            returnKeyType='search' />
 
           <Animated.View
             pointerEvents='none'
-            style={{
-              position: 'absolute',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              top: 0,
-              bottom: 0,
-              width: searchIconWidth,
-              opacity: this.state.animatedValue.interpolate({
-                inputRange: [0, buttonWidth],
-                outputRange: [0, 1]
-              })
-            }}>
+            style={[
+              styles.leftSearchIconStyle,
+              {
+                opacity: this.state.animatedValue.interpolate({
+                  inputRange: [0, buttonWidth],
+                  outputRange: [0, 1]
+                })
+              }
+            ]}>
             <Image
-              style={{
-                width: 12,
-                height: 12,
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                top: 0,
-                bottom: 0
-              }}
-              source={require('../images/icon-search.png')}/>
+              style={styles.searchIconStyle}
+              source={require('../images/icon-search.png')} />
           </Animated.View>
 
           <Animated.View
             pointerEvents='none'
-            style={{
-              position: 'absolute',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              alignSelf: 'stretch',
+            style={[styles.centerSearchIconStyle, {
               opacity: this.state.animatedValue.interpolate({
                 inputRange: [0, 70],
                 outputRange: [!this.state.value ? 1 : 0, 0]
               })
-            }}>
+            }]}>
             <Image
-              style={{width: 12, height: 12, marginRight: 5}}
-              source={require('../images/icon-search.png')}/>
+              style={styles.searchIconStyle}
+              source={require('../images/icon-search.png')} />
             <Text style={{
+              marginLeft: 5,
               color: '#979797',
               fontSize: 14,
               backgroundColor: 'rgba(0, 0, 0, 0)'
@@ -200,7 +174,7 @@ export default class CustomSearchBar extends Component {
               renderToHardwareTextureAndroid
             >
               <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}}
-                    numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
+                numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -213,3 +187,38 @@ CustomSearchBar.propTypes = {
   showActiveSearchIcon: PropTypes.bool,
   isShowHolder: PropTypes.bool // 是否显示搜索图标
 }
+
+const styles = StyleSheet.create({
+  searchTextInputStyle: {
+    flex: 1,
+    height: 28,
+    padding: 0,
+    paddingLeft: searchIconWidth,
+    paddingRight: 8,
+    borderRadius: 5
+  },
+  centerSearchIconStyle: {
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignSelf: 'stretch',
+  },
+  leftSearchIconStyle: {
+    position: 'absolute',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 0,
+    bottom: 0,
+    width: searchIconWidth
+  },
+  searchIconStyle: {
+    width: 12,
+    height: 12,
+  }
+})

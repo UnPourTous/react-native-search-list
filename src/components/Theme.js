@@ -16,8 +16,7 @@ export default {
     primaryDark: '#171a23',
     primaryLight: '#171a23',
 
-    secondary: '',
-
+    // secondary: '',
     maskColor: 'rgba(0, 0, 0, 0.1)'
   },
   size: {
@@ -36,6 +35,6 @@ export default {
     })
   },
   duration: {
-    toggleSearchBar: 1000
+    toggleSearchBar: 300
   }
 }

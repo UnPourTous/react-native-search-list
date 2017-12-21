@@ -4,13 +4,14 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  Animated
 } from 'react-native'
 
 let returnTrue = () => true
 const itemHeight = 14
 
-export default class SectionList extends Component {
+export default class SectionIndex extends Component {
   constructor (props, context) {
     super(props, context)
 
@@ -45,31 +46,28 @@ export default class SectionList extends Component {
   }
 
   render () {
-    let renderSection = this.props.renderSection
-    let sections = this.props.sections && this.props.sections.length > 0 ? this.props.sections.map((section, index) => {
+    const {renderSectionItem} = this.props
+    const sections = this.props.sections && this.props.sections.length > 0 ? this.props.sections.map((section, index) => {
       let title = this.props.getSectionListTitle ? this.props.getSectionListTitle(section) : section
-
-      let child = renderSection ? renderSection(section, title) : <View
-        style={styles.item}>
-        <Text style={styles.text}>{title}</Text>
-      </View>
 
       return (
         <View
           key={index}
           pointerEvents='none'>
-          {child}
+          {renderSectionItem ? renderSectionItem(section, title) : <View
+            style={styles.item}>
+            <Text style={styles.text}>{title}</Text>
+          </View>}
         </View>
       )
     }) : <View />
 
     return (
-      <View
+      <Animated.View
         style={[
           styles.container,
           this.props.style
-        ]}
-      >
+        ]}>
         <View
           onLayout={(e) => {
             if (!this.sectionListContentArea && e.nativeEvent.layout) {
@@ -84,23 +82,19 @@ export default class SectionList extends Component {
             // https://github.com/facebook/react-native/pull/15123/commits/e22763f8c78d59d6ab04417690d25976671be6f0#diff-3f71f1808c93380dfbd5c044f9e6b4c7R122
             this.detectAndScrollToSection(e)
           }}
-          onResponderRelease={this.resetSection} >
+          onResponderRelease={this.resetSection}>
           {sections}
         </View>
-      </View>
+      </Animated.View>
     )
   }
 }
 
 let styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    right: 0,
-    top: 0,
-    bottom: 0,
     width: 15
   },
 

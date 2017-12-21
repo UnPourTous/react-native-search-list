@@ -214,5 +214,9 @@ type: `function`
 * [md5](https://github.com/pvorb/node-md5)
 * [react-native-selectablesectionlistview](https://github.com/johanneslumpe/react-native-selectablesectionlistview)
 
+## TODO 
+1. add hightlight demo
+1. test ios & android & android with status bar and without
+
 ## License
 This library is distributed under MIT Licence.

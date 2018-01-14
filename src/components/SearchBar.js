@@ -16,15 +16,27 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Theme from './Theme'
 
-// width for the cancel button area, should be a fix value at this moment
-const buttonWidth = 70
+const {cancelButtonWidth: buttonWidth, searchBarHorizontalPadding, searchIconWidth} = Theme.size
 
-// padding between the search input and the search bar
-const searchBarHorizontalPadding = 8
-
-// width for the left search icon
-const searchIconWidth = 30
 export default class CustomSearchBar extends Component {
+  static propTypes = {
+    placeholder: PropTypes.string,
+    onChange: PropTypes.func, // search input value changed callback,
+
+    onFocus: PropTypes.func, // search input focused callback
+    onBlur: PropTypes.func, // search input blured callback
+
+    onClickCancel: PropTypes.func, // the search cancel button clicked
+    cancelTitle: PropTypes.stirng, // title for the search cancel button
+    textColor: PropTypes.string, // color for the search cancel button
+
+    // TODO 这里名字要改
+    activeSearchBarColor: PropTypes.string, // active state background color for the search input
+    searchBarActiveColor: PropTypes.string, // active state text color for the search input
+
+    isShowHolder: PropTypes.bool // 是否显示搜索图标
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -35,22 +47,16 @@ export default class CustomSearchBar extends Component {
   }
 
   onChange (str) {
-    if (this.props.onChange) {
-      this.props.onChange(str)
-    }
+    this.props.onChange && this.props.onChange(str)
     this.setState({str})
   }
 
   onBlur () {
-    if (this.props.onBlur) {
-      this.props.onBlur()
-    }
+    this.props.onBlur && this.props.onBlur()
   }
 
   onFocus () {
-    if (this.props.onFocus) {
-      this.props.onFocus()
-    }
+    this.props.onFocus && this.props.onFocus()
     this.searchingAnimation(true)
   }
 
@@ -113,7 +119,7 @@ export default class CustomSearchBar extends Component {
             onBlur={this.onBlur.bind(this)}
             ref='input'
             style={[styles.searchTextInputStyle, {
-              color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797',
+              color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797'
             }, this.props.searchTextInputStyle]}
             onChangeText={this.onChange.bind(this)}
             value={this.state.value}
@@ -174,18 +180,13 @@ export default class CustomSearchBar extends Component {
               renderToHardwareTextureAndroid
             >
               <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}}
-                numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
+                    numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
       </View>
     )
   };
-}
-
-CustomSearchBar.propTypes = {
-  showActiveSearchIcon: PropTypes.bool,
-  isShowHolder: PropTypes.bool // 是否显示搜索图标
 }
 
 const styles = StyleSheet.create({
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
   },
   leftSearchIconStyle: {
     position: 'absolute',
@@ -219,6 +220,6 @@ const styles = StyleSheet.create({
   },
   searchIconStyle: {
     width: 12,
-    height: 12,
+    height: 12
   }
 })

@@ -8,60 +8,83 @@ import {
   StyleSheet,
   ListView,
   PixelRatio,
-  Animated,
-  TextInput
+  Animated
 } from 'react-native'
 
 import React, { Component } from 'react'
 
 import {
-  isCharacter,
-  sTrim,
-  containsChinese
+  sTrim
 } from './utils/utils'
 
 import SearchBar from './components/SearchBar'
 import pinyin from 'js-pinyin'
-import md5 from 'md5'
 import Toolbar from './components/Toolbar'
 import Touchable from './utils/Touchable'
 import SectionIndex from './components/SectionIndex'
 import PropTypes from 'prop-types'
 import Theme from './components/Theme'
+import SearchService from './SearchService'
 
-const {State: TextInputState} = TextInput
-const searchBarHeight = 0
-const defaultSectionHeight = Theme.size.sectionHeaderHeight
 const defaultCellHeight = 0
 
 export default class SearchList extends Component {
+  static propTypes = {
+    data: PropTypes.array.isRequired,
+    renderRow: PropTypes.func.isRequired,
+    cellHeight: PropTypes.number.isRequired,
+
+    hideSectionList: PropTypes.bool,
+    sectionHeaderHeight: PropTypes.number,
+    searchBarBgColor: PropTypes.string,
+    title: PropTypes.string,
+    textColor: PropTypes.string,
+    cancelTitle: PropTypes.string,
+
+    sortFunc: PropTypes.func,
+    resultSortFunc: PropTypes.func,
+    onScrollToSection: PropTypes.func,
+    renderAlphaSection: PropTypes.func,
+    showActiveSearchIcon: PropTypes.bool,
+    leftButtonStyle: PropTypes.object,
+    backIcon: PropTypes.number,
+    backIconStyle: PropTypes.object,
+
+    renderHeader: PropTypes.func,
+    renderEmpty: PropTypes.func,
+    renderEmptyResult: PropTypes.func,
+    renderSeparator: PropTypes.func,
+    renderSectionHeader: PropTypes.func,
+    renderFooter: PropTypes.func
+  }
+
+  static defaultProps = {
+    sectionHeaderHeight: Theme.size.sectionHeaderHeight
+  }
+
   constructor (props) {
     super(props)
+    const listDataSource = new ListView.DataSource({
+      getSectionData: SearchList.getSectionData,
+      getRowData: SearchList.getRowData,
+      rowHasChanged: (row1, row2) => {
+        if (row1 !== row2) {
+          return true
+        } else return !!(row1 && row2 && row1.macher && row2.macher && row1.macher !== row1.macher)
+      },
+      sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+    })
     this.state = {
       isSearching: false,
-      isEmptyResult: false,
-      dataSource: new ListView.DataSource({
-        getSectionData: SearchList.getSectionData,
-        getRowData: SearchList.getRowData,
-        rowHasChanged: (row1, row2) => {
-          if (row1 !== row2) {
-            return true
-          } else if (row1 && row2 && row1.macher && row2.macher && row1.macher !== row1.macher) {
-            return true
-          } else {
-            return false
-          }
-        },
-        sectionHeaderHasChanged: (s1, s2) => s1 !== s2
-      }),
-
-      animatedValue: new Animated.Value(0)
+      animatedValue: new Animated.Value(0),
+      dataSource: listDataSource
     }
-    this.navBarYOffset = Theme.size.toolbarHeight
+
     this.searchStr = ''
     this.sectionIDs = []
-    this.rowIDs = [[]]
-    this.tmpSource = []
+    this.copiedSource = []
+
+    pinyin.setOptions({checkPolyphone: false, charCase: 2})
   }
 
   static getSectionData (dataBlob, sectionID) {
@@ -72,296 +95,65 @@ export default class SearchList extends Component {
     return dataBlob[sectionID + ':' + rowID]
   }
 
-  componentWillMount () {
-
-  }
-
   componentWillReceiveProps (nextProps) {
     if (nextProps && this.props.data !== nextProps.data) {
-      this.tmpSource = Array.from(nextProps.data)
-      this.initList(this.tmpSource)
+      this.initList(nextProps.data)
     }
   }
 
   componentDidMount () {
-    this.tmpSource = Array.from(this.props.data ? this.props.data : [])
-    this.initList(this.tmpSource)
-
-    pinyin.setOptions({checkPolyphone: false, charCase: 2})
+    this.initList(this.props.data)
   }
 
-  generateSearchHandler (source) {
-    let searchHandler = null
-    if (containsChinese(source)) {
-      searchHandler = {}
-      searchHandler.charIndexerArr = []
-      searchHandler.translatedStr = ''
-
-      let translatedLength = 0
-      for (let i = 0; i < source.length; i++) {
-        let tempChar = source[i]
-
-        let pinyinStr = pinyin.getFullChars(tempChar)
-
-        let charIndexer = {}
-        charIndexer.index = i
-        charIndexer.startIndexInTransedStr = translatedLength
-        charIndexer.endIndexInTransedStr = translatedLength + pinyinStr.length - 1
-        charIndexer.pinyinStr = pinyinStr.toLowerCase()
-
-        searchHandler.charIndexerArr.push(charIndexer)
-
-        translatedLength += pinyinStr.length
-        searchHandler.translatedStr += pinyinStr.toLowerCase()
-      }
-    }
-    return searchHandler
+  initList (data = []) {
+    this.copiedSource = Array.from(data)
+    this.parseInitList(SearchService.sortList(SearchService.initList(this.copiedSource), this.props.sortFunc))
   }
 
-  orderList (srcList) {
-    if (!srcList) {
-      return
-    }
-
-    srcList.sort(this.props.sortFunc ? this.props.sortFunc : function (a, b) {
-      if (!isCharacter(b.orderIndex)) {
-        return -1
-      } else if (!isCharacter(a.orderIndex)) {
-        return 1
-      } else if (b.orderIndex > a.orderIndex) {
-        return -1
-      } else if (b.orderIndex < a.orderIndex) {
-        return 1
-      } else {
-        if (b.isCN > a.isCN) {
-          return -1
-        } else if (b.isCN < a.isCN) {
-          return 1
-        } else {
-          return 0
-        }
-      }
-    })
-    this.parseList(srcList)
-  }
-
-  initList (srcList) {
-    if (!srcList || srcList.length === 0) {
-      return
-    }
-    srcList.forEach((item) => {
-      if (item) {
-        // 生成排序索引
-        item.orderIndex = ''
-        item.isCN = 0
-
-        if (item.searchStr) {
-          let tempStr = sTrim(item.searchStr)
-
-          if (tempStr !== '') {
-            // 补充首字母
-            let firstChar = item.searchStr[0]
-
-            if (containsChinese(firstChar)) {
-              let pinyinChar = pinyin.getCamelChars(firstChar)
-
-              if (pinyinChar) {
-                item.orderIndex = pinyinChar.toUpperCase()
-                item.isCN = 1
-              }
-            } else {
-              item.orderIndex = firstChar.toUpperCase()
-              item.isCN = 0
-            }
-          }
-          // 对中文进行处理
-          let handler = this.generateSearchHandler(item.searchStr)
-          if (handler) {
-            item.searchHandler = handler
-          }
-          if (!item.searchKey) {
-            item.searchKey = md5(item.searchStr)
-          }
-        }
-      }
-    })
-    this.orderList(srcList)
-  }
-
-  parseList (srcList) {
-    if (!srcList) {
-      return
-    }
-    let friendWithSection = {}
-    this.sectionIDs = []
-    this.rowIds = [[]]
-    /* 形成如下的结构
-     let dataBlob = {
-     'sectionID1' : { ...section1 data },
-     'sectionID1:rowID1' : { ...row1 data },
-     'sectionID1:rowID2' : { ..row2 data },
-     'sectionID2' : { ...section2 data },
-     'sectionID2:rowID1' : { ...row1 data },
-     'sectionID2:rowID2' : { ..row2 data },
-     ...
-     }
-     let sectionIDs = [ 'sectionID1', 'sectionID2', ... ]
-     let rowIDs = [ [ 'rowID1', 'rowID2' ], [ 'rowID1', 'rowID2' ], ... ]
-     */
-    srcList.forEach((item) => {
-      if (item) {
-        // 加入到section
-        let orderIndex = item.orderIndex
-        if (!isCharacter(item.orderIndex)) {
-          orderIndex = '#'
-        }
-        if (!friendWithSection[orderIndex]) {
-          friendWithSection[orderIndex] = orderIndex
-          this.sectionIDs.push(orderIndex)
-        }
-
-        // rows组装
-        // 1. 保证row数组长度和section数组长度一致
-        let sectionIndex = this.sectionIDs.findIndex((tIndex) => {
-          return orderIndex === tIndex
-        })
-        for (let i = this.rowIds.length; i <= sectionIndex; i++) {
-          this.rowIds.push([])
-        }
-        // 2. 在section对应的数组加入row id
-        let tRows = this.rowIds[sectionIndex]
-        if (tRows) {
-          tRows.push(item.searchKey)
-        }
-
-        // 3. 实际数据加入friendWithSection
-        let itemKey = orderIndex + ':' + item.searchKey
-        friendWithSection[itemKey] = item
-      }
-    })
+  parseInitList (srcList) {
+    const {rowsWithSection, sectionIDs, rowIds} = SearchService.parseList(srcList)
+    this.sectionIDs = sectionIDs
+    this.rowIds = rowIds
     this.setState({
       isSearching: false,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(friendWithSection, (!this.sectionIDs || this.sectionIDs.length === 0) ? [''] : this.sectionIDs, this.rowIds)
+      dataSource: this.state.dataSource.cloneWithRowsAndSections(
+        rowsWithSection,
+        (!sectionIDs || sectionIDs.length === 0) ? [''] : sectionIDs,
+        rowIds
+      )
     })
   }
 
   search (input) {
-    if (!this.tmpSource) {
-      return
-    }
     this.searchStr = input
     if (input) {
       input = sTrim(input)
-      let inputLower = input.toLowerCase()
-      let tempResult = []
-      this.tmpSource.forEach((item, idx, array) => {
-        if (item) {
-          // 全局匹配字符
-          if (item.searchStr) {
-            let searchHandler = item.searchHandler
-            let result = this.generateMacherInto(item.searchStr, item, inputLower, searchHandler ? searchHandler.translatedStr : '', searchHandler ? searchHandler.charIndexerArr : [])
-            if (result.macher) {
-              tempResult.push(result)
-            }
-          }
-        }
-      })
+      const tempResult = SearchService.search(this.copiedSource, input.toLowerCase())
       if (tempResult.length === 0) {
         this.setState({
-          isEmptyResult: true,
-          isSearching: true
+          isSearching: true,
+          dataSource: this.state.dataSource.cloneWithRowsAndSections(
+            {},
+            [],
+            [])
         })
       } else {
-        this.orderResultList(tempResult)
+        const {
+          searchResultWithSection,
+          rowIds
+        } = SearchService.sortResultList(tempResult, this.props.resultSortFunc)
+        this.rowIds = rowIds
+        this.setState({
+          isSearching: true,
+          dataSource: this.state.dataSource.cloneWithRowsAndSections(
+            searchResultWithSection,
+            [''],
+            rowIds)
+        })
       }
     } else {
-      // 重置为原来的列表
-      this.parseList(this.tmpSource)
+      this.parseInitList(this.copiedSource)
     }
-  }
-
-  orderResultList (searchResultList) {
-    if (!searchResultList) {
-      this.setState({isEmptyResult: true, isSearching: true})
-      return
-    }
-
-    searchResultList.sort(this.props.resultSortFunc ? this.props.resultSortFunc : function (a, b) {
-      if (b.macher && a.macher) {
-        if (b.macher.machStart < a.macher.machStart) {
-          return 1
-        } else if (b.macher.machStart > a.macher.machStart) {
-          return -1
-        } else {
-          return 0
-        }
-      } else {
-        return 0
-      }
-    })
-    let searchResultWithSection = {'': ''}
-    this.rowIds = [[]]
-    let tRows = this.rowIds[0]
-    searchResultList.forEach((result) => {
-      tRows.push(result.searchKey)
-      searchResultWithSection[':' + result.searchKey] = result
-    })
-    this.setState({
-      isEmptyResult: false,
-      isSearching: true,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(searchResultWithSection, [''], this.rowIds)
-    })
-  }
-
-  // FIXME 这个函数需要改造为一个字符串匹配多项
-  generateMacherInto (source, item, inputLower, transStr, charIndexer) {
-    let result = {}
-    Object.assign(result, item)
-    if (source) {
-      let macher = {}
-      macher.matches = []
-      if (source.toLowerCase().indexOf(inputLower) >= 0) {
-        macher.machStart = source.toLowerCase().indexOf(inputLower)
-        macher.machEnd = macher.machStart + inputLower.length
-
-        macher.matches.push({'start': macher.machStart, 'end': macher.machEnd})
-        result.macher = macher
-      } else {
-        if (transStr && charIndexer) {
-          let inputStartIndex = transStr.indexOf(inputLower)
-          if (inputStartIndex >= 0) {
-            for (let i = 0; i < charIndexer.length; i++) {
-              let startCharIndexer = charIndexer[i]
-
-              if (startCharIndexer) {
-                if (startCharIndexer.startIndexInTransedStr === inputStartIndex) {
-                  let inputEndIndex = inputStartIndex + inputLower.length - 1
-                  let find = false
-                  for (let j = i; j < charIndexer.length; j++) {
-                    let endCharIndexer = charIndexer[j]
-
-                    if (inputEndIndex <= endCharIndexer.endIndexInTransedStr) {
-                      find = true
-                      macher.machStart = startCharIndexer.index
-                      macher.machEnd = endCharIndexer.index + 1
-                      macher.matches.push({'start': macher.machStart, 'end': macher.machEnd})
-                      result.macher = macher
-                      break
-                    }
-                  }
-
-                  if (find) {
-                    break
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return result
   }
 
   renderSectionHeader (sectionData, sectionID) {
@@ -370,7 +162,7 @@ export default class SearchList extends Component {
         <View />)
     } else {
       return (
-        <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight || defaultSectionHeight}]}>
+        <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
           <Text style={styles.sectionTitle}>{sectionID}</Text>
         </View>)
     }
@@ -395,14 +187,14 @@ export default class SearchList extends Component {
           <View style={{
             height: 1 / PixelRatio.get(),
             backgroundColor: '#efefef'
-          }}/>
+          }} />
         </View>
       )
     }
   }
 
   renderFooter () {
-    return <View style={styles.scrollSpinner}/>
+    return <View style={styles.scrollSpinner} />
   }
 
   renderRow (item,
@@ -433,7 +225,7 @@ export default class SearchList extends Component {
       toValue: 0
     }).start(() => {
       this.search('')
-      this.setState({isSearching: false, isEmptyResult: false})
+      this.setState({isSearching: false})
     })
   }
 
@@ -445,10 +237,6 @@ export default class SearchList extends Component {
 
   onBlur () {
     // this.cancelSearch()
-  }
-
-  onClickBack () {
-    this.props.onClickBack && this.props.onClickBack()
   }
 
   onClickCancel () {
@@ -466,7 +254,7 @@ export default class SearchList extends Component {
     let y = this.props.headerHeight || 0
 
     let cellHeight = this.props.cellHeight || defaultCellHeight
-    let sectionHeaderHeight = this.props.sectionHeaderHeight || defaultSectionHeight
+    let sectionHeaderHeight = this.props.sectionHeaderHeight
     let index = this.sectionIDs.indexOf(section)
 
     let numcells = 0
@@ -487,6 +275,7 @@ export default class SearchList extends Component {
       <Animated.View
         ref='view'
         style={[{
+          // 考虑上动画以后页面要向上移动，这里必须拉长
           height: Theme.size.windowHeight + Theme.size.toolbarHeight,
           width: Theme.size.windowWidth,
           transform: [
@@ -500,28 +289,28 @@ export default class SearchList extends Component {
         }, this.props.style]}>
         <View style={{
           flex: 1,
-          backgroundColor: '#171a23'
+          backgroundColor: Theme.color.primaryDark
         }}>
           <Toolbar
-            style={[styles.toolbar, {
+            animatedValue={this.state.animatedValue}
+
+            style={[{
               opacity: this.state.animatedValue.interpolate({
                 inputRange: [0, 1],
                 outputRange: [1, 0]
               })
-            }]}
-            // searchBarBgColor={this.props.searchBarBgColor ? this.props.searchBarBgColor : '#171a23'}
+            }, this.props.toolbarStyle]}
             title={this.props.title}
-            hideBack={!this.props.onClickBack}
             textColor={this.props.textColor}
-            leftButtonStyle={this.props.leftButtonStyle}
-            backIcon={this.props.backIcon}
-            backIconStyle={this.props.backIconStyle}
-            onClickBack={this.onClickBack.bind(this)}/>
+          />
+
           <SearchBar
             placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
+
             onChange={this.search.bind(this)}
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
+
             onClickCancel={this.onClickCancel.bind(this)}
             cancelTitle={this.props.cancelTitle}
             textColor={this.props.textColor}
@@ -529,7 +318,7 @@ export default class SearchList extends Component {
             activeSearchBarColor={this.props.activeSearchBarColor}
             showActiveSearchIcon={this.props.showActiveSearchIcon}
             searchBarActiveColor={this.props.searchBarActiveColor}
-            ref='searchBar'/>
+            ref='searchBar' />
           {this._renderStickHeader()}
 
           <View
@@ -546,9 +335,10 @@ export default class SearchList extends Component {
   }
 
   _renderSearchBody () {
-    const {isSearching, isEmptyResult} = this.state
+    const {isSearching} = this.state
     const {renderEmptyResult, renderEmpty, data} = this.props
 
+    const isEmptyResult = this.state.dataSource.getRowCount() === 0
     if (isSearching && isEmptyResult && renderEmptyResult) {
       return renderEmptyResult(this.searchStr)
     } else {
@@ -568,7 +358,7 @@ export default class SearchList extends Component {
             renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
             renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
             renderHeader={this.props.renderHeader && this.props.renderHeader}
-            enableEmptySections/>
+            enableEmptySections />
         )
       } else {
         if (renderEmpty) {
@@ -592,10 +382,9 @@ export default class SearchList extends Component {
       return (
         <Touchable
           onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
-          style={[styles.maskStyle, {
-          }]}>
+          style={[styles.maskStyle, {}]}>
           <Animated.View
-            style={[styles.maskStyle]}/>
+            style={[styles.maskStyle]} />
         </Touchable>
       )
     }
@@ -625,37 +414,11 @@ export default class SearchList extends Component {
             }}
             onSectionSelect={this.scrollToSection.bind(this)}
             sections={this.sectionIDs}
-            renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)}/>
+            renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)} />
         </View>
       )
     }
   }
-}
-
-SearchList.propTypes = {
-  data: PropTypes.array.isRequired,
-  renderRow: PropTypes.func.isRequired,
-  cellHeight: PropTypes.number.isRequired,
-
-  hideSectionList: PropTypes.bool,
-  sectionHeaderHeight: PropTypes.number,
-  searchBarBgColor: PropTypes.string,
-  title: PropTypes.string,
-  textColor: PropTypes.string,
-  cancelTitle: PropTypes.string,
-
-  sortFunc: PropTypes.func,
-  resultSortFunc: PropTypes.func,
-  renderSeparator: PropTypes.func,
-  renderSectionHeader: PropTypes.func,
-  onClickBack: PropTypes.func,
-  onScrollToSection: PropTypes.func,
-  renderAlphaSection: PropTypes.func,
-  showActiveSearchIcon: PropTypes.bool,
-  leftButtonStyle: PropTypes.object,
-  backIcon: PropTypes.number,
-  backIconStyle: PropTypes.object,
-  renderComponentAboveHeader: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -687,9 +450,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     height: 1 / PixelRatio.get(),
     marginVertical: 1
-  },
-  toolbar: {
-    height: Theme.size.toolbarHeight + Theme.size.statusBarHeight
   },
   maskStyle: {
     position: 'absolute',

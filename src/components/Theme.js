@@ -2,12 +2,16 @@
  * Created by erichua on 13/12/2017.
  */
 import {
-  Navigator,
   Dimensions,
   Platform,
   StatusBar
 } from 'react-native'
 
+const statusBarHeight = Platform.select({
+  android: StatusBar.currentHeight,
+  // TODO 这里不要写死值
+  ios: Platform.OS === 'ios' && Dimensions.get('window').height === 812 ? 44 : 20
+})
 export default {
   color: {
     primary: '#171a23',
@@ -22,17 +26,18 @@ export default {
   size: {
     sectionHeaderHeight: 24,
 
-    toolbarHeight: 56,
+    toolbarHeight: 44,
+    headerHeight: 44 + statusBarHeight,
     searchInputHeight: 44,
 
     windowWidth: Dimensions.get('window').width,
     windowHeight: Dimensions.get('window').height,
 
-    // TODO 这里需要关注是否浸入式
-    statusBarHeight: Platform.select({
-      android: StatusBar.currentHeight,
-      ios: Platform.OS === 'ios' && Dimensions.get('window').height === 812 ? 44 : Navigator.NavigationBar.Styles.General.StatusBarHeight
-    })
+    statusBarHeight,
+
+    searchIconWidth: 30,
+    cancelButtonWidth: 70, // width for the cancel button area, should be a fix value at this moment
+    searchBarHorizontalPadding: 8 // padding between the search input and the search bar
   },
   duration: {
     toggleSearchBar: 300

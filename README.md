@@ -209,6 +209,25 @@ renderHeader for the internal ListView
 type: `function`
 
 
+### `renderStickHeader`
+render a stickHeader above the body.
+
+type: `function`
+
+
+### `renderEmpty`
+Render a view when data is empty.
+
+type: `function`
+
+### `renderEmptyResult`
+Render a view when the search result is empty.
+
+type: `function`
+
+### `toolbarStyle`
+
+
 ## Thanks
 * [js-pinyin](https://github.com/waterchestnut/pinyin)
 * [md5](https://github.com/pvorb/node-md5)

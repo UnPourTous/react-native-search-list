@@ -4,30 +4,45 @@ import {
   StyleSheet,
   Text,
   View,
-  Animated
+  Animated,
+  ViewPropTypes
 } from 'react-native'
+import PropTypes from 'prop-types'
+import Theme from './Theme'
 
 let statusBarSize = (Platform.OS === 'ios' ? 20 : 0)
 
 export default class Toolbar extends Component {
+  static propTypes = {
+    style: ViewPropTypes, // custom style
+    renderBackButton: PropTypes.func,
+    renderRightButton: PropTypes.func,
+    renderTitle: PropTypes.func,
+
+    title: PropTypes.string,
+    textColor: PropTypes.string
+  }
+
+  static defaultProps = {
+    textColor: 'white'
+  }
+
   render () {
-    const {toolbarStyle} = this.props
+    const {style} = this.props
     return (
       <Animated.View
-        {...this.props}
+        style={[styles.container, style]}
         shouldRasterizeIOS
         renderToHardwareTextureAndroid>
-        <View style={[styles.container, toolbarStyle]}>
-          {this._renderBackButton()}
-          {this._renderTitle()}
-          {this._renderRightButton()}
-        </View>
+        {this._renderBackButton()}
+        {this._renderTitle()}
+        {this._renderRightButton()}
       </Animated.View>
     )
   }
 
   _renderBackButton () {
-    const {renderBackButton = false} = this.props
+    const {renderBackButton} = this.props
     if (renderBackButton) {
       return renderBackButton()
     }
@@ -36,13 +51,16 @@ export default class Toolbar extends Component {
   }
 
   _renderTitle () {
-    const {renderTitle, title} = this.props
+    const {renderTitle, title, textColor} = this.props
     if (renderTitle) {
       return renderTitle()
     } else {
       return (
         <View style={[styles.titleStyle]}>
-          <Text style={[styles.titleTextStyle, {color: this.props.textColor ? this.props.textColor : 'white'}]}
+          <Text
+            style={[styles.titleTextStyle, {
+              color: textColor
+            }]}
             numberOfLines={1}>
             {title}
           </Text>
@@ -52,7 +70,7 @@ export default class Toolbar extends Component {
   }
 
   _renderRightButton () {
-    const {renderRightButton = false} = this.props
+    const {renderRightButton} = this.props
     if (renderRightButton) {
       return renderRightButton()
     }
@@ -63,9 +81,8 @@ export default class Toolbar extends Component {
 
 let styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    height: 56,
-    paddingTop: statusBarSize,
+    height: Theme.size.headerHeight,
+    paddingTop: Theme.size.statusBarHeight,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#171a23'
@@ -73,11 +90,10 @@ let styles = StyleSheet.create({
   titleStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    flexGrow: 1,
-    height: 25
+    flexDirection: 'row',
+    flex: 1
   },
   titleTextStyle: {
-    flexGrow: 1,
     fontSize: 18
   }
 })

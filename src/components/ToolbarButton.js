@@ -34,7 +34,7 @@ export default class extends Component {
           <Image
             style={[styles.backIcon, backIconStyle]}
             source={icon}
-            resizeMode='cover'/>
+            resizeMode='cover' />
         </View>
       </Touchable>
     )

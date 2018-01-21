@@ -18,7 +18,7 @@ import Theme from './Theme'
 
 const {cancelButtonWidth: buttonWidth, searchBarHorizontalPadding, searchIconWidth} = Theme.size
 
-export default class CustomSearchBar extends Component {
+export default class SearchBar extends Component {
   static propTypes = {
     placeholder: PropTypes.string,
     onChange: PropTypes.func, // search input value changed callback,
@@ -27,7 +27,7 @@ export default class CustomSearchBar extends Component {
     onBlur: PropTypes.func, // search input blured callback
 
     onClickCancel: PropTypes.func, // the search cancel button clicked
-    cancelTitle: PropTypes.stirng, // title for the search cancel button
+    cancelTitle: PropTypes.string, // title for the search cancel button
     textColor: PropTypes.string, // color for the search cancel button
 
     // TODO 这里名字要改

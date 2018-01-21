@@ -214,7 +214,8 @@ export default class SearchList extends Component {
     this.setState({isSearching: true})
     Animated.timing(this.state.animatedValue, {
       duration: Theme.duration.toggleSearchBar,
-      toValue: 1
+      toValue: 1,
+      useNativeDriver: true
     }).start(() => {
     })
   }
@@ -222,7 +223,8 @@ export default class SearchList extends Component {
   exitSearchState () {
     Animated.timing(this.state.animatedValue, {
       duration: Theme.duration.toggleSearchBar,
-      toValue: 0
+      toValue: 0,
+      useNativeDriver: true
     }).start(() => {
       this.search('')
       this.setState({isSearching: false})

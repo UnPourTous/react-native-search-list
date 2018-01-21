@@ -4,8 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Animated,
-  ViewPropTypes
+  Animated
 } from 'react-native'
 import PropTypes from 'prop-types'
 import Theme from './Theme'
@@ -14,7 +13,7 @@ let statusBarSize = (Platform.OS === 'ios' ? 20 : 0)
 
 export default class Toolbar extends Component {
   static propTypes = {
-    style: ViewPropTypes, // custom style
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.number]),
     renderBackButton: PropTypes.func,
     renderRightButton: PropTypes.func,
     renderTitle: PropTypes.func,

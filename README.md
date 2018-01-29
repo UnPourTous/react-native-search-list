@@ -1,5 +1,5 @@
 # A searchable ListView which supports Chinese PinYin and alphabetical index.
-
+[![npm version](https://badge.fury.io/js/%40unpourtous%2Freact-native-search-list.svg)](https://badge.fury.io/js/%40unpourtous%2Freact-native-search-list)
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 ### React Native Search List

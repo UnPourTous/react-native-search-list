@@ -8,7 +8,8 @@ import {
   StyleSheet,
   ListView,
   PixelRatio,
-  Animated
+  Animated,
+  Image
 } from 'react-native'
 
 import React, { Component } from 'react'
@@ -51,6 +52,7 @@ export default class SearchList extends Component {
     backIconStyle: PropTypes.object,
 
     renderHeader: PropTypes.func,
+    renderBackButton: PropTypes.func,
     renderEmpty: PropTypes.func,
     renderEmptyResult: PropTypes.func,
     renderSeparator: PropTypes.func,
@@ -304,6 +306,20 @@ export default class SearchList extends Component {
             }, this.props.toolbarStyle]}
             title={this.props.title}
             textColor={this.props.textColor}
+            renderBackButton={this.props.renderBackButton || (() => {
+              <Touchable
+                onPress={this.props.onPress}>
+                <Image
+                  hitSlop={{top: 10, left: 20, bottom: 10, right: 20}}
+                  style={[{
+                    width: 20,
+                    height: 20,
+                    paddingLeft: 15,
+                    paddingRight: 15
+                  }]}
+                  source={require('./images/icon-back.png')} />
+              </Touchable>
+            })}
           />
 
           <SearchBar

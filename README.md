@@ -6,7 +6,10 @@
 
 A searchable ListView which supports Chinese PinYin and alphabetical index.
 
-<img src='https://github.com/UnPourTous/react-native-search-list/blob/master/screenshots/react-native-search-list-demo.gif?raw=true' />
+<img src='https://github.com/UnPourTous/react-native-search-list/blob/develop-refactor/screenshots/search-list-demo-v2.gif' />
+
+The following pic may be helpful when understanding the structure and APIs: 
+![image](https://user-images.githubusercontent.com/1309744/36627720-fba7dade-1981-11e8-941f-03fc94af00ec.png)
 
 ## Installation
 
@@ -14,24 +17,9 @@ A searchable ListView which supports Chinese PinYin and alphabetical index.
 
 ## Usage
 
-To Use SearchList, need a array of object as data source,and each object has searchStr property:
+To Use SearchList, need a array of object as data source,and each object has searchStr property, eample code are put in `example/entry.js`.
 
 ```js
-import React, { Component } from 'react'
-import {
-  AppRegistry,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-  Alert
-} from 'react-native'
-import SearchList from '@unpourtous/react-native-search-list'
-import demoList from './data'
-import { HighlightableText } from '@unpourtous/react-native-search-list'
-import Touchable from '../src/utils/Touchable'
-
-const cellheight = 40
 export default class example extends Component {
   constructor (props) {
     super(props)
@@ -50,7 +38,7 @@ export default class example extends Component {
           ],
           {cancelable: true})
       }}>
-        <View key={rowID} style={{flex: 1, marginLeft: 20, height: cellheight, justifyContent: 'center'}}>
+        <View key={rowID} style={{flex: 1, marginLeft: 20, height: rowHeight, justifyContent: 'center'}}>
           {/*use `HighlightableText` to highlight the search result*/}
           <HighlightableText
             matcher={item.matcher}
@@ -93,16 +81,15 @@ export default class example extends Component {
           renderEmptyResult={this.renderEmptyResult.bind(this)}
           renderBackButton={() => null}
           renderEmpty={this.renderEmpty.bind(this)}
-          cellHeight={cellheight}
+
+          rowHeight={rowHeight}
+
+          toolbarBackgroundColor={'#2196f3'}
           title='Search List Demo'
           cancelTitle='取消'
-          searchPlaceHolder='Search'
-          customSearchBarStyle={{
-            fontSize: 14
-          }}
           onClickBack={() => {}}
+
           searchListBackgroundColor={'#2196f3'}
-          toolbarBackgroundColor={'#2196f3'}
 
           searchBarToggleDuration={300}
 
@@ -111,170 +98,54 @@ export default class example extends Component {
           searchInputPlaceholderColor={'#FFF'}
           searchInputTextColor={'#FFF'}
           searchInputTextColorActive={'#000'}
+          searchInputPlaceholder='Search'
+          sectionIndexTextColor={'#6ec6ff'}
           searchBarBackgroundColor={'#2196f3'}
         />
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#efefef',
-    flexDirection: 'column',
-    justifyContent: 'flex-start'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
-  },
-  emptyDataSource: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    marginTop: 50
-  },
-  emptySearchResult: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    marginTop: 50
-  }
-})
-
-AppRegistry.registerComponent('example', () => example)
 ```
-## API
+## APIs
 
-Props
------
-
-### `data`
-the rows of list view.each object should contain `searchStr`,it will be used for search source.
-If you have custom row id,you should set `searchKey` for each object
-
-type: `Array`
-defaultValue: `[]`
-
-### `renderRow`
-the row content
-
-type: `function`
-
-### `cellHeight`
-the height of row content,it will be used for scroll calculate
-
-type: `number`
-defaultValue: `0`
-
-### `sectionHeaderHeight`
-the height of section header content,it will be used for scroll calculate
-
-type: `number`
-defaultValue: `24`
-
-### `hideSectionList`
-Whether to hide the alphabetical section listing view or not 
-
-type: `bool`
-defaultValue: `false`
-
-### `topOffset`
-the top offset for list view and alphabetical section view
-
-type: `number`
-defaultValue: `0`
-
-### `searchBarBgColor`
-the background color of search bar and nav bar,please use hex color string
-
-type: `string`
-defaultValue: `#171a23`
-
-### `title`
-the title of nav bar
-
-type: `string`
-
-### `textColor`
-the color of nav bar title and search bar text color
-
-type: `string`
-defaultValue: `white`
-
-### `cancelTitle`
-the title of search bar cancel button
-
-type: `string`
-defaultValue: `Cancel`
-
-### `sortFunc`
-the sort function for the list view data source,sorting alphabetical by default 
-
-type: `func`
-
-### `resultSortFunc`
-the sort function for the search result,sorting first match position by default 
-
-type: `func`
-
-### `renderSeparator`
-row separator
-
-type: `function`
-
-### `renderSectionHeader`
-the section header content
-
-type: `function`
-
-### `onClickBack`
-the callback of left button.if set, left button will shown 
-
-type: `function`
-
-### `onScrollToSection`
-the callback of alphabetical section view be clicked or touch.
-
-type: `function`
-
-### `renderAlphaSection`
-the alphabetical section view content
-
-type: `function`
-
-### `renderHeader`
-renderHeader for the internal ListView
-
-type: `function`
-
-
-### `renderStickHeader`
-render a stickHeader above the body.
-
-type: `function`
-
-
-### `renderEmpty`
-Render a view when data is empty.
-
-type: `function`
-
-### `renderEmptyResult`
-Render a view when the search result is empty.
-
-type: `function`
-
-### `toolbarStyle`
+prop name | type | description | default value
+--- | --- | --- | --- 
+data | array | The rows of list view.each object should contain `searchStr`, it will be used for search source. If you have custom row id,you should set `searchKey` for each object. | 
+renderRow | number | Render your custom row content. | 
+rowHeight | number | The height of the default row content, it will be used for scroll calculate. | `40`
+sectionHeaderHeight | number | The height of section header content. | `24`
+searchListBackgroundColor | string | BackgroundColor for searchList. | `#171a23`
+toolbarBackgroundColor | string | Toolbar background color. | `#171a23`
+searchBarToggleDuration | number | Custom search bar animation duration. | `300`
+searchBarBackgroundColor | string | Custom search bar background color. | `#171a23`
+searchInputBackgroundColor | string | Custom search input default state background color. | 
+searchInputBackgroundColorActive | string | Custom search input searching state background color. | 
+searchInputPlaceholder | string | Custom search input placeholder text. | 
+searchInputPlaceholderColor | string | Custom search input placeholder text color. | 
+searchInputTextColor | string | Custom search input default state text color. | 
+searchInputTextColorActive | string | Custom search input searching state text color. | 
+searchBarBackgroundColor | string | Custom search bar background color. | 
+title | string | Toolbar title. | 
+titleTextColor | string | Toolbar title text color. | 
+cancelTextColor | string | Search bar cancel text color. | 
+cancelTitle | string | Search bar cancel text color. | 
+sectionIndexTextColor | string | Section index text color. | 
+hideSectionList | bool | Whether to hide the alphabetical section listing view or not. |
+renderSectionIndexItem | func | Custom render SectionIndexItem. |
+sortFunc | func | The sort function for the list view data source,sorting alphabetical by default  |
+resultSortFunc | func | The sort function for the search result,sorting first match position by default |
+onScrollToSection | func | The callback of alphabetical section view be clicked or touch. |
+renderBackButton | func | Render a custom back buttom on Toolbar. |
+renderEmpty | func | Render a view when data is empty.  |
+renderEmptyResult | func | Render a view when search result is empty.  |
+renderSeparator | func | Render row separator. |
+renderSectionHeader | func | `renderSectionHeader` for the internal ListView  |
+renderHeader | func | `renderHeader` for the internal ListView |
+renderFooter | func | `renderFooter` for the internal ListView  |
+renderRow | func | `renderRow` for the internal ListView |
+onSearchStart | func | Callback when searching start. |
+onSearchEnd | func | Callback when searching end. |
 
 
 ## Thanks

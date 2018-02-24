@@ -28,13 +28,31 @@ export default class SearchBar extends Component {
 
     onClickCancel: PropTypes.func, // the search cancel button clicked
     cancelTitle: PropTypes.string, // title for the search cancel button
-    textColor: PropTypes.string, // color for the search cancel button
+    cancelTextColor: PropTypes.string, // color for the search cancel button
 
-    // TODO 这里名字要改
-    activeSearchBarColor: PropTypes.string, // active state background color for the search input
-    searchBarActiveColor: PropTypes.string, // active state text color for the search input
+    searchInputBackgroundColor: PropTypes.string, // default state background color for the search input
+    searchInputBackgroundColorActive: PropTypes.string, // active state background color for the search input
+    searchInputPlaceholderColor: PropTypes.string, // default placeholder color for the search input
+    searchInputTextColor: PropTypes.string, // default state text color for the search input
+    searchInputTextColorActive: PropTypes.string, // active state text color for the search input
+
+    searchBarBackgroundColor: PropTypes.string, // active state background color for the search bar
 
     isShowHolder: PropTypes.bool // 是否显示搜索图标
+  }
+
+  static defaultProps = {
+    searchInputBackgroundColor: '#FFF',
+    searchInputBackgroundColorActive: '#171a23',
+
+    searchInputPlaceholderColor: '#979797',
+    searchInputTextColor: '#171a23',
+    searchInputTextColorActive: '#FFF',
+
+    searchBarBackgroundColor: '#171a23',
+
+    cancelTextColor: 'white',
+    cancelTitle: 'Cancel'
   }
 
   constructor (props) {
@@ -95,7 +113,7 @@ export default class SearchBar extends Component {
             flexDirection: 'row',
             padding: searchBarHorizontalPadding,
             height: Theme.size.searchInputHeight,
-            backgroundColor: '#171a23'
+            backgroundColor: this.props.searchBarBackgroundColor
           },
           {
             width: Theme.size.windowWidth + buttonWidth
@@ -109,7 +127,7 @@ export default class SearchBar extends Component {
           }),
           backgroundColor: this.state.animatedValue.interpolate({
             inputRange: [0, buttonWidth],
-            outputRange: ['#2f3139', this.props.activeSearchBarColor]
+            outputRange: [this.props.searchInputBackgroundColor, this.props.searchInputBackgroundColorActive]
           }),
           height: 28,
           borderRadius: 5
@@ -119,7 +137,9 @@ export default class SearchBar extends Component {
             onBlur={this.onBlur.bind(this)}
             ref='input'
             style={[styles.searchTextInputStyle, {
-              color: this.props.searchBarActiveColor && !this.state.isShowHolder ? this.props.searchBarActiveColor : '#979797'
+              color: this.props.searchInputTextColorActive && !this.state.isShowHolder
+                ? this.props.searchInputTextColorActive
+                : this.props.searchInputTextColor || '#979797'
             }, this.props.searchTextInputStyle]}
             onChangeText={this.onChange.bind(this)}
             value={this.state.value}
@@ -155,7 +175,7 @@ export default class SearchBar extends Component {
               source={require('../images/icon-search.png')} />
             <Text style={{
               marginLeft: 5,
-              color: '#979797',
+              color: this.props.searchInputPlaceholderColor,
               fontSize: 14,
               backgroundColor: 'rgba(0, 0, 0, 0)'
             }}>{this.props.placeholder}</Text>
@@ -179,8 +199,9 @@ export default class SearchBar extends Component {
               shouldRasterizeIOS
               renderToHardwareTextureAndroid
             >
-              <Text style={{color: this.props.textColor ? this.props.textColor : 'white'}}
-                    numberOfLines={1}>{this.props.cancelTitle ? this.props.cancelTitle : 'Cancel'}</Text>
+              <Text
+                style={{color: this.props.cancelTextColor}}
+                numberOfLines={1}>{this.props.cancelTitle}</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

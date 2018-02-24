@@ -7,11 +7,16 @@ import {
   StyleSheet,
   Animated
 } from 'react-native'
+import PropTypes from 'prop-types'
 
 let returnTrue = () => true
 const itemHeight = 14
 
 export default class SectionIndex extends Component {
+  static propTypes = {
+    renderSectionItem: PropTypes.func
+  }
+
   constructor (props, context) {
     super(props, context)
 

@@ -17,7 +17,7 @@ import demoList from './data'
 import { HighlightableText } from '@unpourtous/react-native-search-list'
 import Touchable from '../src/utils/Touchable'
 
-const cellheight = 40
+const rowHeight = 40
 export default class example extends Component {
   constructor (props) {
     super(props)
@@ -36,9 +36,14 @@ export default class example extends Component {
           ],
           {cancelable: true})
       }}>
-        <View key={rowID} style={{flex: 1, marginLeft: 40, height: cellheight, justifyContent: 'center'}}>
+        <View key={rowID} style={{flex: 1, marginLeft: 20, height: rowHeight, justifyContent: 'center'}}>
           {/*use `HighlightableText` to highlight the search result*/}
-          <HighlightableText matcher={item.matcher} text={item.searchStr} />
+          <HighlightableText
+            matcher={item.matcher}
+            text={item.searchStr}
+            textColor={'#000'}
+            hightlightTextColor={'#0069c0'}
+          />
         </View>
       </Touchable>
     )
@@ -72,19 +77,28 @@ export default class example extends Component {
           data={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
           renderEmptyResult={this.renderEmptyResult.bind(this)}
+          renderBackButton={() => null}
           renderEmpty={this.renderEmpty.bind(this)}
-          cellHeight={cellheight}
-          title='Search List'
-          searchPlaceHolder='Search'
-          customSearchBarStyle={{
-            fontSize: 14
-          }}
+
+          rowHeight={rowHeight}
+
+          toolbarBackgroundColor={'#2196f3'}
+          title='Search List Demo'
+          cancelTitle='取消'
           onClickBack={() => {}}
-          leftButtonStyle={{justifyContent: 'flex-start'}}
-          backIconStyle={{width: 8.5, height: 17}}
-          activeSearchBarColor='#fff'
-          showActiveSearchIcon
-          searchBarActiveColor='#171a23'
+
+          searchListBackgroundColor={'#2196f3'}
+
+          searchBarToggleDuration={300}
+
+          searchInputBackgroundColor={'#0069c0'}
+          searchInputBackgroundColorActive={'#6ec6ff'}
+          searchInputPlaceholderColor={'#FFF'}
+          searchInputTextColor={'#FFF'}
+          searchInputTextColorActive={'#000'}
+          searchInputPlaceholder='Search'
+          sectionIndexTextColor={'#6ec6ff'}
+          searchBarBackgroundColor={'#2196f3'}
         />
       </View>
     )

@@ -17,55 +17,65 @@ A searchable ListView which supports Chinese PinYin and alphabetical index.
 To Use SearchList, need a array of object as data source,and each object has searchStr property:
 
 ```js
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
-
 import React, { Component } from 'react'
 import {
   AppRegistry,
+  StatusBar,
+  StyleSheet,
+  Text,
   View,
-  Text
+  Alert
 } from 'react-native'
 import SearchList from '@unpourtous/react-native-search-list'
+import demoList from './data'
+import { HighlightableText } from '@unpourtous/react-native-search-list'
+import Touchable from '../src/utils/Touchable'
 
 const cellheight = 40
 export default class example extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      dataSource: [
-        {'searchStr': 'A1'},
-        {'searchStr': 'B1'},
-        {'searchStr': 'A2'},
-        {'searchStr': 'C1'},
-        {'searchStr': 'Linder'},
-        {'searchStr': '林林'},
-        {'searchStr': '王五'},
-        {'searchStr': '张三'},
-        {'searchStr': '张二'},
-        {'searchStr': '李四'}]
+      dataSource: demoList
     }
   }
 
+  // custom render row
   renderRow (item, sectionID, rowID, highlightRowFunc, isSearching) {
     return (
-      <View key={rowID} style={{flex: 1, marginLeft: 40, height: cellheight, justifyContent: 'center'}}>
-        <Text>{item.searchStr}</Text>
+      <Touchable onPress={() => {
+        Alert.alert('Clicked!', `sectionID: ${sectionID}; item: ${item.searchStr}`,
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: true})
+      }}>
+        <View key={rowID} style={{flex: 1, marginLeft: 20, height: cellheight, justifyContent: 'center'}}>
+          {/*use `HighlightableText` to highlight the search result*/}
+          <HighlightableText
+            matcher={item.matcher}
+            text={item.searchStr}
+            textColor={'#000'}
+            hightlightTextColor={'#0069c0'}
+          />
+        </View>
+      </Touchable>
+    )
+  }
+
+  // render empty view when datasource is empty
+  renderEmpty () {
+    return (
+      <View style={styles.emptyDataSource}>
+        <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}> No Content </Text>
       </View>
     )
   }
 
-  emptyContent (searchStr) {
+  // render empty result view when search result is empty
+  renderEmptyResult (searchStr) {
     return (
-      <View style={{
-        flex: 1,
-        alignItems: 'center',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        marginTop: 50
-      }}>
+      <View style={styles.emptySearchResult}>
         <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}> No Result For <Text
           style={{color: '#171a23', fontSize: 18}}>{searchStr}</Text></Text>
         <Text style={{color: '#979797', fontSize: 18, alignItems: 'center', paddingTop: 10}}>Please search again</Text>
@@ -75,33 +85,72 @@ export default class example extends Component {
 
   render () {
     return (
-      <View style={{
-        flex: 1,
-        backgroundColor: '#efefef',
-        flexDirection: 'column',
-        justifyContent: 'flex-start'
-      }}>
+      <View style={styles.container}>
+        <StatusBar backgroundColor='#F00' barStyle='light-content' />
         <SearchList
           data={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
-          emptyContent={this.emptyContent.bind(this)}
+          renderEmptyResult={this.renderEmptyResult.bind(this)}
+          renderBackButton={() => null}
+          renderEmpty={this.renderEmpty.bind(this)}
           cellHeight={cellheight}
-          title='Search List'
+          title='Search List Demo'
+          cancelTitle='取消'
           searchPlaceHolder='Search'
           customSearchBarStyle={{
             fontSize: 14
           }}
           onClickBack={() => {}}
-          leftButtonStyle={{justifyContent: 'flex-start'}}
-          backIconStyle={{width: 8.5, height: 17}}
-          activeSearchBarColor='#fff'
-          showActiveSearchIcon
-          searchBarActiveColor='#171a23'
+          searchListBackgroundColor={'#2196f3'}
+          toolbarBackgroundColor={'#2196f3'}
+
+          searchBarToggleDuration={300}
+
+          searchInputBackgroundColor={'#0069c0'}
+          searchInputBackgroundColorActive={'#6ec6ff'}
+          searchInputPlaceholderColor={'#FFF'}
+          searchInputTextColor={'#FFF'}
+          searchInputTextColorActive={'#000'}
+          searchBarBackgroundColor={'#2196f3'}
         />
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#efefef',
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5
+  },
+  emptyDataSource: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: 50
+  },
+  emptySearchResult: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: 50
+  }
+})
+
 AppRegistry.registerComponent('example', () => example)
 ```
 ## API

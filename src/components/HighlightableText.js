@@ -11,10 +11,19 @@ import PropTypes from 'prop-types'
 export default class HighlightableText extends Component {
   static propTypes = {
     matcher: PropTypes.object,
-    text: PropTypes.string.isRequired
+    text: PropTypes.string.isRequired,
+    textColor: PropTypes.string,
+    hightlightTextColor: PropTypes.string
   }
 
+  static defaultProps = {
+    textColor: '#171a23',
+    hightlightTextColor: '#dcb35f'
+  }
+
+
   render () {
+    const {textColor, hightlightTextColor} = this.props
     let startIndex = 0
     let titleContents = []
 
@@ -28,14 +37,14 @@ export default class HighlightableText extends Component {
         let str = text.slice(startIndex, match.start)
         titleContents.push(<Text key={key + startIndex} style={{
           fontSize: 15,
-          color: '#171a23'
+          color: textColor
         }}>{str}</Text>)
 
         // 被选中的文字
         let selStr = text.slice(match.start, endIndex)
         titleContents.push(<Text key={key + match.start} style={{
           fontSize: 15,
-          color: '#dcb35f'
+          color: hightlightTextColor
         }}>{selStr}</Text>)
 
         startIndex = endIndex
@@ -45,7 +54,7 @@ export default class HighlightableText extends Component {
         let selStr = text.slice(startIndex, endIndex)
         titleContents.push(<Text key={key + startIndex} style={{
           fontSize: 15,
-          color: '#dcb35f'
+          color: hightlightTextColor
         }}>{selStr}</Text>)
 
         startIndex = endIndex
@@ -56,7 +65,7 @@ export default class HighlightableText extends Component {
       let str = text.slice(startIndex, text.length)
       titleContents.push(<Text key={key + startIndex} style={{
         fontSize: 15,
-        color: '#171a23'
+        color: textColor
       }} numberOfLines={1}>{str}</Text>)
     }
 

@@ -26,51 +26,67 @@ import SectionIndex from './components/SectionIndex'
 import PropTypes from 'prop-types'
 import Theme from './components/Theme'
 import SearchService from './SearchService'
-
-const defaultCellHeight = 0
+import HighlightableText from './components/HighlightableText'
 
 export default class SearchList extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
-    // custom render row
-    renderRow: PropTypes.func.isRequired,
-    // @deprecated row height for the default renderRow method,
-    // use `renderRow` is highly recommended if your want to custom
-    cellHeight: PropTypes.number.isRequired,
+    // use `renderSectionIndexItem` to get much more freedom
+    rowHeight: PropTypes.number.isRequired,
 
-    // TODO hide section list(the index) on the right,
     hideSectionList: PropTypes.bool,
 
     sectionHeaderHeight: PropTypes.number,
-    searchBarBgColor: PropTypes.string,
+
+    searchListBackgroundColor: PropTypes.string,
+
+    toolbarBackgroundColor: PropTypes.string,
+
+    searchBarToggleDuration: PropTypes.number,
+    searchBarBackgroundColor: PropTypes.string,
+
+    searchInputBackgroundColor: PropTypes.string,
+    searchInputBackgroundColorActive: PropTypes.string,
+    // default state text color for the search input
+    searchInputTextColor: PropTypes.string,
+    // active state text color for the search input
+    searchInputTextColorActive: PropTypes.string,
+    searchInputPlaceholderColor: PropTypes.string,
+    searchInputPlaceholder: PropTypes.string,
+
     title: PropTypes.string,
-    textColor: PropTypes.string,
+    titleTextColor: PropTypes.string,
+
+    cancelTextColor: PropTypes.string,
     cancelTitle: PropTypes.string,
+
+    // use `renderSectionIndexItem` to get much more freedom
+    sectionIndexTextColor: PropTypes.string,
+    renderSectionIndexItem: PropTypes.func,
 
     sortFunc: PropTypes.func,
     resultSortFunc: PropTypes.func,
-    onScrollToSection: PropTypes.func,
-    renderAlphaSection: PropTypes.func,
-    showActiveSearchIcon: PropTypes.bool,
-    leftButtonStyle: PropTypes.object,
-    backIcon: PropTypes.number,
-    backIconStyle: PropTypes.object,
 
-    renderHeader: PropTypes.func,
+    onScrollToSection: PropTypes.func,
+
     renderBackButton: PropTypes.func,
     renderEmpty: PropTypes.func,
     renderEmptyResult: PropTypes.func,
     renderSeparator: PropTypes.func,
     renderSectionHeader: PropTypes.func,
+    renderHeader: PropTypes.func,
     renderFooter: PropTypes.func,
+    // custom render row
+    renderRow: PropTypes.func.isRequired,
 
     onSearchStart: PropTypes.func,
-    onSearchEnd: PropTypes.func,
-    onSearchCancel: PropTypes.func,
+    onSearchEnd: PropTypes.func
   }
 
   static defaultProps = {
-    sectionHeaderHeight: Theme.size.sectionHeaderHeight
+    sectionHeaderHeight: Theme.size.sectionHeaderHeight,
+    rowHeight: Theme.size.rowHeight,
+    sectionIndexTextColor: '#171a23'
   }
 
   constructor (props) {
@@ -193,58 +209,78 @@ export default class SearchList extends Component {
    * @returns {XML}
    * @private
    */
-  _renderAlphaSection (sectionData, sectionID) {
-    return (<Text style={{color: '#171a23', fontSize: 11, width: 36, height: 14}}>{sectionID}</Text>)
+  _renderSectionIndexItem (sectionData, sectionID) {
+    return (
+      <Text style={{color: this.props.sectionIndexTextColor, fontSize: 14, width: 36, height: 14}}>
+        {sectionID}
+      </Text>
+    )
   }
 
   /**
-   *
+   * default render Separator
    * @param sectionID
    * @param rowID
    * @param adjacentRowHighlighted
    * @returns {XML}
    */
   _renderSeparator (sectionID, rowID, adjacentRowHighlighted) {
-    if (this.props.renderSeparator) {
-      return this.props.renderSeparator(sectionID, rowID, adjacentRowHighlighted)
-    } else {
-      let style = styles.rowSeparator
-      if (adjacentRowHighlighted) {
-        style = [style, styles.rowSeparatorHide]
-      }
-      return (
-        <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
-          <View style={{
-            height: 1 / PixelRatio.get(),
-            backgroundColor: '#efefef'
-          }} />
-        </View>
-      )
+    let style = styles.rowSeparator
+    if (adjacentRowHighlighted) {
+      style = [style, styles.rowSeparatorHide]
     }
+    return (
+      <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
+        <View style={{
+          height: 1 / PixelRatio.get(),
+          backgroundColor: '#efefef'
+        }} />
+      </View>
+    )
   }
 
+  /**
+   * render default list view footer
+   * @returns {XML}
+   * @private
+   */
   _renderFooter () {
     return <View style={styles.scrollSpinner} />
   }
 
+  /**
+   * render default list view header
+   * @returns {null}
+   * @private
+   */
   _renderHeader () {
     return null
   }
 
+  /**
+   *
+   * @param item
+   * @param sectionID
+   * @param rowID
+   * @param highlightRowFunc
+   * @returns {XML}
+   * @private
+   */
   _renderRow (item, sectionID, rowID, highlightRowFunc) {
-    if (this.props.renderRow) {
-      return this.props.renderRow(item, sectionID, rowID, highlightRowFunc, this.state.isSearching)
-    } else {
-      return <View style={{flex: 1, height: this.props.cellHeight || defaultCellHeight}}>
-        <Text>{item && item.searchStr ? item.searchStr : ''}</Text>
-      </View>
-    }
+    return <View style={{
+      flex: 1,
+      marginLeft: 20,
+      height: this.props.rowHeight,
+      justifyContent: 'center'
+    }}>
+      <HighlightableText text={item.searchStr} matcher={item.matcher} />
+    </View>
   }
 
   enterSearchState () {
     this.setState({isSearching: true})
     Animated.timing(this.state.animatedValue, {
-      duration: Theme.duration.toggleSearchBar,
+      duration: this.props.searchBarToggleDuration || Theme.duration.toggleSearchBar,
       toValue: 1,
       useNativeDriver: true
     }).start(() => {
@@ -253,7 +289,7 @@ export default class SearchList extends Component {
 
   exitSearchState () {
     Animated.timing(this.state.animatedValue, {
-      duration: Theme.duration.toggleSearchBar,
+      duration: this.props.searchBarToggleDuration || Theme.duration.toggleSearchBar,
       toValue: 0,
       useNativeDriver: true
     }).start(() => {
@@ -275,9 +311,7 @@ export default class SearchList extends Component {
 
   onClickCancel () {
     this.exitSearchState()
-    this.props.onBlur && this.props.onBlur()
-
-    this.props.onSearchCancel && this.props.onSearchCancel()
+    this.props.onSearchEnd && this.props.onSearchEnd()
   }
 
   cancelSearch () {
@@ -290,7 +324,7 @@ export default class SearchList extends Component {
     }
     let y = this.props.headerHeight || 0
 
-    let cellHeight = this.props.cellHeight || defaultCellHeight
+    let rowHeight = this.props.rowHeight
     let sectionHeaderHeight = this.props.sectionHeaderHeight
     let index = this.sectionIDs.indexOf(section)
 
@@ -300,7 +334,7 @@ export default class SearchList extends Component {
     }
 
     sectionHeaderHeight = index * sectionHeaderHeight
-    y += numcells * cellHeight + sectionHeaderHeight
+    y += numcells * rowHeight + sectionHeaderHeight
 
     this.refs.searchListView.scrollTo({x: 0, y: y, animated: false})
 
@@ -324,10 +358,10 @@ export default class SearchList extends Component {
             }
           ]
         }, this.props.style]}>
-        <View style={{
+        <View style={[{
           flex: 1,
-          backgroundColor: Theme.color.primaryDark
-        }}>
+          backgroundColor: this.props.searchListBackgroundColor || Theme.color.primaryDark
+        }]}>
           <Toolbar
             animatedValue={this.state.animatedValue}
 
@@ -335,15 +369,16 @@ export default class SearchList extends Component {
               opacity: this.state.animatedValue.interpolate({
                 inputRange: [0, 1],
                 outputRange: [1, 0]
-              })
-            }, this.props.toolbarStyle]}
+              }),
+              backgroundColor: this.props.toolbarBackgroundColor || Theme.color.primaryDark
+            }]}
             title={this.props.title}
-            textColor={this.props.textColor}
+            textColor={this.props.titleTextColor}
             renderBackButton={this.props.renderBackButton || this._renderBackButton.bind(this)}
           />
 
           <SearchBar
-            placeholder={this.props.searchPlaceHolder ? this.props.searchPlaceHolder : ''}
+            placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
 
             onChange={this.search.bind(this)}
             onFocus={this.onFocus.bind(this)}
@@ -351,11 +386,15 @@ export default class SearchList extends Component {
 
             onClickCancel={this.onClickCancel.bind(this)}
             cancelTitle={this.props.cancelTitle}
-            textColor={this.props.textColor}
-            customSearchBarStyle={this.props.customSearchBarStyle}
-            activeSearchBarColor={this.props.activeSearchBarColor}
-            showActiveSearchIcon={this.props.showActiveSearchIcon}
-            searchBarActiveColor={this.props.searchBarActiveColor}
+            cancelTextColor={this.props.cancelTextColor}
+
+            searchBarBackgroundColor={this.props.searchBarBackgroundColor}
+
+            searchInputBackgroundColor={this.props.searchInputBackgroundColor}
+            searchInputBackgroundColorActive={this.props.searchInputBackgroundColorActive}
+            searchInputPlaceholderColor={this.props.searchInputPlaceholderColor}
+            searchInputTextColor={this.props.searchInputTextColor}
+            searchInputTextColorActive={this.props.searchInputTextColorActive}
             ref='searchBar' />
           {this._renderStickHeader()}
 
@@ -435,9 +474,8 @@ export default class SearchList extends Component {
       return (
         <Touchable
           onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
-          style={[styles.maskStyle, {}]}>
-          <Animated.View
-            style={[styles.maskStyle]} />
+          style={[styles.maskStyle]}>
+          <Animated.View />
         </Touchable>
       )
     }
@@ -493,7 +531,7 @@ export default class SearchList extends Component {
             }}
             onSectionSelect={this.scrollToSection.bind(this)}
             sections={this.sectionIDs}
-            renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this._renderAlphaSection.bind(this)} />
+            renderSectionItem={this.props.renderSectionIndexItem || this._renderSectionIndexItem.bind(this)} />
         </View>
       )
     }
@@ -532,7 +570,8 @@ const styles = StyleSheet.create({
   },
   maskStyle: {
     position: 'absolute',
-    top: 0,
+    top: Theme.size.headerHeight + Theme.size.searchInputHeight,
+    // top: 0,
     bottom: 0,
     left: 0,
     right: 0,

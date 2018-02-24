@@ -24,6 +24,9 @@ const searchBarHorizontalPadding = 8
 // width for the left search icon
 const searchIconWidth = 30
 export default class SearchInput extends Component {
+  static propTypes = {
+    isShowHolder: PropTypes.bool // 是否显示搜索图标
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -209,6 +212,4 @@ export default class SearchInput extends Component {
 }
 
 CustomSearchBar.propTypes = {
-  showActiveSearchIcon: PropTypes.bool,
-  isShowHolder: PropTypes.bool // 是否显示搜索图标
 }

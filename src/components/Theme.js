@@ -25,6 +25,7 @@ export default {
   },
   size: {
     sectionHeaderHeight: 24,
+    rowHeight: 40,
 
     toolbarHeight: 44,
     headerHeight: 44 + statusBarHeight,

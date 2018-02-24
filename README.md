@@ -6,10 +6,15 @@
 
 A searchable ListView which supports Chinese PinYin and alphabetical index.
 
+<div style="align: center">
 <img src='https://github.com/UnPourTous/react-native-search-list/blob/develop-refactor/screenshots/search-list-demo-v2.gif' />
+</div>
 
 The following pic may be helpful when understanding the structure and APIs: 
-![image](https://user-images.githubusercontent.com/1309744/36627720-fba7dade-1981-11e8-941f-03fc94af00ec.png)
+
+<div style="align: center">
+<img src='https://user-images.githubusercontent.com/1309744/36627720-fba7dade-1981-11e8-941f-03fc94af00ec.png' />
+</div>
 
 ## Installation
 

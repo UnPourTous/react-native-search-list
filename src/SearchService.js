@@ -23,7 +23,7 @@ export default class SearchService {
             searchStr,
             searchHandler ? searchHandler.translatedStr : '',
             searchHandler ? searchHandler.charIndexerArr : [])
-          if (result.macher) {
+          if (result.matcher) {
             tempResult.push(result)
           }
         }
@@ -36,14 +36,14 @@ export default class SearchService {
     let result = {}
     Object.assign(result, item)
     if (source) {
-      let macher = {}
-      macher.matches = []
+      let matcher = {}
+      matcher.matches = []
       if (source.toLowerCase().indexOf(inputLower) >= 0) {
-        macher.machStart = source.toLowerCase().indexOf(inputLower)
-        macher.machEnd = macher.machStart + inputLower.length
+        matcher.machStart = source.toLowerCase().indexOf(inputLower)
+        matcher.machEnd = matcher.machStart + inputLower.length
 
-        macher.matches.push({'start': macher.machStart, 'end': macher.machEnd})
-        result.macher = macher
+        matcher.matches.push({'start': matcher.machStart, 'end': matcher.machEnd})
+        result.matcher = matcher
       } else {
         if (transStr && charIndexer) {
           let inputStartIndex = transStr.indexOf(inputLower)
@@ -60,10 +60,10 @@ export default class SearchService {
 
                     if (inputEndIndex <= endCharIndexer.endIndexInTransedStr) {
                       find = true
-                      macher.machStart = startCharIndexer.index
-                      macher.machEnd = endCharIndexer.index + 1
-                      macher.matches.push({'start': macher.machStart, 'end': macher.machEnd})
-                      result.macher = macher
+                      matcher.machStart = startCharIndexer.index
+                      matcher.machEnd = endCharIndexer.index + 1
+                      matcher.matches.push({'start': matcher.machStart, 'end': matcher.machEnd})
+                      result.matcher = matcher
                       break
                     }
                   }
@@ -84,10 +84,10 @@ export default class SearchService {
 
   static sortResultList (searchResultList, resultSortFunc) {
     searchResultList.sort(resultSortFunc || function (a, b) {
-      if (b.macher && a.macher) {
-        if (b.macher.machStart < a.macher.machStart) {
+      if (b.matcher && a.matcher) {
+        if (b.matcher.machStart < a.matcher.machStart) {
           return 1
-        } else if (b.macher.machStart > a.macher.machStart) {
+        } else if (b.matcher.machStart > a.matcher.machStart) {
           return -1
         } else {
           return 0

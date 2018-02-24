@@ -32,10 +32,15 @@ const defaultCellHeight = 0
 export default class SearchList extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
+    // custom render row
     renderRow: PropTypes.func.isRequired,
+    // @deprecated row height for the default renderRow method,
+    // use `renderRow` is highly recommended if your want to custom
     cellHeight: PropTypes.number.isRequired,
 
+    // TODO hide section list(the index) on the right,
     hideSectionList: PropTypes.bool,
+
     sectionHeaderHeight: PropTypes.number,
     searchBarBgColor: PropTypes.string,
     title: PropTypes.string,
@@ -57,7 +62,11 @@ export default class SearchList extends Component {
     renderEmptyResult: PropTypes.func,
     renderSeparator: PropTypes.func,
     renderSectionHeader: PropTypes.func,
-    renderFooter: PropTypes.func
+    renderFooter: PropTypes.func,
+
+    onSearchStart: PropTypes.func,
+    onSearchEnd: PropTypes.func,
+    onSearchCancel: PropTypes.func,
   }
 
   static defaultProps = {
@@ -72,7 +81,7 @@ export default class SearchList extends Component {
       rowHasChanged: (row1, row2) => {
         if (row1 !== row2) {
           return true
-        } else return !!(row1 && row2 && row1.macher && row2.macher && row1.macher !== row1.macher)
+        } else return !!(row1 && row2 && row1.matcher && row2.matcher && row1.matcher !== row1.matcher)
       },
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2
     })
@@ -158,25 +167,44 @@ export default class SearchList extends Component {
     }
   }
 
-  renderSectionHeader (sectionData, sectionID) {
+  /**
+   * default section header in ListView
+   * @param sectionData
+   * @param sectionID
+   * @returns {XML}
+   * @private
+   */
+  _renderSectionHeader (sectionData, sectionID) {
     if (!sectionID) {
-      return (
-        <View />)
+      return (<View />)
     } else {
       return (
         <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
           <Text style={styles.sectionTitle}>{sectionID}</Text>
-        </View>)
+        </View>
+      )
     }
   }
 
-  renderAlphaSection (sectionData, sectionID) {
+  /**
+   * default section index item
+   * @param sectionData
+   * @param sectionID
+   * @returns {XML}
+   * @private
+   */
+  _renderAlphaSection (sectionData, sectionID) {
     return (<Text style={{color: '#171a23', fontSize: 11, width: 36, height: 14}}>{sectionID}</Text>)
   }
 
-  renderSeparator (sectionID,
-                   rowID,
-                   adjacentRowHighlighted) {
+  /**
+   *
+   * @param sectionID
+   * @param rowID
+   * @param adjacentRowHighlighted
+   * @returns {XML}
+   */
+  _renderSeparator (sectionID, rowID, adjacentRowHighlighted) {
     if (this.props.renderSeparator) {
       return this.props.renderSeparator(sectionID, rowID, adjacentRowHighlighted)
     } else {
@@ -195,14 +223,15 @@ export default class SearchList extends Component {
     }
   }
 
-  renderFooter () {
+  _renderFooter () {
     return <View style={styles.scrollSpinner} />
   }
 
-  renderRow (item,
-             sectionID,
-             rowID,
-             highlightRowFunc) {
+  _renderHeader () {
+    return null
+  }
+
+  _renderRow (item, sectionID, rowID, highlightRowFunc) {
     if (this.props.renderRow) {
       return this.props.renderRow(item, sectionID, rowID, highlightRowFunc, this.state.isSearching)
     } else {
@@ -237,14 +266,18 @@ export default class SearchList extends Component {
     if (!this.state.isSearching) {
       this.enterSearchState()
     }
+    this.props.onSearchStart && this.props.onSearchStart()
   }
 
   onBlur () {
-    // this.cancelSearch()
+    this.props.onSearchEnd && this.props.onSearchEnd()
   }
 
   onClickCancel () {
     this.exitSearchState()
+    this.props.onBlur && this.props.onBlur()
+
+    this.props.onSearchCancel && this.props.onSearchCancel()
   }
 
   cancelSearch () {
@@ -306,20 +339,7 @@ export default class SearchList extends Component {
             }, this.props.toolbarStyle]}
             title={this.props.title}
             textColor={this.props.textColor}
-            renderBackButton={this.props.renderBackButton || (() => {
-              <Touchable
-                onPress={this.props.onPress}>
-                <Image
-                  hitSlop={{top: 10, left: 20, bottom: 10, right: 20}}
-                  style={[{
-                    width: 20,
-                    height: 20,
-                    paddingLeft: 15,
-                    paddingRight: 15
-                  }]}
-                  source={require('./images/icon-back.png')} />
-              </Touchable>
-            })}
+            renderBackButton={this.props.renderBackButton || this._renderBackButton.bind(this)}
           />
 
           <SearchBar
@@ -344,7 +364,7 @@ export default class SearchList extends Component {
             renderToHardwareTextureAndroid
             style={styles.listContainer}>
             {this._renderSearchBody.bind(this)()}
-            {this._renderSecetionIndex.bind(this)()}
+            {this._renderSectionIndex.bind(this)()}
           </View>
         </View>
         {this._renderMask.bind(this)()}
@@ -352,6 +372,11 @@ export default class SearchList extends Component {
     )
   }
 
+  /**
+   * render the main list view
+   * @returns {*}
+   * @private
+   */
   _renderSearchBody () {
     const {isSearching} = this.state
     const {renderEmptyResult, renderEmpty, data} = this.props
@@ -368,14 +393,16 @@ export default class SearchList extends Component {
             onEndReachedThreshold={30}
             ref='searchListView'
             dataSource={this.state.dataSource}
-            renderRow={this.renderRow.bind(this)}
             keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps='always'
             showsVerticalScrollIndicator
-            renderSeparator={this.props.renderSeparator ? this.props.renderSeparator : this.renderSeparator.bind(this)}
-            renderSectionHeader={this.props.renderSectionHeader ? this.props.renderSectionHeader : this.renderSectionHeader.bind(this)}
-            renderFooter={this.props.renderFooter ? this.props.renderFooter : this.renderFooter.bind(this)}
-            renderHeader={this.props.renderHeader && this.props.renderHeader}
+
+            renderRow={this.props.renderRow || this._renderRow.bind(this)}
+            renderSeparator={this.props.renderSeparator || this._renderSeparator.bind(this)}
+            renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
+            renderFooter={this.props.renderFooter || this._renderFooter.bind(this)}
+            renderHeader={this.props.renderHeader || this._renderHeader.bind(this)}
+
             enableEmptySections />
         )
       } else {
@@ -386,14 +413,22 @@ export default class SearchList extends Component {
     }
   }
 
+  /**
+   * render a custom stick header, isSearching is pass to renderStickHeader
+   * @returns {*}
+   * @private
+   */
   _renderStickHeader () {
     const {renderStickHeader} = this.props
     const {isSearching} = this.state
-    if (!isSearching && renderStickHeader) {
-      return renderStickHeader()
-    }
+    return renderStickHeader ? renderStickHeader(isSearching) : null
   }
 
+  /**
+   * render the modal mask when searching
+   * @returns {XML}
+   * @private
+   */
   _renderMask () {
     const {isSearching} = this.state
     if (isSearching && !this.searchStr) {
@@ -408,8 +443,34 @@ export default class SearchList extends Component {
     }
   }
 
-  _renderSecetionIndex () {
-    // TODO
+  /**
+   * render back button on the Toolbar
+   * @returns {XML}
+   * @private
+   */
+  _renderBackButton () {
+    return (
+      <Touchable
+        onPress={this.props.onPress}>
+        <Image
+          hitSlop={{top: 10, left: 20, bottom: 10, right: 20}}
+          style={[{
+            width: 20,
+            height: 20,
+            paddingLeft: 15,
+            paddingRight: 15
+          }]}
+          source={require('./images/icon-back.png')} />
+      </Touchable>
+    )
+  }
+
+  /**
+   * render the alphabetical index
+   * @returns {*}
+   * @private
+   */
+  _renderSectionIndex () {
     const {hideSectionList} = this.props
     if (hideSectionList) {
       return null
@@ -432,7 +493,7 @@ export default class SearchList extends Component {
             }}
             onSectionSelect={this.scrollToSection.bind(this)}
             sections={this.sectionIDs}
-            renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this.renderAlphaSection.bind(this)} />
+            renderSection={this.props.renderAlphaSection ? this.props.renderAlphaSection : this._renderAlphaSection.bind(this)} />
         </View>
       )
     }

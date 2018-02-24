@@ -9,10 +9,13 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  View
+  View,
+  Alert
 } from 'react-native'
 import SearchList from '@unpourtous/react-native-search-list'
 import demoList from './data'
+import { HighlightableText } from '@unpourtous/react-native-search-list'
+import Touchable from '../src/utils/Touchable'
 
 const cellheight = 40
 export default class example extends Component {
@@ -23,24 +26,28 @@ export default class example extends Component {
     }
   }
 
+  // custom render row
   renderRow (item, sectionID, rowID, highlightRowFunc, isSearching) {
     return (
-      <View key={rowID} style={{flex: 1, marginLeft: 40, height: cellheight, justifyContent: 'center'}}>
-        <Text>{item.searchStr}</Text>
-      </View>
+      <Touchable onPress={() => {
+        Alert.alert('Clicked!', `sectionID: ${sectionID}; item: ${item.searchStr}`,
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: true})
+      }}>
+        <View key={rowID} style={{flex: 1, marginLeft: 40, height: cellheight, justifyContent: 'center'}}>
+          {/*use `HighlightableText` to highlight the search result*/}
+          <HighlightableText matcher={item.matcher} text={item.searchStr} />
+        </View>
+      </Touchable>
     )
   }
 
   // render empty view when datasource is empty
   renderEmpty () {
     return (
-      <View style={{
-        flex: 1,
-        alignItems: 'center',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        marginTop: 50
-      }}>
+      <View style={styles.emptyDataSource}>
         <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}> No Content </Text>
       </View>
     )
@@ -49,13 +56,7 @@ export default class example extends Component {
   // render empty result view when search result is empty
   renderEmptyResult (searchStr) {
     return (
-      <View style={{
-        flex: 1,
-        alignItems: 'center',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        marginTop: 50
-      }}>
+      <View style={styles.emptySearchResult}>
         <Text style={{color: '#979797', fontSize: 18, paddingTop: 20}}> No Result For <Text
           style={{color: '#171a23', fontSize: 18}}>{searchStr}</Text></Text>
         <Text style={{color: '#979797', fontSize: 18, alignItems: 'center', paddingTop: 10}}>Please search again</Text>
@@ -65,12 +66,7 @@ export default class example extends Component {
 
   render () {
     return (
-      <View style={{
-        flex: 1,
-        backgroundColor: '#efefef',
-        flexDirection: 'column',
-        justifyContent: 'flex-start'
-      }}>
+      <View style={styles.container}>
         <StatusBar backgroundColor='#F00' barStyle='light-content' />
         <SearchList
           data={this.state.dataSource}
@@ -98,9 +94,9 @@ export default class example extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: '#efefef',
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
   },
   welcome: {
     fontSize: 20,
@@ -111,6 +107,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5
+  },
+  emptyDataSource: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: 50
+  },
+  emptySearchResult: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: 50
   }
 })
 

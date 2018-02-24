@@ -31,7 +31,7 @@ import HighlightableText from './components/HighlightableText'
 export default class SearchList extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
-    // use `renderSectionIndexItem` to get much more freedom
+    // use `renderRow` to get much more freedom
     rowHeight: PropTypes.number.isRequired,
 
     hideSectionList: PropTypes.bool,
@@ -57,8 +57,8 @@ export default class SearchList extends Component {
     title: PropTypes.string,
     titleTextColor: PropTypes.string,
 
-    cancelTextColor: PropTypes.string,
     cancelTitle: PropTypes.string,
+    cancelTextColor: PropTypes.string,
 
     // use `renderSectionIndexItem` to get much more freedom
     sectionIndexTextColor: PropTypes.string,
@@ -86,7 +86,9 @@ export default class SearchList extends Component {
   static defaultProps = {
     sectionHeaderHeight: Theme.size.sectionHeaderHeight,
     rowHeight: Theme.size.rowHeight,
-    sectionIndexTextColor: '#171a23'
+    sectionIndexTextColor: '#171a23',
+    searchListBackgroundColor: Theme.color.primaryDark,
+    toolbarBackgroundColor: Theme.color.primaryDark,
   }
 
   constructor (props) {
@@ -360,7 +362,7 @@ export default class SearchList extends Component {
         }, this.props.style]}>
         <View style={[{
           flex: 1,
-          backgroundColor: this.props.searchListBackgroundColor || Theme.color.primaryDark
+          backgroundColor: this.props.searchListBackgroundColor
         }]}>
           <Toolbar
             animatedValue={this.state.animatedValue}
@@ -370,7 +372,7 @@ export default class SearchList extends Component {
                 inputRange: [0, 1],
                 outputRange: [1, 0]
               }),
-              backgroundColor: this.props.toolbarBackgroundColor || Theme.color.primaryDark
+              backgroundColor: this.props.toolbarBackgroundColor
             }]}
             title={this.props.title}
             textColor={this.props.titleTextColor}

@@ -5,14 +5,18 @@ import {
   View,
   Text,
   StyleSheet,
-  NativeModules
+  Animated
 } from 'react-native'
+import PropTypes from 'prop-types'
 
-let noop = () => {}
 let returnTrue = () => true
 const itemHeight = 14
 
-export default class SectionList extends Component {
+export default class SectionIndex extends Component {
+  static propTypes = {
+    renderSectionItem: PropTypes.func
+  }
+
   constructor (props, context) {
     super(props, context)
 
@@ -36,57 +40,42 @@ export default class SectionList extends Component {
 
   detectAndScrollToSection (e) {
     let ev = e.nativeEvent
-    let rect = {width: 1, height: 1, x: ev.locationX, y: ev.locationY}
 
-    console.log(ev.locationX, ev.locationY)
     if (this.props.sections && this.props.sections.length) {
-      // const height = this.sectionListContentArea.height
       const index = Math.floor(ev.locationY / itemHeight)
       if (this.lastSelectedIndex !== index) {
         this.lastSelectedIndex = index
         this.onSectionSelect(this.props.sections[index], true)
       }
     }
-    // NativeModules.UIManager.measureViewsInRect(rect, e.target, noop, (frames) => {
-    //   if (frames.length) {
-    //     let index = frames[0].index
-    //     if (this.lastSelectedIndex !== index) {
-    //       this.lastSelectedIndex = index
-    //       this.onSectionSelect(this.props.sections[index], true)
-    //     }
-    //   }
-    // })
   }
 
   render () {
-    let renderSection = this.props.renderSection
-    let sections = this.props.sections && this.props.sections.length > 0 ? this.props.sections.map((section, index) => {
+    const {renderSectionItem} = this.props
+    const sections = this.props.sections && this.props.sections.length > 0 ? this.props.sections.map((section, index) => {
       let title = this.props.getSectionListTitle ? this.props.getSectionListTitle(section) : section
-
-      let child = renderSection ? renderSection(section, title) : <View
-        style={styles.item}>
-        <Text style={styles.text}>{title}</Text>
-      </View>
 
       return (
         <View
           key={index}
           pointerEvents='none'>
-          {child}
+          {renderSectionItem ? renderSectionItem(section, title) : <View
+            style={styles.item}>
+            <Text style={styles.text}>{title}</Text>
+          </View>}
         </View>
       )
     }) : <View />
 
     return (
-      <View
+      <Animated.View
         style={[
           styles.container,
           this.props.style
-        ]}
-      >
+        ]}>
         <View
           onLayout={(e) => {
-            if (!this.sectionListContentArea && e.nativeEvent.layout)  {
+            if (!this.sectionListContentArea && e.nativeEvent.layout) {
               this.sectionListContentArea = e.nativeEvent.layout
             }
           }}
@@ -98,23 +87,19 @@ export default class SectionList extends Component {
             // https://github.com/facebook/react-native/pull/15123/commits/e22763f8c78d59d6ab04417690d25976671be6f0#diff-3f71f1808c93380dfbd5c044f9e6b4c7R122
             this.detectAndScrollToSection(e)
           }}
-          onResponderRelease={this.resetSection} >
+          onResponderRelease={this.resetSection}>
           {sections}
         </View>
-      </View>
+      </Animated.View>
     )
   }
 }
 
 let styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    right: 0,
-    top: 0,
-    bottom: 0,
     width: 15
   },
 

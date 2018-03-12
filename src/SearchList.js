@@ -364,21 +364,6 @@ export default class SearchList extends Component {
           flex: 1,
           backgroundColor: this.props.searchListBackgroundColor
         }]}>
-//           <Toolbar
-//             animatedValue={this.state.animatedValue}
-
-//             style={[{
-//               opacity: this.state.animatedValue.interpolate({
-//                 inputRange: [0, 1],
-//                 outputRange: [1, 0]
-//               }),
-//               backgroundColor: this.props.toolbarBackgroundColor
-//             }]}
-//             title={this.props.title}
-//             textColor={this.props.titleTextColor}
-//             renderBackButton={this.props.renderBackButton || this._renderBackButton.bind(this)}
-//           />
-
           <SearchBar
             placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
 

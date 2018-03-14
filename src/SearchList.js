@@ -6,7 +6,7 @@ import {
   View,
   Text,
   StyleSheet,
-  ListView,
+  SectionList,
   PixelRatio,
   Animated,
   Image
@@ -93,20 +93,20 @@ export default class SearchList extends Component {
 
   constructor (props) {
     super(props)
-    const listDataSource = new ListView.DataSource({
-      getSectionData: SearchList.getSectionData,
-      getRowData: SearchList.getRowData,
-      rowHasChanged: (row1, row2) => {
-        if (row1 !== row2) {
-          return true
-        } else return !!(row1 && row2 && row1.matcher && row2.matcher && row1.matcher !== row1.matcher)
-      },
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2
-    })
+    // const listDataSource = new ListView.DataSource({
+    //   getSectionData: SearchList.getSectionData,
+    //   getRowData: SearchList.getRowData,
+    //   rowHasChanged: (row1, row2) => {
+    //     if (row1 !== row2) {
+    //       return true
+    //     } else return !!(row1 && row2 && row1.matcher && row2.matcher && row1.matcher !== row1.matcher)
+    //   },
+    //   sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+    // })
     this.state = {
       isSearching: false,
       animatedValue: new Animated.Value(0),
-      dataSource: listDataSource
+      dataSource: []
     }
 
     this.searchStr = ''
@@ -140,16 +140,12 @@ export default class SearchList extends Component {
   }
 
   parseInitList (srcList) {
-    const {rowsWithSection, sectionIDs, rowIds} = SearchService.parseList(srcList)
-    this.sectionIDs = sectionIDs
-    this.rowIds = rowIds
+    // const {rowsWithSection, sectionIDs, rowIds} = SearchService.parseList(srcList)
+    // this.sectionIDs = sectionIDs
+    // this.rowIds = rowIds
     this.setState({
       isSearching: false,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(
-        rowsWithSection,
-        (!sectionIDs || sectionIDs.length === 0) ? [''] : sectionIDs,
-        rowIds
-      )
+      dataSource: SearchService.parseList(srcList)
     })
   }
 
@@ -161,10 +157,7 @@ export default class SearchList extends Component {
       if (tempResult.length === 0) {
         this.setState({
           isSearching: true,
-          dataSource: this.state.dataSource.cloneWithRowsAndSections(
-            {},
-            [],
-            [])
+          dataSource: []
         })
       } else {
         const {
@@ -174,10 +167,7 @@ export default class SearchList extends Component {
         this.rowIds = rowIds
         this.setState({
           isSearching: true,
-          dataSource: this.state.dataSource.cloneWithRowsAndSections(
-            searchResultWithSection,
-            [''],
-            rowIds)
+          dataSource: []
         })
       }
     } else {
@@ -187,34 +177,28 @@ export default class SearchList extends Component {
 
   /**
    * default section header in ListView
-   * @param sectionData
-   * @param sectionID
    * @returns {XML}
    * @private
+   * @param title
    */
-  _renderSectionHeader (sectionData, sectionID) {
-    if (!sectionID) {
-      return (<View />)
-    } else {
-      return (
-        <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
-          <Text style={styles.sectionTitle}>{sectionID}</Text>
-        </View>
-      )
-    }
+  _renderSectionHeader (title) {
+    return (
+      <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+      </View>
+    )
   }
 
   /**
    * default section index item
-   * @param sectionData
-   * @param sectionID
    * @returns {XML}
    * @private
+   * @param section
    */
-  _renderSectionIndexItem (sectionData, sectionID) {
+  _renderSectionIndexItem (section) {
     return (
       <Text style={{color: this.props.sectionIndexTextColor, fontSize: 14, width: 36, height: 14}}>
-        {sectionID}
+        {section.title}
       </Text>
     )
   }
@@ -422,25 +406,29 @@ export default class SearchList extends Component {
     const {isSearching} = this.state
     const {renderEmptyResult, renderEmpty, data} = this.props
 
-    const isEmptyResult = this.state.dataSource.getRowCount() === 0
+    const isEmptyResult = this.state.dataSource.length === 0
     if (isSearching && isEmptyResult && renderEmptyResult) {
       return renderEmptyResult(this.searchStr)
     } else {
       if (data && data.length > 0) {
         return (
-          <ListView
+          <SectionList
             initialListSize={15}
             pageSize={10}
             onEndReachedThreshold={30}
             ref='searchListView'
-            dataSource={this.state.dataSource}
+            sections={this.state.dataSource}
             keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps='always'
             showsVerticalScrollIndicator
 
-            renderRow={this.props.renderRow || this._renderRow.bind(this)}
+            renderItem={({item}) => {
+              return this.props.renderRow ? this.props.renderRow(item) : this._renderRow.bind(this)(item)
+            }}
             renderSeparator={this.props.renderSeparator || this._renderSeparator.bind(this)}
-            renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
+            renderSectionHeader={({section}) => {
+              return this.props.renderSectionHeader ? this.props.renderSectionHeader(section.title) : this._renderSectionHeader.bind(this)(section.title)
+            }}
             renderFooter={this.props.renderFooter || this._renderFooter.bind(this)}
             renderHeader={this.props.renderHeader || this._renderHeader.bind(this)}
 
@@ -532,7 +520,7 @@ export default class SearchList extends Component {
               })
             }}
             onSectionSelect={this.scrollToSection.bind(this)}
-            sections={this.sectionIDs}
+            sections={this.state.dataSource}
             renderSectionItem={this.props.renderSectionIndexItem || this._renderSectionIndexItem.bind(this)} />
         </View>
       )

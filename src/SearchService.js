@@ -138,6 +138,18 @@ export default class SearchService {
   }
 
   static parseList (srcList) {
+    const tmpResult = {}
+    srcList.forEach(item => {
+      tmpResult[item.orderIndex] = tmpResult[item.orderIndex] || []
+      tmpResult[item.orderIndex].push(item)
+    })
+
+    return Object.keys(tmpResult).map(key => ({
+      data: tmpResult[key],
+      title: key
+    }))
+
+
     let rowsWithSection = {}
     const sectionIDs = []
     const rowIds = [[]]

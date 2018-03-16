@@ -1,7 +1,3 @@
-/**
- * Created by haywoodfu on 17/4/16.
- */
-
 import {
   View,
   Text,

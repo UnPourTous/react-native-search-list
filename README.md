@@ -168,5 +168,3 @@ onSearchEnd | func | Callback when searching end. |
 ## License
 This library is distributed under MIT Licence.
 
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FUnPourTous%2Freact-native-search-list.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FUnPourTous%2Freact-native-search-list?ref=badge_large)

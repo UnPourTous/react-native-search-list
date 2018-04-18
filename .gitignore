@@ -2,4 +2,10 @@ node_modules/*
 .idea/*
 
 example/node_modules/*
+_cacache/
+_logs/
+anonymous-cli-metrics.json
+example/_cacache/
+example/_logs/
+example/anonymous-cli-metrics.json
 

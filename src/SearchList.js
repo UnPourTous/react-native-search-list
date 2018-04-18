@@ -213,7 +213,7 @@ export default class SearchList extends Component {
    */
   _renderSectionIndexItem (sectionData, sectionID) {
     return (
-      <Text style={{color: this.props.sectionIndexTextColor, fontSize: 14, width: 36, height: 14}}>
+      <Text style={{textAlign: 'center', color: this.props.sectionIndexTextColor, fontSize: 14, height: 20}}>
         {sectionID}
       </Text>
     )

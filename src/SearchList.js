@@ -9,7 +9,8 @@ import {
   ListView,
   PixelRatio,
   Animated,
-  Image
+  Image,
+  Platform
 } from 'react-native'
 
 import React, { Component } from 'react'
@@ -581,6 +582,13 @@ const styles = StyleSheet.create({
     zIndex: 999
   },
   scrollSpinner: {
-    marginVertical: 40
+    ...Platform.select({
+      android: {
+        height: Theme.size.searchInputHeight
+      },
+      ios: {
+        marginVertical: 40
+      }
+    }),
   }
 })

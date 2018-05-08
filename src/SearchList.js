@@ -199,7 +199,12 @@ export default class SearchList extends Component {
     } else {
       return (
         <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
-          <Text style={styles.sectionTitle}>{sectionID}</Text>
+          <View style={{
+            justifyContent: 'center',
+            height: this.props.sectionHeaderHeight
+          }}>
+            <Text style={styles.sectionTitle}>{sectionID}</Text>
+          </View>
         </View>
       )
     }
@@ -517,7 +522,7 @@ export default class SearchList extends Component {
       return null
     } else {
       return (
-        <View style={{
+        <View pointerEvents={'box-none'} style={{
           position: 'absolute',
           right: 0,
           top: 0,

@@ -2,11 +2,10 @@
   "name": "@unpourtous/react-native-search-list",
   "version": "2.0.8",
   "description": "react native component for search list view",
-  "main": "index.js",
+  "main": "./library/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run-android": "cd example; react-native run-android; cd -",
-    "run-ios": "cd example; react-native run-ios; cd -"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
   },
   "keywords": [
     "react-native",
@@ -31,7 +30,9 @@
     "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-standard": "^2.3.1",
     "standard": "^10.0.3",
-    "standardjs": "^1.0.0-alpha"
+    "standardjs": "^1.0.0-alpha",
+    "react": "^16.0.0",
+    "react-native": "0.51.0"
   },
   "directories": {
     "example": "example"

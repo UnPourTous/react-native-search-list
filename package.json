@@ -1,6 +1,6 @@
 {
   "name": "@unpourtous/react-native-search-list",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "react native component for search list view",
   "main": "./library/index.js",
   "scripts": {

@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
   },
   searchIconStyle: {
     width: 12,
-    height: 12
+    height: 12,
+    tintColor: 'white'
   }
 })

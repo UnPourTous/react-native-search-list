@@ -5,7 +5,8 @@ import {
   ListView,
   PixelRatio,
   Animated,
-  Image
+  Image,
+  Platform
 } from 'react-native'
 
 import React, { Component } from 'react'
@@ -194,7 +195,12 @@ export default class SearchList extends Component {
     } else {
       return (
         <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
-          <Text style={styles.sectionTitle}>{sectionID}</Text>
+          <View style={{
+            justifyContent: 'center',
+            height: this.props.sectionHeaderHeight
+          }}>
+            <Text style={styles.sectionTitle}>{sectionID}</Text>
+          </View>
         </View>
       )
     }
@@ -209,7 +215,7 @@ export default class SearchList extends Component {
    */
   _renderSectionIndexItem (sectionData, sectionID) {
     return (
-      <Text style={{color: this.props.sectionIndexTextColor, fontSize: 14, width: 36, height: 14}}>
+      <Text style={{textAlign: 'center', color: this.props.sectionIndexTextColor, fontSize: 14, height: 20}}>
         {sectionID}
       </Text>
     )
@@ -497,7 +503,7 @@ export default class SearchList extends Component {
       return null
     } else {
       return (
-        <View style={{
+        <View pointerEvents={'box-none'} style={{
           position: 'absolute',
           right: 0,
           top: 0,
@@ -562,6 +568,13 @@ const styles = StyleSheet.create({
     zIndex: 999
   },
   scrollSpinner: {
-    marginVertical: 40
+    ...Platform.select({
+      android: {
+        height: Theme.size.searchInputHeight
+      },
+      ios: {
+        marginVertical: 40
+      }
+    }),
   }
 })

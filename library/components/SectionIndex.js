@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types'
 
 let returnTrue = () => true
-const itemHeight = 14
+const itemHeight = 20
 
 export default class SectionIndex extends Component {
   static propTypes = {
@@ -74,6 +74,9 @@ export default class SectionIndex extends Component {
           this.props.style
         ]}>
         <View
+          style={{
+            width: 36
+          }}
           onLayout={(e) => {
             if (!this.sectionListContentArea && e.nativeEvent.layout) {
               this.sectionListContentArea = e.nativeEvent.layout
@@ -100,7 +103,7 @@ let styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 15
+    width: 36
   },
 
   item: {

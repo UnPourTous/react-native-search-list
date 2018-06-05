@@ -12,10 +12,9 @@ import {
   View,
   Alert
 } from 'react-native'
-import SearchList from '@unpourtous/react-native-search-list'
 import demoList from './data'
-import { HighlightableText } from '@unpourtous/react-native-search-list'
-import Touchable from '../src/utils/Touchable'
+import SearchList, { HighlightableText } from './library'
+import Touchable from './library/utils/Touchable'
 
 const rowHeight = 40
 export default class example extends Component {
@@ -32,12 +31,12 @@ export default class example extends Component {
       <Touchable onPress={() => {
         Alert.alert('Clicked!', `sectionID: ${sectionID}; item: ${item.searchStr}`,
           [
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
+            {text: 'OK', onPress: () => console.log('OK Pressed')}
           ],
           {cancelable: true})
       }}>
         <View key={rowID} style={{flex: 1, marginLeft: 20, height: rowHeight, justifyContent: 'center'}}>
-          {/*use `HighlightableText` to highlight the search result*/}
+          {/* use `HighlightableText` to highlight the search result */}
           <HighlightableText
             matcher={item.matcher}
             text={item.searchStr}

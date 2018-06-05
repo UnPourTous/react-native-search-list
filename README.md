@@ -25,7 +25,7 @@ The following pic may be helpful when understanding the structure and APIs:
 
 ## Usage
 
-To Use SearchList, need a array of object as data source,and each object has searchStr property, eample code are put in `example/entry.js`.
+To Use SearchList, need a array of object as data source,and each object has searchStr property, eample code are put in `./entry.js`.
 
 ```js
 export default class example extends Component {

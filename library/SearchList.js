@@ -106,11 +106,11 @@ export default class SearchList extends Component {
     })
     this.state = {
       isSearching: false,
+      searchStr: '',
       animatedValue: new Animated.Value(0),
       dataSource: listDataSource
     }
 
-    this.searchStr = ''
     this.sectionIDs = []
     this.copiedSource = []
 
@@ -155,7 +155,7 @@ export default class SearchList extends Component {
   }
 
   search (input) {
-    this.searchStr = input
+    this.setState({searchStr: input})
     if (input) {
       input = sTrim(input)
       const tempResult = SearchService.search(this.copiedSource, input.toLowerCase())
@@ -424,12 +424,12 @@ export default class SearchList extends Component {
    * @private
    */
   _renderSearchBody () {
-    const {isSearching} = this.state
+    const {isSearching, searchStr} = this.state
     const {renderEmptyResult, renderEmpty, data} = this.props
 
     const isEmptyResult = this.state.dataSource.getRowCount() === 0
     if (isSearching && isEmptyResult && renderEmptyResult) {
-      return renderEmptyResult(this.searchStr)
+      return renderEmptyResult(searchStr)
     } else {
       if (data && data.length > 0) {
         return (
@@ -476,8 +476,8 @@ export default class SearchList extends Component {
    * @private
    */
   _renderMask () {
-    const {isSearching} = this.state
-    if (isSearching && !this.searchStr) {
+    const {isSearching, searchStr} = this.state
+    if (isSearching && !searchStr) {
       return (
         <Touchable
           onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'

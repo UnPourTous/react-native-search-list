@@ -174,7 +174,6 @@ export default class SearchList extends Component {
         } = SearchService.sortResultList(tempResult, this.props.resultSortFunc)
         this.rowIds = rowIds
         this.setState({
-          isSearching: true,
           dataSource: this.state.dataSource.cloneWithRowsAndSections(
             searchResultWithSection,
             [''],

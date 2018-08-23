@@ -71,6 +71,7 @@ export default class SearchList extends Component {
     onScrollToSection: PropTypes.func,
 
     renderBackButton: PropTypes.func,
+    renderRightButton: PropTypes.func,
     renderEmpty: PropTypes.func,
     renderEmptyResult: PropTypes.func,
     renderSeparator: PropTypes.func,
@@ -383,6 +384,7 @@ export default class SearchList extends Component {
             title={this.props.title}
             textColor={this.props.titleTextColor}
             renderBackButton={this.props.renderBackButton || this._renderBackButton.bind(this)}
+            renderRightButton={this.props.renderRightButton}
           />
 
           <SearchBar

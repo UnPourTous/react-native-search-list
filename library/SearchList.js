@@ -70,6 +70,10 @@ export default class SearchList extends Component {
 
     onScrollToSection: PropTypes.func,
 
+    statusBarHeight: PropTypes.number,
+    toolbarHeight: PropTypes.number,
+    renderToolbar: PropTypes.func,
+
     renderBackButton: PropTypes.func,
     renderRightButton: PropTypes.func,
     renderEmpty: PropTypes.func,
@@ -86,6 +90,8 @@ export default class SearchList extends Component {
   }
 
   static defaultProps = {
+    toolbarHeight: Theme.size.toolbarHeight,
+    statusBarHeight: Theme.size.statusBarHeight,
     sectionHeaderHeight: Theme.size.sectionHeaderHeight,
     rowHeight: Theme.size.rowHeight,
     sectionIndexTextColor: '#171a23',
@@ -355,13 +361,13 @@ export default class SearchList extends Component {
         ref='view'
         style={[{
           // 考虑上动画以后页面要向上移动，这里必须拉长
-          height: Theme.size.windowHeight + Theme.size.toolbarHeight,
+          height: Theme.size.windowHeight + this.props.toolbarHeight,
           width: Theme.size.windowWidth,
           transform: [
             {
               translateY: this.state.animatedValue.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, -Theme.size.toolbarHeight]
+                outputRange: [0, -this.props.toolbarHeight]
               })
             }
           ]
@@ -370,21 +376,8 @@ export default class SearchList extends Component {
           flex: 1,
           backgroundColor: this.props.searchListBackgroundColor
         }]}>
-          <Toolbar
-            animatedValue={this.state.animatedValue}
 
-            style={[{
-              opacity: this.state.animatedValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1, 0]
-              }),
-              backgroundColor: this.props.toolbarBackgroundColor
-            }]}
-            title={this.props.title}
-            textColor={this.props.titleTextColor}
-            renderBackButton={this.props.renderBackButton || this._renderBackButton.bind(this)}
-            renderRightButton={this.props.renderRightButton}
-          />
+          {this._renderToolbar()}
 
           <SearchBar
             placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
@@ -483,7 +476,7 @@ export default class SearchList extends Component {
       return (
         <Touchable
           onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
-          style={[styles.maskStyle]}>
+          style={[{top: this.props.toolbarHeight + Theme.size.searchInputHeight}, styles.maskStyle]}>
           <Animated.View />
         </Touchable>
       )
@@ -513,12 +506,40 @@ export default class SearchList extends Component {
   }
 
   /**
+   * render Toolbar
+   * @returns {XML}
+   * @private
+   */
+  _renderToolbar () {
+    const {renderToolbar, toolbarHeight, statusBarHeight} = this.props;
+    return renderToolbar ? renderToolbar() : (
+        <Toolbar
+            animatedValue={this.state.animatedValue}
+
+            style={[{
+              opacity: this.state.animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0]
+              }),
+              backgroundColor: this.props.toolbarBackgroundColor,
+              height: toolbarHeight,
+              paddingTop: statusBarHeight
+            }]}
+            title={this.props.title}
+            textColor={this.props.titleTextColor}
+            renderBackButton={this.props.renderBackButton || this._renderBackButton.bind(this)}
+            renderRightButton={this.props.renderRightButton}
+        />
+    )
+  }
+
+  /**
    * render the alphabetical index
    * @returns {*}
    * @private
    */
   _renderSectionIndex () {
-    const {hideSectionList} = this.props
+    const {hideSectionList, toolbarHeight} = this.props
     if (hideSectionList) {
       return null
     } else {
@@ -527,7 +548,7 @@ export default class SearchList extends Component {
           position: 'absolute',
           right: 0,
           top: 0,
-          bottom: Theme.size.toolbarHeight,
+          bottom: toolbarHeight,
           flexDirection: 'column',
           justifyContent: 'center'
         }}>
@@ -579,7 +600,6 @@ const styles = StyleSheet.create({
   },
   maskStyle: {
     position: 'absolute',
-    top: Theme.size.headerHeight + Theme.size.searchInputHeight,
     // top: 0,
     bottom: 0,
     left: 0,

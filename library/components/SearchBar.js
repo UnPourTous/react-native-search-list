@@ -26,6 +26,9 @@ export default class SearchBar extends Component {
     onFocus: PropTypes.func, // search input focused callback
     onBlur: PropTypes.func, // search input blured callback
 
+    renderCancel: PropTypes.func, // render cancel button if need custom styling
+    staticCancelButton: PropTypes.bool,
+
     onClickCancel: PropTypes.func, // the search cancel button clicked
     cancelTitle: PropTypes.string, // title for the search cancel button
     cancelTextColor: PropTypes.string, // color for the search cancel button
@@ -38,7 +41,8 @@ export default class SearchBar extends Component {
 
     searchBarBackgroundColor: PropTypes.string, // active state background color for the search bar
 
-    isShowHolder: PropTypes.bool // 是否显示搜索图标
+    showSearchIcon: PropTypes.bool,
+    isSearching: PropTypes.bool // Determines if the searchbar is currently focused
   }
 
   static defaultProps = {
@@ -52,14 +56,17 @@ export default class SearchBar extends Component {
     searchBarBackgroundColor: '#171a23',
 
     cancelTextColor: 'white',
-    cancelTitle: 'Cancel'
+    cancelTitle: 'Cancel',
+
+    showSearchIcon: true,
+    staticCancelButton: false,
   }
 
   constructor (props) {
     super(props)
     this.state = {
       value: props.value,
-      isShowHolder: true,
+      isSearching: true,
       animatedValue: new Animated.Value(0)
     }
   }
@@ -93,7 +100,7 @@ export default class SearchBar extends Component {
       duration: Theme.duration.toggleSearchBar,
       toValue: toVal
     }).start(() => {
-      this.setState({isShowHolder: !isSearching})
+      this.setState({isSearching: !isSearching})
     })
   }
 
@@ -123,7 +130,8 @@ export default class SearchBar extends Component {
           width: this.state.animatedValue.interpolate({
             inputRange: [0, buttonWidth],
             // TODO 这里要想办法做得更灵活一点
-            outputRange: [Theme.size.windowWidth - searchBarHorizontalPadding * 2, Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding]
+            // Control total width of searchBar
+            outputRange: [ this.props.staticCancelButton ? Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding : Theme.size.windowWidth - searchBarHorizontalPadding * 2, Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding]
           }),
           backgroundColor: this.state.animatedValue.interpolate({
             inputRange: [0, buttonWidth],
@@ -136,8 +144,8 @@ export default class SearchBar extends Component {
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
             ref='input'
-            style={[styles.searchTextInputStyle, {
-              color: this.props.searchInputTextColorActive && !this.state.isShowHolder
+            style={[styles.searchTextInputStyle, this.props.showSearchIcon ? '' : {paddingLeft: 8}, {
+              color: this.props.searchInputTextColorActive && !this.state.isSearching
                 ? this.props.searchInputTextColorActive
                 : this.props.searchInputTextColor || '#979797'
             }, this.props.searchTextInputStyle]}
@@ -148,8 +156,7 @@ export default class SearchBar extends Component {
 
           <Animated.View
             pointerEvents='none'
-            style={[
-              styles.leftSearchIconStyle,
+            style={[styles.leftSearchIconStyle,
               {
                 opacity: this.state.animatedValue.interpolate({
                   inputRange: [0, buttonWidth],
@@ -157,9 +164,9 @@ export default class SearchBar extends Component {
                 })
               }
             ]}>
-            <Image
-              style={styles.searchIconStyle}
-              source={require('../images/icon-search.png')} />
+            {this.props.showSearchIcon ? (<Image
+                style={styles.searchIconStyle}
+                source={require('../images/icon-search.png')} />) : null }
           </Animated.View>
 
           <Animated.View
@@ -170,9 +177,9 @@ export default class SearchBar extends Component {
                 outputRange: [!this.state.value ? 1 : 0, 0]
               })
             }]}>
-            <Image
-              style={styles.searchIconStyle}
-              source={require('../images/icon-search.png')} />
+            {this.props.showSearchIcon ? (<Image
+                style={styles.searchIconStyle}
+                source={require('../images/icon-search.png')} />) : null }
             <Text style={{
               marginLeft: 5,
               color: this.props.searchInputPlaceholderColor,
@@ -199,15 +206,27 @@ export default class SearchBar extends Component {
               shouldRasterizeIOS
               renderToHardwareTextureAndroid
             >
-              <Text
-                style={{color: this.props.cancelTextColor}}
-                numberOfLines={1}>{this.props.cancelTitle}</Text>
+              {this._renderCancel.bind(this)()}
             </View>
           </TouchableWithoutFeedback>
         </View>
       </View>
     )
   };
+
+  /**
+   * render Cancel Button
+   * @returns {XML}
+   * @private
+   */
+  _renderCancel () {
+    const {renderCancel, cancelTitle, cancelTextColor} = this.props;
+    return renderCancel ? renderCancel() : (
+        <Text
+            style={{color: cancelTextColor}}
+            numberOfLines={1}>{cancelTitle}</Text>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

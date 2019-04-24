@@ -73,6 +73,9 @@ export default class SearchList extends Component {
     statusBarHeight: PropTypes.number,
     toolbarHeight: PropTypes.number,
     renderToolbar: PropTypes.func,
+    renderCancel: PropTypes.func,
+    staticCancelButton: PropTypes.bool,
+    showSearchIcon: PropTypes.bool,
 
     renderBackButton: PropTypes.func,
     renderRightButton: PropTypes.func,
@@ -397,6 +400,11 @@ export default class SearchList extends Component {
             searchInputPlaceholderColor={this.props.searchInputPlaceholderColor}
             searchInputTextColor={this.props.searchInputTextColor}
             searchInputTextColorActive={this.props.searchInputTextColorActive}
+
+            renderCancel={this.props.renderCancel}
+            staticCancelButton={this.props.staticCancelButton}
+            showSearchIcon={this.props.showSearchIcon}
+
             ref='searchBar' />
           {this._renderStickHeader()}
 

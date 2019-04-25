@@ -76,6 +76,10 @@ export default class SearchList extends Component {
     renderCancel: PropTypes.func,
     staticCancelButton: PropTypes.bool,
     showSearchIcon: PropTypes.bool,
+    searchBarStyle: PropTypes.object,
+    searchBarContainerStyle: PropTypes.object,
+
+    displayMask: PropTypes.bool,
 
     renderBackButton: PropTypes.func,
     renderRightButton: PropTypes.func,
@@ -100,6 +104,7 @@ export default class SearchList extends Component {
     sectionIndexTextColor: '#171a23',
     searchListBackgroundColor: Theme.color.primaryDark,
     toolbarBackgroundColor: Theme.color.primaryDark,
+    searchBarContainerStyle: {},
   }
 
   constructor (props) {
@@ -382,30 +387,33 @@ export default class SearchList extends Component {
 
           {this._renderToolbar()}
 
-          <SearchBar
-            placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
+          <View style={this.props.searchBarContainerStyle}>
+            <SearchBar
+              placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
 
-            onChange={this.search.bind(this)}
-            onFocus={this.onFocus.bind(this)}
-            onBlur={this.onBlur.bind(this)}
+              onChange={this.search.bind(this)}
+              onFocus={this.onFocus.bind(this)}
+              onBlur={this.onBlur.bind(this)}
 
-            onClickCancel={this.onClickCancel.bind(this)}
-            cancelTitle={this.props.cancelTitle}
-            cancelTextColor={this.props.cancelTextColor}
+              onClickCancel={this.onClickCancel.bind(this)}
+              cancelTitle={this.props.cancelTitle}
+              cancelTextColor={this.props.cancelTextColor}
 
-            searchBarBackgroundColor={this.props.searchBarBackgroundColor}
+              searchBarBackgroundColor={this.props.searchBarBackgroundColor}
 
-            searchInputBackgroundColor={this.props.searchInputBackgroundColor}
-            searchInputBackgroundColorActive={this.props.searchInputBackgroundColorActive}
-            searchInputPlaceholderColor={this.props.searchInputPlaceholderColor}
-            searchInputTextColor={this.props.searchInputTextColor}
-            searchInputTextColorActive={this.props.searchInputTextColorActive}
+              searchInputBackgroundColor={this.props.searchInputBackgroundColor}
+              searchInputBackgroundColorActive={this.props.searchInputBackgroundColorActive}
+              searchInputPlaceholderColor={this.props.searchInputPlaceholderColor}
+              searchInputTextColor={this.props.searchInputTextColor}
+              searchInputTextColorActive={this.props.searchInputTextColorActive}
 
-            renderCancel={this.props.renderCancel}
-            staticCancelButton={this.props.staticCancelButton}
-            showSearchIcon={this.props.showSearchIcon}
+              renderCancel={this.props.renderCancel}
+              staticCancelButton={this.props.staticCancelButton}
+              showSearchIcon={this.props.showSearchIcon}
+              searchBarStyle={this.props.searchBarStyle}
 
-            ref='searchBar' />
+              ref='searchBar' />
+          </View>
           {this._renderStickHeader()}
 
           <View
@@ -416,7 +424,8 @@ export default class SearchList extends Component {
             {this._renderSectionIndex.bind(this)()}
           </View>
         </View>
-        {this._renderMask.bind(this)()}
+
+        {this.props.displayMask ? this._renderMask.bind(this)() : null}
       </Animated.View>
     )
   }

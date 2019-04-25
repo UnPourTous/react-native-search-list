@@ -42,7 +42,8 @@ export default class SearchBar extends Component {
     searchBarBackgroundColor: PropTypes.string, // active state background color for the search bar
 
     showSearchIcon: PropTypes.bool,
-    isSearching: PropTypes.bool // Determines if the searchbar is currently focused
+    isSearching: PropTypes.bool, // Determines if the searchbar is currently focused,
+    searchBarStyle: PropTypes.object,
   }
 
   static defaultProps = {
@@ -60,6 +61,7 @@ export default class SearchBar extends Component {
 
     showSearchIcon: true,
     staticCancelButton: false,
+    searchBarStyle: {},
   }
 
   constructor (props) {
@@ -124,7 +126,8 @@ export default class SearchBar extends Component {
           },
           {
             width: Theme.size.windowWidth + buttonWidth
-          }
+          },
+            this.props.searchBarStyle
         ]}>
         <Animated.View style={{
           width: this.state.animatedValue.interpolate({

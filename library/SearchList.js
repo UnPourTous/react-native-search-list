@@ -78,6 +78,7 @@ export default class SearchList extends Component {
     renderToolbar: PropTypes.func,
     renderCancel: PropTypes.func,
     renderCancelWhileSearching: PropTypes.func,
+    cancelContainerStyle: PropTypes.object,
     staticCancelButton: PropTypes.bool,
     showSearchIcon: PropTypes.bool,
     searchBarStyle: PropTypes.object,
@@ -416,6 +417,7 @@ export default class SearchList extends Component {
 
               renderCancel={this.props.renderCancel}
               renderCancelWhileSearching={this.props.renderCancelWhileSearching}
+              cancelContainerStyle={this.props.cancelContainerStyle}
               staticCancelButton={this.props.staticCancelButton}
               showSearchIcon={this.props.showSearchIcon}
               searchBarStyle={this.props.searchBarStyle}

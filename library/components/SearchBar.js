@@ -29,6 +29,7 @@ export default class SearchBar extends Component {
 
     renderCancel: PropTypes.func, // render cancel button if need custom stylring
     renderCancelWhileSearching: PropTypes.func,
+    cancelContainerStyle: PropTypes.object,  // style properties for the container of the cancel button
     staticCancelButton: PropTypes.bool,
 
     onClickCancel: PropTypes.func, // the search cancel button clicked
@@ -40,7 +41,7 @@ export default class SearchBar extends Component {
     searchInputPlaceholderColor: PropTypes.string, // default placeholder color for the search input
     searchInputTextColor: PropTypes.string, // default state text color for the search input
     searchInputTextColorActive: PropTypes.string, // active state text color for the search input
-    searchInputStyle: PropTypes.object, // active state text color for the search input
+    searchInputStyle: PropTypes.object, // style properties for the search input
 
     searchBarBackgroundColor: PropTypes.string, // active state background color for the search bar
 
@@ -169,31 +170,40 @@ export default class SearchBar extends Component {
                 source={require('../images/icon-search.png')} />) : null }
           </Animated.View>
         </Animated.View>
-        <View style={{
-          width: buttonWidth,
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+        <View style={[styles.cancelContainer, this.props.cancelContainerStyle]}>
           <TouchableWithoutFeedback onPress={this.cancelSearch.bind(this)}>
-            <View
-              style={{
-                flex: 1,
-                height: Theme.size.searchInputHeight,
-                width: buttonWidth,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 5
-              }}
-              shouldRasterizeIOS
-              renderToHardwareTextureAndroid
-            >
               {this.state.value !== '' ? this._renderCancelWhileSearching.bind(this)() : this._renderCancel.bind(this)()}
-            </View>
           </TouchableWithoutFeedback>
         </View>
       </View>
     )
   };
+
+  /**
+   * render the default Cancel Button
+   * @returns {XML}
+   * @private
+   */
+  _renderDefaultCancel () {
+    return (
+        <View
+            style={{
+              flex: 1,
+              height: Theme.size.searchInputHeight,
+              width: buttonWidth,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 5
+            }}
+            shouldRasterizeIOS
+            renderToHardwareTextureAndroid
+        >
+          <Text
+              style={{color: cancelTextColor}}
+              numberOfLines={1}>{cancelTitle}</Text>
+        </View>
+    )
+  }
 
   /**
    * render Cancel Button
@@ -202,11 +212,7 @@ export default class SearchBar extends Component {
    */
   _renderCancel () {
     const {renderCancel, cancelTitle, cancelTextColor} = this.props;
-    return renderCancel ? renderCancel() : (
-        <Text
-            style={{color: cancelTextColor}}
-            numberOfLines={1}>{cancelTitle}</Text>
-    )
+    return renderCancel ? renderCancel() : this._renderDefaultCancel()
   }
 
   /**
@@ -216,15 +222,16 @@ export default class SearchBar extends Component {
    */
   _renderCancelWhileSearching () {
     const {renderCancelWhileSearching, cancelTitle, cancelTextColor} = this.props;
-    return renderCancelWhileSearching ? renderCancelWhileSearching() : (
-        <Text
-            style={{color: cancelTextColor}}
-            numberOfLines={1}>{cancelTitle}</Text>
-    )
+    return renderCancelWhileSearching ? renderCancelWhileSearching() : this._renderDefaultCancel()
   }
 }
 
 const styles = StyleSheet.create({
+  cancelContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   searchTextInputStyle: {
     flex: 1,
     height: 28,

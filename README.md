@@ -148,6 +148,7 @@ title | string | Toolbar title |
 titleTextColor | string | Toolbar title text color | 
 cancelTextColor | string | Search bar cancel text color | `#ffffff`
 cancelTitle | string | Search bar cancel text color | `Cancel`
+cancelContainerStyle | object | Style properties for the cancel button container |
 sectionIndexTextColor | string | Section index text color | 
 hideSectionList | bool | Whether to hide the alphabetical section listing view or not. |
 renderSectionIndexItem | func | Custom render SectionIndexItem. |

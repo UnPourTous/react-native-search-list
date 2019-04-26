@@ -134,6 +134,7 @@ searchInputPlaceholderColor | string | Custom search input placeholder text colo
 searchInputTextColor | string | Custom search input default state text color | `#171a23`
 searchInputTextColorActive | string | Custom search input searching state text color | `#ffffff`
 searchBarBackgroundColor | string | Custom search bar background color | `#171a23`
+searchInputStyle | object | Style properties for the internal TextInput Component | 
 statusBarHeight | number | The height of the status bar | 
 toolbarHeight | number | The height of the tool bar | `44`
 searchBarBackgroundColor | string | Custom search bar background color | 

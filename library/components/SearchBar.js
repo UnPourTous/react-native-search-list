@@ -40,6 +40,7 @@ export default class SearchBar extends Component {
     searchInputPlaceholderColor: PropTypes.string, // default placeholder color for the search input
     searchInputTextColor: PropTypes.string, // default state text color for the search input
     searchInputTextColorActive: PropTypes.string, // active state text color for the search input
+    searchInputStyle: PropTypes.object, // active state text color for the search input
 
     searchBarBackgroundColor: PropTypes.string, // active state background color for the search bar
 
@@ -153,7 +154,7 @@ export default class SearchBar extends Component {
               color: this.props.searchInputTextColorActive && !this.state.isSearching
                 ? this.props.searchInputTextColorActive
                 : this.props.searchInputTextColor || '#979797'
-            }, this.props.searchTextInputStyle]}
+            }, this.props.searchInputStyle]}
             onChangeText={this.onChange.bind(this)}
             value={this.state.value}
             underlineColorAndroid='transparent'

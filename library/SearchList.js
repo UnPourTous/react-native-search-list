@@ -56,6 +56,8 @@ export default class SearchList extends Component {
     searchInputPlaceholder: PropTypes.string,
     searchInputDefaultValue: PropTypes.string,
 
+    searchInputStyle: PropTypes.object,
+
     title: PropTypes.string,
     titleTextColor: PropTypes.string,
 
@@ -393,6 +395,7 @@ export default class SearchList extends Component {
           <View style={this.props.searchBarContainerStyle}>
             <SearchBar
               placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
+              defaultValue={this.props.searchInputDefaultValue ? this.props.searchInputDefaultValue : ''}
 
               onChange={this.search.bind(this)}
               onFocus={this.onFocus.bind(this)}
@@ -409,6 +412,7 @@ export default class SearchList extends Component {
               searchInputPlaceholderColor={this.props.searchInputPlaceholderColor}
               searchInputTextColor={this.props.searchInputTextColor}
               searchInputTextColorActive={this.props.searchInputTextColorActive}
+              searchInputStyle={this.props.searchInputStyle}
 
               renderCancel={this.props.renderCancel}
               renderCancelWhileSearching={this.props.renderCancelWhileSearching}

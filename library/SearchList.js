@@ -107,6 +107,7 @@ export default class SearchList extends Component {
     searchListBackgroundColor: Theme.color.primaryDark,
     toolbarBackgroundColor: Theme.color.primaryDark,
     searchBarContainerStyle: {},
+    displayMask: true
   }
 
   constructor (props) {
@@ -593,10 +594,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#fff'
+    backgroundColor: '#ffffff'
   },
   rowSeparator: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     paddingLeft: 25
   },
   rowSeparatorHide: {

@@ -49,22 +49,20 @@ export default class SearchBar extends Component {
   }
 
   static defaultProps = {
-    searchInputBackgroundColor: '#FFF',
+    searchInputBackgroundColor: '#ffffff',
     searchInputBackgroundColorActive: '#171a23',
 
     searchInputPlaceholderColor: '#979797',
     searchInputTextColor: '#171a23',
-    searchInputTextColorActive: '#FFF',
+    searchInputTextColorActive: '#ffffff',
 
     searchBarBackgroundColor: '#171a23',
 
-    cancelTextColor: 'white',
+    cancelTextColor: '#ffffff',
     cancelTitle: 'Cancel',
 
     showSearchIcon: true,
     staticCancelButton: false,
-    searchBarStyle: {},
-    defaultValue: '',
   }
 
   constructor (props) {

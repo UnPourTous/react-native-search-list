@@ -1,6 +1,6 @@
 {
-  "name": "@unpourtous/react-native-search-list",
-  "version": "2.1.0",
+  "name": "@zanechua/react-native-search-list",
+  "version": "2.2.0",
   "description": "react native component for search list view",
   "main": "./library/index.js",
   "scripts": {
@@ -15,6 +15,13 @@
     "alphabetic"
   ],
   "author": "haywood",
+  "contributors": [
+    {
+      "name": "Zane J. Chua",
+      "email": "hi@zanechua.com",
+      "url": "https://zanechua.com"
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^8.1.0",
@@ -39,12 +46,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/UnPourTous/react-native-search-list.git"
+    "url": "git+https://github.com/zanechua/react-native-search-list.git"
   },
   "bugs": {
-    "url": "https://github.com/UnPourTous/react-native-search-list/issues"
+    "url": "https://github.com/zanechua/react-native-search-list/issues"
   },
-  "homepage": "https://github.com/UnPourTous/react-native-search-list#readme",
+  "homepage": "https://github.com/zanechua/react-native-search-list#readme",
   "dependencies": {
     "hoek": "^5.0.3",
     "is-buffer": "^1.1.6",

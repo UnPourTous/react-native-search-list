@@ -1,6 +1,6 @@
 {
   "name": "@zanechua/react-native-search-list",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "react native component for search list view",
   "main": "./library/index.js",
   "scripts": {
@@ -15,6 +15,13 @@
     "alphabetic"
   ],
   "author": "haywood",
+  "contributors": [
+    {
+      "name": "Zane J. Chua",
+      "email": "hi@zanechua.com",
+      "url": "https://zanechua.com"
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^8.1.0",

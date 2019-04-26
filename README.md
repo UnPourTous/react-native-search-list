@@ -119,39 +119,53 @@ export default class example extends Component {
 
 prop name | type | description | default value
 --- | --- | --- | --- 
-data | array | The rows of list view.each object should contain `searchStr`, it will be used for search source. If you have custom row id,you should set `searchKey` for each object. | 
-renderRow | number | Render your custom row content. | 
-rowHeight | number | The height of the default row content, it will be used for scroll calculate. | `40`
-sectionHeaderHeight | number | The height of section header content. | `24`
-searchListBackgroundColor | string | BackgroundColor for searchList. | `#171a23`
-toolbarBackgroundColor | string | Toolbar background color. | `#171a23`
-searchBarToggleDuration | number | Custom search bar animation duration. | `300`
-searchBarBackgroundColor | string | Custom search bar background color. | `#171a23`
-searchInputBackgroundColor | string | Custom search input default state background color. | 
-searchInputBackgroundColorActive | string | Custom search input searching state background color. | 
-searchInputPlaceholder | string | Custom search input placeholder text. | 
-searchInputPlaceholderColor | string | Custom search input placeholder text color. | 
-searchInputTextColor | string | Custom search input default state text color. | 
-searchInputTextColorActive | string | Custom search input searching state text color. | 
-searchBarBackgroundColor | string | Custom search bar background color. | 
-title | string | Toolbar title. | 
-titleTextColor | string | Toolbar title text color. | 
-cancelTextColor | string | Search bar cancel text color. | 
-cancelTitle | string | Search bar cancel text color. | 
-sectionIndexTextColor | string | Section index text color. | 
+data | array | The rows of list view.each object should contain `searchStr`, it will be used for search source. If you have custom row id,you should set `searchKey` for each object | 
+renderRow | number | Render your custom row content | 
+rowHeight | number | The height of the default row content, it will be used for scroll calculate | `40`
+sectionHeaderHeight | number | The height of section header content | `24`
+searchListBackgroundColor | string | BackgroundColor for searchList | `#171a23`
+toolbarBackgroundColor | string | Toolbar background color | `#171a23`
+searchBarToggleDuration | number | Custom search bar animation duration | `300`
+searchBarBackgroundColor | string | Custom search bar background color | `#171a23`
+searchInputBackgroundColor | string | Custom search input default state background color | `#ffffff`
+searchInputBackgroundColorActive | string | Custom search input searching state background color | 
+searchInputPlaceholder | string | Custom search input placeholder text | 
+searchInputDefaultValue | string | Custom search input default value text | 
+searchInputPlaceholderColor | string | Custom search input placeholder text color | `#979797`
+searchInputTextColor | string | Custom search input default state text color | `#171a23`
+searchInputTextColorActive | string | Custom search input searching state text color | `#ffffff`
+searchBarBackgroundColor | string | Custom search bar background color | `#171a23`
+statusBarHeight | number | The height of the status bar | 
+toolbarHeight | number | The height of the tool bar | `44`
+searchBarBackgroundColor | string | Custom search bar background color | 
+staticCancelButton | bool | Enable/Disable a static cancel button with no slide in animation | `false`
+showSearchIcon | bool | Show/Hide the search icon | `true`
+displayMask | bool | Show/Hide the mask during searching | `true`
+searchBarStyle | object | Style properties for the SearchBar Component | 
+searchBarContainerStyle | object | Style properties for the SearchBar Container Component | 
+searchBarBackgroundColor | string | Custom search bar background color | 
+title | string | Toolbar title | 
+titleTextColor | string | Toolbar title text color | 
+cancelTextColor | string | Search bar cancel text color | `#ffffff`
+cancelTitle | string | Search bar cancel text color | `Cancel`
+sectionIndexTextColor | string | Section index text color | 
 hideSectionList | bool | Whether to hide the alphabetical section listing view or not. |
 renderSectionIndexItem | func | Custom render SectionIndexItem. |
-sortFunc | func | The sort function for the list view data source,sorting alphabetical by default  |
+sortFunc | func | The sort function for the list view data source,sorting alphabetical by default |
 resultSortFunc | func | The sort function for the search result,sorting first match position by default |
-onScrollToSection | func | The callback of alphabetical section view be clicked or touch. |
+onScrollToSection | func | The callback of alphabetical section view be clicked or touch |
 renderBackButton | func | Render a custom back buttom on Toolbar. |
-renderEmpty | func | Render a view when data is empty.  |
-renderEmptyResult | func | Render a view when search result is empty.  |
+renderEmpty | func | Render a view when data is empty. |
+renderEmptyResult | func | Render a view when search result is empty. |
 renderSeparator | func | Render row separator. |
-renderSectionHeader | func | `renderSectionHeader` for the internal ListView  |
+renderSectionHeader | func | `renderSectionHeader` for the internal ListView |
 renderHeader | func | `renderHeader` for the internal ListView |
-renderFooter | func | `renderFooter` for the internal ListView  |
+renderFooter | func | `renderFooter` for the internal ListView |
 renderRow | func | `renderRow` for the internal ListView |
+renderToolbar | func | `renderToolbar` for the Toolbar |
+renderCancel | func | `renderCancel` for custom rendering of the cancel button |
+renderCancelWhileSearching | func | `renderCancelWhileSearching` for custom rendering of the cancel button during search |
+renderToolbar | func | `renderToolbar` for the Toolbar |
 onSearchStart | func | Callback when searching start. |
 onSearchEnd | func | Callback when searching end. |
 

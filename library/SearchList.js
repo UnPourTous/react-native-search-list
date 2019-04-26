@@ -54,6 +54,7 @@ export default class SearchList extends Component {
     searchInputTextColorActive: PropTypes.string,
     searchInputPlaceholderColor: PropTypes.string,
     searchInputPlaceholder: PropTypes.string,
+    searchInputDefaultValue: PropTypes.string,
 
     title: PropTypes.string,
     titleTextColor: PropTypes.string,
@@ -74,6 +75,7 @@ export default class SearchList extends Component {
     toolbarHeight: PropTypes.number,
     renderToolbar: PropTypes.func,
     renderCancel: PropTypes.func,
+    renderCancelWhileSearching: PropTypes.func,
     staticCancelButton: PropTypes.bool,
     showSearchIcon: PropTypes.bool,
     searchBarStyle: PropTypes.object,
@@ -408,6 +410,7 @@ export default class SearchList extends Component {
               searchInputTextColorActive={this.props.searchInputTextColorActive}
 
               renderCancel={this.props.renderCancel}
+              renderCancelWhileSearching={this.props.renderCancelWhileSearching}
               staticCancelButton={this.props.staticCancelButton}
               showSearchIcon={this.props.showSearchIcon}
               searchBarStyle={this.props.searchBarStyle}

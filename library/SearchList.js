@@ -85,6 +85,7 @@ export default class SearchList extends Component {
     searchBarContainerStyle: PropTypes.object,
 
     displayMask: PropTypes.bool,
+    searchOnDefaultValue: PropTypes.bool,
 
     renderBackButton: PropTypes.func,
     renderRightButton: PropTypes.func,
@@ -110,7 +111,8 @@ export default class SearchList extends Component {
     searchListBackgroundColor: Theme.color.primaryDark,
     toolbarBackgroundColor: Theme.color.primaryDark,
     searchBarContainerStyle: {},
-    displayMask: true
+    displayMask: true,
+    searchOnDefaultValue: false,
   }
 
   constructor (props) {
@@ -154,6 +156,10 @@ export default class SearchList extends Component {
 
   componentDidMount () {
     this.initList(this.props.data)
+
+    if (this.props.searchOnDefaultValue && this.props.searchInputDefaultValue != '') {
+      this.search(this.props.searchInputDefaultValue);
+    }
   }
 
   initList (data = []) {

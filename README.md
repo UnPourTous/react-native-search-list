@@ -130,6 +130,7 @@ searchInputBackgroundColor | string | Custom search input default state backgrou
 searchInputBackgroundColorActive | string | Custom search input searching state background color | 
 searchInputPlaceholder | string | Custom search input placeholder text | 
 searchInputDefaultValue | string | Custom search input default value text | 
+searchOnDefaultValue | bool | Enable filtered results based on default value | 
 searchInputPlaceholderColor | string | Custom search input placeholder text color | `#979797`
 searchInputTextColor | string | Custom search input default state text color | `#171a23`
 searchInputTextColorActive | string | Custom search input searching state text color | `#ffffff`

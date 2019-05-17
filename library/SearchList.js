@@ -57,6 +57,7 @@ export default class SearchList extends Component {
     searchInputDefaultValue: PropTypes.string,
 
     searchInputStyle: PropTypes.object,
+    listContainerStyle: PropTypes.object,
 
     title: PropTypes.string,
     titleTextColor: PropTypes.string,
@@ -435,7 +436,7 @@ export default class SearchList extends Component {
           <View
             shouldRasterizeIOS
             renderToHardwareTextureAndroid
-            style={styles.listContainer}>
+            style={[styles.listContainer, this.props.listContainerStyle]}>
             {this._renderSearchBody.bind(this)()}
             {this._renderSectionIndex.bind(this)()}
           </View>

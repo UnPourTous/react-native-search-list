@@ -122,6 +122,7 @@ data | array | The rows of list view.each object should contain `searchStr`, it 
 renderRow | number | Render your custom row content | 
 rowHeight | number | The height of the default row content, it will be used for scroll calculate | `40`
 sectionHeaderHeight | number | The height of section header content | `24`
+listContainerStyle | object | Style properties for the internal TextInput Component | 
 searchListBackgroundColor | string | BackgroundColor for searchList | `#171a23`
 toolbarBackgroundColor | string | Toolbar background color | `#171a23`
 searchBarToggleDuration | number | Custom search bar animation duration | `300`

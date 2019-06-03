@@ -68,6 +68,7 @@ export default class SearchList extends Component {
     // use `renderSectionIndexItem` to get much more freedom
     sectionIndexTextColor: PropTypes.string,
     renderSectionIndexItem: PropTypes.func,
+    sectionIndexContainerStyle: PropTypes.object,
 
     sortFunc: PropTypes.func,
     resultSortFunc: PropTypes.func,
@@ -160,6 +161,7 @@ export default class SearchList extends Component {
 
     if (this.props.searchOnDefaultValue && this.props.searchInputDefaultValue != '') {
       this.search(this.props.searchInputDefaultValue);
+      this.enterSearchState();
     }
   }
 
@@ -574,6 +576,9 @@ export default class SearchList extends Component {
    */
   _renderSectionIndex () {
     const {hideSectionList, toolbarHeight} = this.props
+    if (this.state.isSearching) {
+      return null;
+    }
     if (hideSectionList) {
       return null
     } else {

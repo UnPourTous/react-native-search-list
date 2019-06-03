@@ -1,6 +1,6 @@
 {
   "name": "@zanechua/react-native-search-list",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "react native component for search list view",
   "main": "./library/index.js",
   "scripts": {

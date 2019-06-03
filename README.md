@@ -154,6 +154,7 @@ cancelContainerStyle | object | Style properties for the cancel button container
 sectionIndexTextColor | string | Section index text color | 
 hideSectionList | bool | Whether to hide the alphabetical section listing view or not. |
 renderSectionIndexItem | func | Custom render SectionIndexItem. |
+sectionIndexContainerStyle | object | Style properties for the Section Index Container Component | 
 sortFunc | func | The sort function for the list view data source,sorting alphabetical by default |
 resultSortFunc | func | The sort function for the search result,sorting first match position by default |
 onScrollToSection | func | The callback of alphabetical section view be clicked or touch |

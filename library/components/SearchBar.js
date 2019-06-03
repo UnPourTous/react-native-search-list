@@ -26,6 +26,7 @@ export default class SearchBar extends Component {
 
     onFocus: PropTypes.func, // search input focused callback
     onBlur: PropTypes.func, // search input blured callback
+    onSubmitEditing: PropTypes.func, // search input submit callback
 
     renderCancel: PropTypes.func, // render cancel button if need custom stylring
     renderCancelWhileSearching: PropTypes.func,
@@ -71,7 +72,7 @@ export default class SearchBar extends Component {
     super(props)
     this.state = {
       value: props.defaultValue,
-      isSearching: true,
+      isSearching: false,
       animatedValue: new Animated.Value(0)
     }
   }
@@ -86,8 +87,17 @@ export default class SearchBar extends Component {
   }
 
   onFocus () {
-    this.props.onFocus && this.props.onFocus()
     this.searchingAnimation(true)
+    this.props.onFocus && this.props.onFocus()
+  }
+
+  onSubmitEditing () {
+    if (this.state.value === '')
+    {
+      this.cancelSearch();
+    }
+
+    this.props.onSubmitEditing && this.props.onSubmitEditing()
   }
 
   searchingAnimation (isSearching) {
@@ -105,15 +115,14 @@ export default class SearchBar extends Component {
       duration: Theme.duration.toggleSearchBar,
       toValue: toVal
     }).start(() => {
-      this.setState({isSearching: !isSearching})
+      this.setState({isSearching: isSearching})
     })
   }
 
   cancelSearch () {
     this.refs.input.clear()
     this.refs.input.blur()
-    this.searchingAnimation(false)
-    this.setState({value: ''})
+    this.setState({value: '', isSearching: false})
     this.props.onClickCancel && this.props.onClickCancel()
   }
 
@@ -150,6 +159,7 @@ export default class SearchBar extends Component {
           <TextInput
             onFocus={this.onFocus.bind(this)}
             onBlur={this.onBlur.bind(this)}
+            onSubmitEditing={this.onSubmitEditing.bind(this)}
             ref='input'
             style={[styles.searchTextInputStyle, this.props.showSearchIcon ? '' : {paddingLeft: 8}, {
               color: this.props.searchInputTextColorActive && !this.state.isSearching
@@ -172,7 +182,7 @@ export default class SearchBar extends Component {
         </Animated.View>
         <View style={[styles.cancelContainer, this.props.cancelContainerStyle]}>
           <TouchableWithoutFeedback onPress={this.cancelSearch.bind(this)}>
-              {this.state.value !== '' ? this._renderCancelWhileSearching.bind(this)() : this._renderCancel.bind(this)()}
+              {this.state.isSearching ? this._renderCancelWhileSearching.bind(this)() : this._renderCancel.bind(this)()}
           </TouchableWithoutFeedback>
         </View>
       </View>

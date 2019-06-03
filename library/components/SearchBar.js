@@ -72,7 +72,7 @@ export default class SearchBar extends Component {
     super(props)
     this.state = {
       value: props.defaultValue,
-      isSearching: false,
+      isSearching: props.defaultValue !== '',
       animatedValue: new Animated.Value(0)
     }
   }

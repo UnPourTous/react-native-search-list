@@ -575,7 +575,7 @@ export default class SearchList extends Component {
    * @private
    */
   _renderSectionIndex () {
-    const {hideSectionList, toolbarHeight} = this.props
+    const {hideSectionList, toolbarHeight, sectionIndexContainerStyle} = this.props
     if (this.state.isSearching) {
       return null;
     }
@@ -583,14 +583,14 @@ export default class SearchList extends Component {
       return null
     } else {
       return (
-        <View pointerEvents={'box-none'} style={{
+        <View pointerEvents={'box-none'} style={[{
           position: 'absolute',
           right: 0,
           top: 0,
           bottom: toolbarHeight,
           flexDirection: 'column',
           justifyContent: 'center'
-        }}>
+        }, sectionIndexContainerStyle]}>
           <SectionIndex
             style={{
               opacity: this.state.animatedValue.interpolate({

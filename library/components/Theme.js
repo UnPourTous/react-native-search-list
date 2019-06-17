@@ -10,7 +10,7 @@ import {
 const statusBarHeight = Platform.select({
   android: StatusBar.currentHeight,
   // TODO 这里不要写死值
-  ios: Platform.OS === 'ios' && Dimensions.get('window').height === 812 ? 44 : 20
+  ios: Platform.OS === 'ios' && parseInt((Dimensions.get('window').height / Dimensions.get('window').width) * 100) === 216 ? 44 : 20
 })
 export default {
   color: {

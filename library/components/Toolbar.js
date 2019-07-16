@@ -1,15 +1,16 @@
-import React, { Component } from 'react'
+'use strict';
+import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
   Text,
   View,
   Animated
-} from 'react-native'
-import PropTypes from 'prop-types'
-import Theme from './Theme'
+} from 'react-native';
+import PropTypes from 'prop-types';
+import Theme from './Theme';
 
-let statusBarSize = (Platform.OS === 'ios' ? 20 : 0)
+let statusBarSize = (Platform.OS === 'ios' ? 20 : 0);
 
 export default class Toolbar extends Component {
   static propTypes = {
@@ -27,7 +28,7 @@ export default class Toolbar extends Component {
   }
 
   render () {
-    const {style} = this.props
+    const {style} = this.props;
     return (
       <Animated.View
         style={[styles.container, style]}
@@ -37,22 +38,22 @@ export default class Toolbar extends Component {
         {this._renderTitle()}
         {this._renderRightButton()}
       </Animated.View>
-    )
+    );
   }
 
   _renderBackButton () {
-    const {renderBackButton} = this.props
+    const {renderBackButton} = this.props;
     if (renderBackButton) {
-      return renderBackButton()
+      return renderBackButton();
     }
 
-    return null
+    return null;
   }
 
   _renderTitle () {
-    const {renderTitle, title, textColor} = this.props
+    const {renderTitle, title, textColor} = this.props;
     if (renderTitle) {
-      return renderTitle()
+      return renderTitle();
     } else {
       return (
         <View style={[styles.titleStyle]}>
@@ -64,17 +65,17 @@ export default class Toolbar extends Component {
             {title}
           </Text>
         </View>
-      )
+      );
     }
   }
 
   _renderRightButton () {
-    const {renderRightButton} = this.props
+    const {renderRightButton} = this.props;
     if (renderRightButton) {
-      return renderRightButton()
+      return renderRightButton();
     }
 
-    return null
+    return null;
   }
 }
 
@@ -95,4 +96,4 @@ let styles = StyleSheet.create({
   titleTextStyle: {
     fontSize: 18
   }
-})
+});

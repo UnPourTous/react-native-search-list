@@ -1,7 +1,8 @@
+'use strict';
 import {
   TouchableOpacity
-} from 'react-native'
-import React, { Component } from 'react'
+} from 'react-native';
+import React, { Component } from 'react';
 
 export default class Touchable extends Component {
   static defaultProps = {
@@ -15,6 +16,6 @@ export default class Touchable extends Component {
         activeOpacity={Touchable.defaultProps.activeOpacity}>
         {this.props.children}
       </TouchableOpacity>
-    )
+    );
   }
 }

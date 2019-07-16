@@ -1,15 +1,12 @@
-/**
- * Created by erichua on 22/12/2017.
- */
-
-import React, { Component } from 'react'
+'use strict';
+import React, { Component } from 'react';
 import {
   View,
   Image,
   StyleSheet
-} from 'react-native'
-import Touchable from './../utils/Touchable'
-import PropTypes from 'prop-types'
+} from 'react-native';
+import Touchable from './../utils/Touchable';
+import PropTypes from 'prop-types';
 
 export default class extends Component {
   static propTypes = {
@@ -27,7 +24,7 @@ export default class extends Component {
       leftButtonStyle,
       backIconStyle,
       onPress
-    } = this.props
+    } = this.props;
     return (
       <Touchable onPress={onPress} underlayColor='rgba(0, 0, 0, 0.0)'>
         <View style={[styles.actionItem, leftButtonStyle]}>
@@ -37,7 +34,7 @@ export default class extends Component {
             resizeMode='cover' />
         </View>
       </Touchable>
-    )
+    );
   }
 }
 
@@ -56,4 +53,4 @@ const styles = StyleSheet.create({
     paddingRight: 8
   }
 
-})
+});

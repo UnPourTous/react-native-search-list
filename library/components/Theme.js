@@ -1,17 +1,15 @@
-/**
- * Created by erichua on 13/12/2017.
- */
+'use strict';
 import {
   Dimensions,
   Platform,
   StatusBar
-} from 'react-native'
+} from 'react-native';
 
 const statusBarHeight = Platform.select({
   android: StatusBar.currentHeight,
   // TODO 这里不要写死值
   ios: Platform.OS === 'ios' && Dimensions.get('window').height === 812 ? 44 : 20
-})
+});
 export default {
   color: {
     primary: '#171a23',
@@ -43,4 +41,4 @@ export default {
   duration: {
     toggleSearchBar: 300
   }
-}
+};

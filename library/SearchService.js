@@ -136,6 +136,7 @@ export default class SearchService {
   }
 
   static parseList (srcList) {
+    let formattedData = [];
     let rowsWithSection = {};
     const sectionIDs = [];
     const rowIds = [[]];
@@ -162,6 +163,7 @@ export default class SearchService {
         if (!rowsWithSection[orderIndex]) {
           rowsWithSection[orderIndex] = orderIndex;
           sectionIDs.push(orderIndex);
+          formattedData.push({ title: orderIndex, data: [] });
         }
 
         // rows组装
@@ -169,6 +171,9 @@ export default class SearchService {
         let sectionIndex = sectionIDs.findIndex((tIndex) => {
           return orderIndex === tIndex;
         });
+
+        // console.log(orderIndex);
+
         for (let i = rowIds.length; i <= sectionIndex; i++) {
           rowIds.push([]);
         }
@@ -178,13 +183,22 @@ export default class SearchService {
           tRows.push(item.searchKey);
         }
 
+        const rowData = formattedData.find((object) => {
+          return object.title === orderIndex;
+        });
+
+        rowData.data.push(item);
+
         // 3. 实际数据加入friendWithSection
         let itemKey = orderIndex + ':' + item.searchKey;
+        // console.log(itemKey);
+        // console.log(item);
         rowsWithSection[itemKey] = item;
       }
     });
 
     return {
+      formattedData,
       rowsWithSection,
       sectionIDs,
       rowIds

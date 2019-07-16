@@ -3,11 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  ListView,
   PixelRatio,
   Animated,
   Image,
-  Platform
+  Platform,
+  SectionList
 } from 'react-native';
 
 import React, { Component } from 'react';
@@ -90,7 +90,7 @@ export default class SearchList extends Component {
     renderRightButton: PropTypes.func,
     renderEmpty: PropTypes.func,
     renderEmptyResult: PropTypes.func,
-    renderSeparator: PropTypes.func,
+    renderItemSeparator: PropTypes.func,
     renderSectionHeader: PropTypes.func,
     renderHeader: PropTypes.func,
     renderFooter: PropTypes.func,
@@ -116,21 +116,20 @@ export default class SearchList extends Component {
 
   constructor (props) {
     super(props);
-    const listDataSource = new ListView.DataSource({
-      getSectionData: SearchList.getSectionData,
-      getRowData: SearchList.getRowData,
-      rowHasChanged: (row1, row2) => {
-        if (row1 !== row2) {
-          return true;
-        } else return !!(row1 && row2 && row1.matcher && row2.matcher && row1.matcher !== row1.matcher);
-      },
-      sectionHeaderHasChanged: (s1, s2) => s1 !== s2
-    });
+    // const listDataSource = new ListView.DataSource({
+    //   getSectionData: SearchList.getSectionData,
+    //   getRowData: SearchList.getRowData,
+    //   rowHasChanged: (row1, row2) => {
+    //     if (row1 !== row2) {
+    //       return true
+    //     } else return !!(row1 && row2 && row1.matcher && row2.matcher && row1.matcher !== row1.matcher)
+    //   },
+    //   sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+    // })
     this.state = {
       isSearching: false,
       searchStr: '',
-      animatedValue: new Animated.Value(0),
-      dataSource: listDataSource
+      animatedValue: new Animated.Value(0)
     };
 
     this.sectionIDs = [];
@@ -168,16 +167,18 @@ export default class SearchList extends Component {
   }
 
   parseInitList (srcList) {
-    const {rowsWithSection, sectionIDs, rowIds} = SearchService.parseList(srcList);
+    const {rowsWithSection, sectionIDs, rowIds, formattedData} = SearchService.parseList(srcList);
     this.sectionIDs = sectionIDs;
     this.rowIds = rowIds;
+    this.formattedData = formattedData;
     this.setState({
       isSearching: false,
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(
-        rowsWithSection,
-        (!sectionIDs || sectionIDs.length === 0) ? [''] : sectionIDs,
-        rowIds
-      )
+      data: rowsWithSection
+      // dataSource: this.state.dataSource.cloneWithRowsAndSections(
+      //   rowsWithSection,
+      //   (!sectionIDs || sectionIDs.length === 0) ? [''] : sectionIDs,
+      //   rowIds
+      // )
     });
   }
 
@@ -219,21 +220,17 @@ export default class SearchList extends Component {
    * @returns {XML}
    * @private
    */
-  _renderSectionHeader (sectionData, sectionID) {
-    if (!sectionID) {
-      return (<View />);
-    } else {
-      return (
-        <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
-          <View style={{
-            justifyContent: 'center',
-            height: this.props.sectionHeaderHeight
-          }}>
-            <Text style={styles.sectionTitle}>{sectionID}</Text>
-          </View>
+  _renderSectionHeader ({ section: { title } }) {
+    return (
+      <View style={[styles.sectionHeader, {height: this.props.sectionHeaderHeight}]}>
+        <View style={{
+          justifyContent: 'center',
+          height: this.props.sectionHeaderHeight
+        }}>
+          <Text style={styles.sectionTitle}>{title}</Text>
         </View>
-      );
-    }
+      </View>
+    );
   }
 
   /**
@@ -258,7 +255,7 @@ export default class SearchList extends Component {
    * @param adjacentRowHighlighted
    * @returns {XML}
    */
-  _renderSeparator (sectionID, rowID, adjacentRowHighlighted) {
+  _renderItemSeparator (sectionID, rowID, adjacentRowHighlighted) {
     let style = styles.rowSeparator;
     if (adjacentRowHighlighted) {
       style = [style, styles.rowSeparatorHide];
@@ -455,30 +452,47 @@ export default class SearchList extends Component {
     const {isSearching, searchStr} = this.state;
     const {renderEmptyResult, renderEmpty, data} = this.props;
 
-    const isEmptyResult = this.state.dataSource.getRowCount() === 0;
-    if (isSearching && isEmptyResult && renderEmptyResult) {
+    // const isEmptyResult = this.state.dataSource.getRowCount() === 0
+    // if (isSearching && isEmptyResult && renderEmptyResult) {
+    if (isSearching && renderEmptyResult) {
       return renderEmptyResult(searchStr);
     } else {
-      if (data && data.length > 0) {
+      if (data && data.length > 0 && typeof this.formattedData !== 'undefined') {
         return (
-          <ListView
-            initialListSize={15}
-            pageSize={10}
-            onEndReachedThreshold={30}
-            ref='searchListView'
-            dataSource={this.state.dataSource}
-            keyboardDismissMode='on-drag'
-            keyboardShouldPersistTaps='always'
-            showsVerticalScrollIndicator
-
-            renderRow={this.props.renderRow || this._renderRow.bind(this)}
-            renderSeparator={this.props.renderSeparator || this._renderSeparator.bind(this)}
+          <SectionList
+            keyExtractor={(item, index) => item.title + index}
+            renderItem={this.props.renderRow || this._renderRow.bind(this)}
+            ItemSeparatorComponent={this.props.renderItemSeparator || this._renderItemSeparator.bind(this)}
             renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
-            renderFooter={this.props.renderFooter || this._renderFooter.bind(this)}
-            renderHeader={this.props.renderHeader || this._renderHeader.bind(this)}
-
-            enableEmptySections />
+            sections={this.formattedData}
+          />
         );
+        // return (
+        //   <SectionList
+        //     keyExtractor={({ key }) => key}
+        //     data={data}
+        //     renderItem={this.props.renderRow || this._renderRow.bind(this)}
+        //   />
+        // )
+        // return (
+        //   <ListView
+        //     initialListSize={15}
+        //     pageSize={10}
+        //     onEndReachedThreshold={30}
+        //     ref='searchListView'
+        //     dataSource={this.state.dataSource}
+        //     keyboardDismissMode='on-drag'
+        //     keyboardShouldPersistTaps='always'
+        //     showsVerticalScrollIndicator
+        //
+        //     renderRow={this.props.renderRow || this._renderRow.bind(this)}
+        //     renderItemSeparator={this.props.renderItemSeparator || this._renderItemSeparator.bind(this)}
+        //     renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
+        //     renderFooter={this.props.renderFooter || this._renderFooter.bind(this)}
+        //     renderHeader={this.props.renderHeader || this._renderHeader.bind(this)}
+        //
+        //     enableEmptySections />
+        // )
       } else {
         if (renderEmpty) {
           return renderEmpty();

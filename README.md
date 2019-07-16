@@ -161,7 +161,7 @@ onScrollToSection | func | The callback of alphabetical section view be clicked 
 renderBackButton | func | Render a custom back buttom on Toolbar. |
 renderEmpty | func | Render a view when data is empty. |
 renderEmptyResult | func | Render a view when search result is empty. |
-renderSeparator | func | Render row separator. |
+renderItemSeparator | func | Render row separator. |
 renderSectionHeader | func | `renderSectionHeader` for the internal ListView |
 renderHeader | func | `renderHeader` for the internal ListView |
 renderFooter | func | `renderFooter` for the internal ListView |

@@ -170,13 +170,12 @@ export default class SearchList extends Component {
       const tempResult = SearchService.search(originalListData, input.toLowerCase());
 
       if (tempResult.length === 0) {
-
         this.setState({
           isSearching: true,
           sectionListData: Array.from(this.state.sectionListData)
         });
       } else {
-        const { searchResultData }= SearchService.sortResultList(tempResult, this.props.resultSortFunc);
+        const { searchResultData } = SearchService.sortResultList(tempResult, this.props.resultSortFunc);
         this.setState({
           isSearching: false,
           sectionListData: searchResultData

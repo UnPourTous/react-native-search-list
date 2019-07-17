@@ -444,15 +444,7 @@ export default class SearchList extends Component {
             ListFooterComponent={this.props.renderFooter || this._renderFooter.bind(this)}
             ListHeaderComponent={this.props.renderHeader || this._renderHeader.bind(this)}
 
-            getItemLayout={(data, index) => {
-              const itemSeparatorHeight = 1 / PixelRatio.get();
-              const itemHeight = rowHeight + itemSeparatorHeight;
-              return ({
-                length: itemHeight,
-                offset: itemHeight * index,
-                index
-              });
-            }}
+            onScrollToIndexFailed={()=>{}}
           />
         );
       } else {

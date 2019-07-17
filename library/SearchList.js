@@ -94,7 +94,7 @@ export default class SearchList extends Component {
     renderSectionHeader: PropTypes.func,
     renderHeader: PropTypes.func,
     renderFooter: PropTypes.func,
-    // custom render row
+    renderStickyHeader: PropTypes.func,
     renderRow: PropTypes.func.isRequired,
 
     onSearchStart: PropTypes.func,
@@ -126,6 +126,13 @@ export default class SearchList extends Component {
       animatedValue: new Animated.Value(0)
     };
 
+    this.search = this.search.bind(this);
+    this.cancelSearch = this.cancelSearch.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onClickCancel = this.onClickCancel.bind(this);
+    this.scrollToSection = this.scrollToSection.bind(this);
+
     pinyin.setOptions({checkPolyphone: false, charCase: 2});
   }
 
@@ -136,18 +143,22 @@ export default class SearchList extends Component {
   }
 
   componentDidMount () {
-    this.initList(this.props.data);
-
-    if (this.props.searchOnDefaultValue && this.props.searchInputDefaultValue != '') {
-      this.search(this.props.searchInputDefaultValue);
-      this.enterSearchState();
-    }
+    this.initList(this.props.data)
+      .then(() => {
+        if (this.props.searchOnDefaultValue && this.props.searchInputDefaultValue != '') {
+          this.search(this.props.searchInputDefaultValue);
+          this.enterSearchState();
+        }
+      });
   }
 
   initList (data = []) {
-    const copiedSource = Array.from(data);
-    this.setState({ originalListData: copiedSource });
-    this.parseInitList(SearchService.sortList(SearchService.initList(copiedSource), this.props.sortFunc));
+    return new Promise((resolve, reject) => {
+      const copiedSource = Array.from(data);
+      this.setState({ originalListData: copiedSource });
+      this.parseInitList(SearchService.sortList(SearchService.initList(copiedSource), this.props.sortFunc));
+      resolve();
+    });
   }
 
   parseInitList (srcList) {
@@ -371,11 +382,11 @@ export default class SearchList extends Component {
               placeholder={this.props.searchInputPlaceholder ? this.props.searchInputPlaceholder : ''}
               defaultValue={this.props.searchInputDefaultValue ? this.props.searchInputDefaultValue : ''}
 
-              onChange={this.search.bind(this)}
-              onFocus={this.onFocus.bind(this)}
-              onBlur={this.onBlur.bind(this)}
+              onChange={this.search}
+              onFocus={this.onFocus}
+              onBlur={this.onBlur}
 
-              onClickCancel={this.onClickCancel.bind(this)}
+              onClickCancel={this.onClickCancel}
               cancelTitle={this.props.cancelTitle}
               cancelTextColor={this.props.cancelTextColor}
 
@@ -397,7 +408,7 @@ export default class SearchList extends Component {
 
               ref='searchBar' />
           </View>
-          {this._renderStickHeader()}
+          {this._renderStickyHeader()}
 
           <View
             shouldRasterizeIOS
@@ -420,9 +431,9 @@ export default class SearchList extends Component {
    */
   _renderSearchBody () {
     const { isReady, isSearching, searchStr, sectionListData } = this.state;
-    const { renderEmptyResult, renderEmpty, data, rowHeight } = this.props;
+    const { renderEmptyResult, renderEmpty, data } = this.props;
 
-    if (isSearching && renderEmptyResult && searchStr !== '') {
+    if (isSearching && !isReady && renderEmptyResult && searchStr !== '') {
       return renderEmptyResult(searchStr);
     } else {
       if (data && data.length > 0 && isReady) {
@@ -444,7 +455,7 @@ export default class SearchList extends Component {
             ListFooterComponent={this.props.renderFooter || this._renderFooter.bind(this)}
             ListHeaderComponent={this.props.renderHeader || this._renderHeader.bind(this)}
 
-            onScrollToIndexFailed={()=>{}}
+            onScrollToIndexFailed={() => {}}
           />
         );
       } else {
@@ -456,14 +467,14 @@ export default class SearchList extends Component {
   }
 
   /**
-   * render a custom stick header, isSearching is pass to renderStickHeader
+   * render a custom sticky header, isSearching is pass to renderStickyHeader
    * @returns {*}
    * @private
    */
-  _renderStickHeader () {
-    const { renderStickHeader } = this.props;
+  _renderStickyHeader () {
+    const { renderStickyHeader } = this.props;
     const { isSearching } = this.state;
-    return renderStickHeader ? renderStickHeader(isSearching) : null;
+    return renderStickyHeader ? renderStickyHeader(isSearching) : null;
   }
 
   /**
@@ -476,7 +487,7 @@ export default class SearchList extends Component {
     if (isSearching && !searchStr) {
       return (
         <Touchable
-          onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
+          onPress={this.cancelSearch} underlayColor='rgba(0, 0, 0, 0.0)'
           style={[{top: this.props.toolbarHeight + Theme.size.searchInputHeight}, styles.maskStyle]}>
           <Animated.View />
         </Touchable>
@@ -575,7 +586,7 @@ export default class SearchList extends Component {
                 outputRange: [1, 0]
               })
             }}
-            onSectionSelect={this.scrollToSection.bind(this)}
+            onSectionSelect={this.scrollToSection}
             sections={sectionIds}
             renderSectionItem={renderSectionIndexItem || this._renderSectionIndexItem.bind(this)} />
         </View>

@@ -72,6 +72,12 @@ export default class SearchBar extends Component {
       isSearching: props.defaultValue !== '',
       animatedValue: new Animated.Value(0)
     };
+
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onSubmitEditing = this.onSubmitEditing.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.cancelSearch = this.cancelSearch.bind(this);
   }
 
   onChange (value) {
@@ -144,7 +150,7 @@ export default class SearchBar extends Component {
             inputRange: [0, buttonWidth],
             // TODO 这里要想办法做得更灵活一点
             // Control total width of searchBar
-            outputRange: [ this.props.staticCancelButton ? Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding : Theme.size.windowWidth - searchBarHorizontalPadding * 2, Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding]
+            outputRange: [this.props.staticCancelButton ? Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding : Theme.size.windowWidth - searchBarHorizontalPadding * 2, Theme.size.windowWidth - buttonWidth - searchBarHorizontalPadding]
           }),
           backgroundColor: this.state.animatedValue.interpolate({
             inputRange: [0, buttonWidth],
@@ -154,16 +160,16 @@ export default class SearchBar extends Component {
           borderRadius: 5
         }}>
           <TextInput
-            onFocus={this.onFocus.bind(this)}
-            onBlur={this.onBlur.bind(this)}
-            onSubmitEditing={this.onSubmitEditing.bind(this)}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            onSubmitEditing={this.onSubmitEditing}
             ref='input'
             style={[styles.searchTextInputStyle, this.props.showSearchIcon ? '' : {paddingLeft: 8}, {
               color: this.props.searchInputTextColorActive && !this.state.isSearching
                 ? this.props.searchInputTextColorActive
                 : this.props.searchInputTextColor || '#979797'
             }, this.props.searchInputStyle]}
-            onChangeText={this.onChange.bind(this)}
+            onChangeText={this.onChange}
             value={this.state.value}
             underlineColorAndroid='transparent'
             placeholder={this.props.placeholder}
@@ -178,7 +184,7 @@ export default class SearchBar extends Component {
           </Animated.View>
         </Animated.View>
         <View style={[styles.cancelContainer, this.props.cancelContainerStyle]}>
-          <TouchableWithoutFeedback onPress={this.cancelSearch.bind(this)}>
+          <TouchableWithoutFeedback onPress={this.cancelSearch}>
             {this.state.isSearching ? this._renderCancelWhileSearching.bind(this)() : this._renderCancel.bind(this)()}
           </TouchableWithoutFeedback>
         </View>

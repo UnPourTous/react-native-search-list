@@ -168,6 +168,7 @@ renderItemSeparator | func | Render row separator. |
 renderSectionHeader | func | `renderSectionHeader` for the internal ListView |
 renderHeader | func | `renderHeader` for the internal ListView |
 renderFooter | func | `renderFooter` for the internal ListView |
+renderStickyHeader | func | `renderStickyHeader` for the section below the SearchBar |
 renderRow | func | `renderRow` for the internal ListView |
 renderToolbar | func | `renderToolbar` for the Toolbar |
 renderCancel | func | `renderCancel` for custom rendering of the cancel button |

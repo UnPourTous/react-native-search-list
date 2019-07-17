@@ -420,7 +420,7 @@ export default class SearchList extends Component {
    */
   _renderSearchBody () {
     const { isReady, isSearching, searchStr, sectionListData } = this.state;
-    const { renderEmptyResult, renderEmpty, data } = this.props;
+    const { renderEmptyResult, renderEmpty, data, rowHeight } = this.props;
 
     if (isSearching && renderEmptyResult && searchStr !== '') {
       return renderEmptyResult(searchStr);
@@ -443,6 +443,16 @@ export default class SearchList extends Component {
             renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
             ListFooterComponent={this.props.renderFooter || this._renderFooter.bind(this)}
             ListHeaderComponent={this.props.renderHeader || this._renderHeader.bind(this)}
+
+            getItemLayout={(data, index) => {
+              const itemSeparatorHeight = 1 / PixelRatio.get();
+              const itemHeight = rowHeight + itemSeparatorHeight;
+              return ({
+                length: itemHeight,
+                offset: itemHeight * index,
+                index
+              });
+            }}
           />
         );
       } else {

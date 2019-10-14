@@ -241,7 +241,7 @@ export default class SearchList extends Component {
       <View key={'SEP_' + sectionID + '_' + rowID} style={style}>
         <View style={{
           height: 1 / PixelRatio.get(),
-          backgroundColor: '#efefef'
+          backgroundColor: '#fafafa'
         }} />
       </View>
     )
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
     height: Theme.size.sectionHeaderHeight,
     justifyContent: 'center',
     paddingLeft: 25,
-    backgroundColor: '#efefef'
+    backgroundColor: '#fafafa'
   },
   sectionTitle: {
     color: '#979797',

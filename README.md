@@ -29,7 +29,7 @@ The following picture may be helpful to understand the structure and APIs:
 
 ## Usage
 
-To Use SearchList, need a array of object as data source,and each object has searchStr property, eample code are put in `./entry.js`.
+To Use SearchList, you will need an array of objects as the data source, and each object has to have a searchStr property, example code is in `./entry.js`.
 
 ```js
 export default class example extends Component {
@@ -88,6 +88,7 @@ export default class example extends Component {
       <View style={styles.container}>
         <StatusBar backgroundColor='#F00' barStyle='light-content' />
         <SearchList
+          key={this.state.dataSourceKey}
           data={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
           renderEmptyResult={this.renderEmptyResult.bind(this)}

@@ -21,6 +21,7 @@ export default class example extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      dataSourceKey: 1,
       dataSource: demoList
     }
   }
@@ -73,6 +74,7 @@ export default class example extends Component {
       <View style={styles.container}>
         <StatusBar backgroundColor='#F00' barStyle='light-content' />
         <SearchList
+          key={this.state.dataSourceKey}
           data={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
           renderEmptyResult={this.renderEmptyResult.bind(this)}

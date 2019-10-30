@@ -136,12 +136,6 @@ export default class SearchList extends Component {
     pinyin.setOptions({checkPolyphone: false, charCase: 2});
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps && this.props.data !== nextProps.data) {
-      this.initList(nextProps.data);
-    }
-  }
-
   componentDidMount () {
     this.initList(this.props.data)
       .then(() => {

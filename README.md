@@ -165,6 +165,12 @@ onSearchEnd | func | Callback when searching end. |
 1. ~~add hightlight demo~~
 1. ~~test ios & android & android with status bar and without~~
 
+## Our Other Projects
+- [WeTrident](https://github.com/WeBankFinTech/WeTrident): A simple App development framework based on React Native。
+- [WT-Console](https://github.com/WeBankFinTech/wt-console): Realtime log utils in React Native App。
+- [React Native Popup Stub](https://github.com/UnPourTous/react-native-popup-stub): A smart popup container.
+- [WT Console Server](https://github.com/UnPourTous/wt-console-server): An open source log manager backend.
+
 ## License
 This library is distributed under MIT Licence.
 

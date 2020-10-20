@@ -5,7 +5,6 @@ import {
   containsChinese
 } from './utils/utils';
 import pinyin from 'js-pinyin';
-import md5 from 'md5';
 
 export default class SearchService {
   static search (source, searchStr) {
@@ -37,10 +36,10 @@ export default class SearchService {
       let matcher = {};
       matcher.matches = [];
       if (source.toLowerCase().indexOf(inputLower) >= 0) {
-        matcher.machStart = source.toLowerCase().indexOf(inputLower);
-        matcher.machEnd = matcher.machStart + inputLower.length;
+        matcher.charMatchStartIndex = source.toLowerCase().indexOf(inputLower);
+        matcher.charMatchEndIndex = matcher.charMatchStartIndex + inputLower.length;
 
-        matcher.matches.push({'start': matcher.machStart, 'end': matcher.machEnd});
+        matcher.matches.push({'start': matcher.charMatchStartIndex, 'end': matcher.charMatchEndIndex});
         result.matcher = matcher;
       } else {
         if (transStr && charIndexer) {
@@ -58,9 +57,9 @@ export default class SearchService {
 
                     if (inputEndIndex <= endCharIndexer.endIndexInTransedStr) {
                       find = true;
-                      matcher.machStart = startCharIndexer.index;
-                      matcher.machEnd = endCharIndexer.index + 1;
-                      matcher.matches.push({'start': matcher.machStart, 'end': matcher.machEnd});
+                      matcher.charMatchStartIndex = startCharIndexer.index;
+                      matcher.charMatchEndIndex = endCharIndexer.index + 1;
+                      matcher.matches.push({'start': matcher.charMatchStartIndex, 'end': matcher.charMatchEndIndex});
                       result.matcher = matcher;
                       break;
                     }
@@ -83,9 +82,9 @@ export default class SearchService {
   static sortResultList (searchResultList, resultSortFunc) {
     searchResultList.sort(resultSortFunc || function (a, b) {
       if (b.matcher && a.matcher) {
-        if (b.matcher.machStart < a.matcher.machStart) {
+        if (b.matcher.charMatchStartIndex < a.matcher.charMatchStartIndex) {
           return 1;
-        } else if (b.matcher.machStart > a.matcher.machStart) {
+        } else if (b.matcher.charMatchStartIndex > a.matcher.charMatchStartIndex) {
           return -1;
         } else {
           return 0;
@@ -94,16 +93,11 @@ export default class SearchService {
         return 0;
       }
     });
-    let searchResultWithSection = {'': ''};
-    const rowIds = [[]];
-    let tRows = rowIds[0];
-    searchResultList.forEach((result) => {
-      tRows.push(result.searchKey);
-      searchResultWithSection[':' + result.searchKey] = result;
-    });
+
+    const { formattedData } = this.parseList(searchResultList);
+
     return {
-      searchResultWithSection,
-      rowIds
+      searchResultData: formattedData
     };
   }
 
@@ -135,53 +129,20 @@ export default class SearchService {
     return searchHandler;
   }
 
-  static parseList (srcList) {
+  static parseList (sourceData) {
     let formattedData = [];
-    let rowsWithSection = {};
-    const sectionIDs = [];
-    const rowIds = [[]];
-    /* 形成如下的结构
-     let dataBlob = {
-     'sectionID1' : { ...section1 data },
-     'sectionID1:rowID1' : { ...row1 data },
-     'sectionID1:rowID2' : { ..row2 data },
-     'sectionID2' : { ...section2 data },
-     'sectionID2:rowID1' : { ...row1 data },
-     'sectionID2:rowID2' : { ..row2 data },
-     ...
-     }
-     let sectionIDs = [ 'sectionID1', 'sectionID2', ... ]
-     let rowIDs = [ [ 'rowID1', 'rowID2' ], [ 'rowID1', 'rowID2' ], ... ]
-     */
-    srcList.forEach((item) => {
+    const sectionIds = [];
+
+    sourceData.forEach((item) => {
       if (item) {
         // 加入到section
         let orderIndex = item.orderIndex;
         if (!isCharacter(item.orderIndex)) {
           orderIndex = '#';
         }
-        if (!rowsWithSection[orderIndex]) {
-          rowsWithSection[orderIndex] = orderIndex;
-          sectionIDs.push(orderIndex);
+        if (!sectionIds.includes(orderIndex)) {
+          sectionIds.push(orderIndex);
           formattedData.push({ title: orderIndex, data: [] });
-        }
-
-        // rows组装
-        // 1. 保证row数组长度和section数组长度一致
-        let sectionIndex = sectionIDs.findIndex((tIndex) => {
-          return orderIndex === tIndex;
-        });
-
-
-        // console.log(orderIndex);
-
-        for (let i = rowIds.length; i <= sectionIndex; i++) {
-          rowIds.push([]);
-        }
-        // 2. 在section对应的数组加入row id
-        let tRows = rowIds[sectionIndex];
-        if (tRows) {
-          tRows.push(item.searchKey);
         }
 
         const rowData = formattedData.find((object) => {
@@ -189,29 +150,21 @@ export default class SearchService {
         });
 
         rowData.data.push(item);
-
-        // 3. 实际数据加入friendWithSection
-        let itemKey = orderIndex + ':' + item.searchKey;
-        // console.log(itemKey);
-        // console.log(item);
-        rowsWithSection[itemKey] = item;
       }
     });
 
     return {
       formattedData,
-      rowsWithSection,
-      sectionIDs,
-      rowIds
+      sectionIds
     };
   }
 
-  static initList (srcList) {
-    srcList.forEach((item) => {
+  static initList (sourceData) {
+    sourceData.forEach((item) => {
       if (item) {
         // 生成排序索引
         item.orderIndex = '';
-        item.isCN = 0;
+        item.isChinese = 0;
 
         if (item.searchStr) {
           let tempStr = sTrim(item.searchStr);
@@ -225,11 +178,11 @@ export default class SearchService {
 
               if (pinyinChar) {
                 item.orderIndex = pinyinChar.toUpperCase();
-                item.isCN = 1;
+                item.isChinese = 1;
               }
             } else {
               item.orderIndex = firstChar.toUpperCase();
-              item.isCN = 0;
+              item.isChinese = 0;
             }
           }
           // 对中文进行处理
@@ -237,17 +190,14 @@ export default class SearchService {
           if (handler) {
             item.searchHandler = handler;
           }
-          if (!item.searchKey) {
-            item.searchKey = md5(item.searchStr);
-          }
         }
       }
     });
-    return srcList;
+    return sourceData;
   }
 
-  static sortList (srcList, sortFunc) {
-    srcList.sort(sortFunc || function (a, b) {
+  static sortList (sourceData, sortFunc) {
+    sourceData.sort(sortFunc || function (a, b) {
       if (!isCharacter(b.orderIndex)) {
         return -1;
       } else if (!isCharacter(a.orderIndex)) {
@@ -257,9 +207,9 @@ export default class SearchService {
       } else if (b.orderIndex < a.orderIndex) {
         return 1;
       } else {
-        if (b.isCN > a.isCN) {
+        if (b.isChinese > a.isChinese) {
           return -1;
-        } else if (b.isCN < a.isCN) {
+        } else if (b.isChinese < a.isChinese) {
           return 1;
         } else {
           return 0;
@@ -267,6 +217,6 @@ export default class SearchService {
       }
     });
 
-    return srcList;
+    return sourceData;
   }
 }

@@ -1,26 +1,31 @@
-# A searchable ListView which supports Chinese PinYin and alphabetical index.
+# React Native Search List
 
-[![npm version](https://badge.fury.io/js/%40zanechua%2Freact-native-search-list.svg)](https://badge.fury.io/js/%40zanechua%2Freact-native-search-list)
-<a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
-[![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
+<p align="center">
+<a href="https://www.npmjs.com/package/@zanechua/react-native-search-list"><img src="https://img.shields.io/npm/v/@zanechua/react-native-search-list.svg?style=flat-square" alt="Release"></a>
+<a href="https://www.npmjs.com/package/@zanechua/react-native-search-list"><img src="https://img.shields.io/npm/dm/@zanechua/react-native-search-list.svg?style=flat-square" alt="Release"></a>
+<a href="https://github.com/zanechua/react-native-search-list/releases"><img src="https://img.shields.io/github/release/zanechua/react-native-search-list.svg?style=flat-square" alt="Release"></a>
+<a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-semistandard-brightgreen.svg?style=flat-square" alt="Standard - JavaScript Style Guide"></a>
+<a href="https://github.com/zanechua/react-native-search-list/blob/master/LICENSE"><img src="https://img.shields.io/github/license/zanechua/react-native-search-list.svg?style=flat-square" alt="License"></a>
+</p>
 
-### React Native Search List
 
 A searchable ListView which supports Chinese PinYin and alphabetical index.
 
+The original library was missing some commonly used features that are now implemented and the deprecated ListView was replaced with a SectionList to be compatible with future releases of React Native.
+
 <p align="center">
-  <img src='https://raw.githubusercontent.com/UnPourTous/react-native-search-list/develop-refactor/screenshots/search-list-demo-v2.gif' />
+  <img src='https://raw.githubusercontent.com/zanechua/react-native-search-list/master/screenshots/search-list-demo-v2.gif' />
 </p>
 
-The following pic may be helpful when understanding the structure and APIs: 
+The following picture may be helpful to understand the structure and APIs: 
 
 <p align="center">
-<img src='https://user-images.githubusercontent.com/1309744/36627720-fba7dade-1981-11e8-941f-03fc94af00ec.png' />
+<img src='https://raw.githubusercontent.com/zanechua/react-native-search-list/master/screenshots/naming.jpg' />
 </p>
 
 ## Installation
 
-`$ npm install @unpourtous/react-native-search-list --save`
+`$ npm install @zanechua/react-native-search-list --save`
 
 ## Usage
 
@@ -118,7 +123,7 @@ export default class example extends Component {
 
 prop name | type | description | default value
 --- | --- | --- | --- 
-data | array | The rows of list view.each object should contain `searchStr`, it will be used for search source. If you have custom row id,you should set `searchKey` for each object | 
+data | array | The rows of list view.each object should contain `searchStr`, it will be used for search source. 
 renderRow | number | Render your custom row content | 
 rowHeight | number | The height of the default row content, it will be used for scroll calculate | `40`
 sectionHeaderHeight | number | The height of section header content | `24`
@@ -127,15 +132,16 @@ searchListBackgroundColor | string | BackgroundColor for searchList | `#171a23`
 toolbarBackgroundColor | string | Toolbar background color | `#171a23`
 searchBarToggleDuration | number | Custom search bar animation duration | `300`
 searchBarBackgroundColor | string | Custom search bar background color | `#171a23`
+searchBarContainerStyle | object | Style properties for the SearchBar Container Component | 
+searchBarStyle | object | Style properties for the SearchBar Component | 
+searchOnDefaultValue | bool | Enable filtered results based on default value | 
 searchInputBackgroundColor | string | Custom search input default state background color | `#ffffff`
 searchInputBackgroundColorActive | string | Custom search input searching state background color | 
 searchInputPlaceholder | string | Custom search input placeholder text | 
 searchInputDefaultValue | string | Custom search input default value text | 
-searchOnDefaultValue | bool | Enable filtered results based on default value | 
 searchInputPlaceholderColor | string | Custom search input placeholder text color | `#979797`
 searchInputTextColor | string | Custom search input default state text color | `#171a23`
 searchInputTextColorActive | string | Custom search input searching state text color | `#ffffff`
-searchBarBackgroundColor | string | Custom search bar background color | `#171a23`
 searchInputStyle | object | Style properties for the internal TextInput Component | 
 statusBarHeight | number | The height of the status bar | 
 toolbarHeight | number | The height of the tool bar | `44`
@@ -143,21 +149,18 @@ searchBarBackgroundColor | string | Custom search bar background color |
 staticCancelButton | bool | Enable/Disable a static cancel button with no slide in animation | `false`
 showSearchIcon | bool | Show/Hide the search icon | `true`
 displayMask | bool | Show/Hide the mask during searching | `true`
-searchBarStyle | object | Style properties for the SearchBar Component | 
-searchBarContainerStyle | object | Style properties for the SearchBar Container Component | 
-searchBarBackgroundColor | string | Custom search bar background color | 
 title | string | Toolbar title | 
 titleTextColor | string | Toolbar title text color | 
-cancelTextColor | string | Search bar cancel text color | `#ffffff`
 cancelTitle | string | Search bar cancel text color | `Cancel`
+cancelTextColor | string | Search bar cancel text color | `#ffffff`
 cancelContainerStyle | object | Style properties for the cancel button container |
-sectionIndexTextColor | string | Section index text color | 
 hideSectionList | bool | Whether to hide the alphabetical section listing view or not. |
-renderSectionIndexItem | func | Custom render SectionIndexItem. |
-sectionIndexContainerStyle | object | Style properties for the Section Index Container Component | 
 sortFunc | func | The sort function for the list view data source,sorting alphabetical by default |
 resultSortFunc | func | The sort function for the search result,sorting first match position by default |
 onScrollToSection | func | The callback of alphabetical section view be clicked or touch |
+sectionIndexTextColor | string | Section index text color | 
+sectionIndexContainerStyle | object | Style properties for the Section Index Container Component | 
+renderSectionIndexItem | func | Custom render SectionIndexItem. |
 renderBackButton | func | Render a custom back buttom on Toolbar. |
 renderEmpty | func | Render a view when data is empty. |
 renderEmptyResult | func | Render a view when search result is empty. |
@@ -174,15 +177,7 @@ onSearchStart | func | Callback when searching start. |
 onSearchEnd | func | Callback when searching end. |
 
 
-## Thanks
+## Contributions
 * [js-pinyin](https://github.com/waterchestnut/pinyin)
-* [md5](https://github.com/pvorb/node-md5)
+* [@unpourtous/react-native-search-list](https://github.com/unpourtous/react-native-search-list)
 * [react-native-selectablesectionlistview](https://github.com/johanneslumpe/react-native-selectablesectionlistview)
-
-## TODO 
-1. ~~add hightlight demo~~
-1. ~~test ios & android & android with status bar and without~~
-
-## License
-This library is distributed under MIT Licence.
-

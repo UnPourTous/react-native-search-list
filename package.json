@@ -25,7 +25,6 @@
   "license": "MIT",
   "dependencies": {
     "js-pinyin": "^0.1.9",
-    "md5": "^2.2.1",
     "prop-types": "^15.6.0"
   },
   "devDependencies": {

@@ -52,17 +52,15 @@ export default class SectionIndex extends Component {
   }
 
   render () {
-    const {renderSectionItem} = this.props;
-    const sections = this.props.sections && this.props.sections.length > 0 ? this.props.sections.map((section, index) => {
-      let title = this.props.getSectionListTitle ? this.props.getSectionListTitle(section) : section;
-
+    const { renderSectionItem, sections } = this.props;
+    const renderedSections = sections && sections.length > 0 ? sections.map((section, index) => {
       return (
         <View
           key={index}
           pointerEvents='none'>
-          {renderSectionItem ? renderSectionItem(section, title) : <View
+          {renderSectionItem ? renderSectionItem(section) : <View
             style={styles.item}>
-            <Text style={styles.text}>{title}</Text>
+            <Text style={styles.text}>{section}</Text>
           </View>}
         </View>
       );
@@ -92,7 +90,7 @@ export default class SectionIndex extends Component {
             this.detectAndScrollToSection(e);
           }}
           onResponderRelease={this.resetSection}>
-          {sections}
+          {renderedSections}
         </View>
       </Animated.View>
     );

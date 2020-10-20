@@ -119,6 +119,7 @@ export default class SearchBar extends Component {
     this.refs.input.clear();
     this.refs.input.blur();
     this.setState({value: '', isSearching: false});
+    this.searchingAnimation(false);
     this.props.onClickCancel && this.props.onClickCancel();
   }
 
@@ -191,6 +192,8 @@ export default class SearchBar extends Component {
    * @private
    */
   _renderDefaultCancel () {
+    const { cancelTitle, cancelTextColor } = this.props;
+
     return (
       <View
         style={{
@@ -217,7 +220,7 @@ export default class SearchBar extends Component {
    * @private
    */
   _renderCancel () {
-    const {renderCancel, cancelTitle, cancelTextColor} = this.props;
+    const { renderCancel } = this.props;
     return renderCancel ? renderCancel() : this._renderDefaultCancel();
   }
 
@@ -227,7 +230,7 @@ export default class SearchBar extends Component {
    * @private
    */
   _renderCancelWhileSearching () {
-    const {renderCancelWhileSearching, cancelTitle, cancelTextColor} = this.props;
+    const { renderCancelWhileSearching } = this.props;
     return renderCancelWhileSearching ? renderCancelWhileSearching() : this._renderDefaultCancel();
   }
 }
@@ -235,7 +238,6 @@ export default class SearchBar extends Component {
 const styles = StyleSheet.create({
   cancelContainer: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center'
   },
   searchTextInputStyle: {

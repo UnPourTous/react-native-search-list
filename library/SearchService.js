@@ -172,6 +172,7 @@ export default class SearchService {
           return orderIndex === tIndex;
         });
 
+
         // console.log(orderIndex);
 
         for (let i = rowIds.length; i <= sectionIndex; i++) {

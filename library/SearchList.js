@@ -174,11 +174,6 @@ export default class SearchList extends Component {
     this.setState({
       isSearching: false,
       data: rowsWithSection
-      // dataSource: this.state.dataSource.cloneWithRowsAndSections(
-      //   rowsWithSection,
-      //   (!sectionIDs || sectionIDs.length === 0) ? [''] : sectionIDs,
-      //   rowIds
-      // )
     });
   }
 
@@ -189,11 +184,7 @@ export default class SearchList extends Component {
       const tempResult = SearchService.search(this.copiedSource, input.toLowerCase());
       if (tempResult.length === 0) {
         this.setState({
-          isSearching: true,
-          dataSource: this.state.dataSource.cloneWithRowsAndSections(
-            {},
-            [],
-            [])
+          isSearching: true
         });
       } else {
         const {
@@ -201,12 +192,6 @@ export default class SearchList extends Component {
           rowIds
         } = SearchService.sortResultList(tempResult, this.props.resultSortFunc);
         this.rowIds = rowIds;
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRowsAndSections(
-            searchResultWithSection,
-            [''],
-            rowIds)
-        });
       }
     } else {
       this.parseInitList(this.copiedSource);
@@ -349,27 +334,18 @@ export default class SearchList extends Component {
     this.refs.searchBar && this.refs.searchBar.cancelSearch && this.refs.searchBar.cancelSearch();
   }
 
-  scrollToSection (section) {
+  scrollToSection (sectionIndex) {
     if (!this.sectionIDs || this.sectionIDs.length === 0) {
       return;
     }
-    let y = this.props.headerHeight || 0;
 
-    let rowHeight = this.props.rowHeight;
-    let sectionHeaderHeight = this.props.sectionHeaderHeight;
-    let index = this.sectionIDs.indexOf(section);
+    this.refs.searchListView.scrollToLocation({
+      itemIndex: 0,
+      sectionIndex,
+      animated: false
+    });
 
-    let numcells = 0;
-    for (let i = 0; i < index && i < this.rowIds.length; i++) {
-      numcells += this.rowIds[i].length;
-    }
-
-    sectionHeaderHeight = index * sectionHeaderHeight;
-    y += numcells * rowHeight + sectionHeaderHeight;
-
-    this.refs.searchListView.scrollTo({x: 0, y: y, animated: false});
-
-    this.props.onScrollToSection && this.props.onScrollToSection(section);
+    this.props.onScrollToSection && this.props.onScrollToSection(sectionIndex);
   }
 
   render () {
@@ -452,47 +428,29 @@ export default class SearchList extends Component {
     const {isSearching, searchStr} = this.state;
     const {renderEmptyResult, renderEmpty, data} = this.props;
 
-    // const isEmptyResult = this.state.dataSource.getRowCount() === 0
-    // if (isSearching && isEmptyResult && renderEmptyResult) {
     if (isSearching && renderEmptyResult) {
       return renderEmptyResult(searchStr);
     } else {
       if (data && data.length > 0 && typeof this.formattedData !== 'undefined') {
         return (
           <SectionList
+            ref='searchListView'
             keyExtractor={(item, index) => item.title + index}
+            sections={this.formattedData}
+
+            initialNumToRender={15}
+            onEndReachedThreshold={30}
+            keyboardDismissMode='on-drag'
+            keyboardShouldPersistTaps='always'
+            showsVerticalScrollIndicator
+
             renderItem={this.props.renderRow || this._renderRow.bind(this)}
             ItemSeparatorComponent={this.props.renderItemSeparator || this._renderItemSeparator.bind(this)}
             renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
-            sections={this.formattedData}
+            ListFooterComponent={this.props.renderFooter || this._renderFooter.bind(this)}
+            ListHeaderComponent={this.props.renderHeader || this._renderHeader.bind(this)}
           />
         );
-        // return (
-        //   <SectionList
-        //     keyExtractor={({ key }) => key}
-        //     data={data}
-        //     renderItem={this.props.renderRow || this._renderRow.bind(this)}
-        //   />
-        // )
-        // return (
-        //   <ListView
-        //     initialListSize={15}
-        //     pageSize={10}
-        //     onEndReachedThreshold={30}
-        //     ref='searchListView'
-        //     dataSource={this.state.dataSource}
-        //     keyboardDismissMode='on-drag'
-        //     keyboardShouldPersistTaps='always'
-        //     showsVerticalScrollIndicator
-        //
-        //     renderRow={this.props.renderRow || this._renderRow.bind(this)}
-        //     renderItemSeparator={this.props.renderItemSeparator || this._renderItemSeparator.bind(this)}
-        //     renderSectionHeader={this.props.renderSectionHeader || this._renderSectionHeader.bind(this)}
-        //     renderFooter={this.props.renderFooter || this._renderFooter.bind(this)}
-        //     renderHeader={this.props.renderHeader || this._renderHeader.bind(this)}
-        //
-        //     enableEmptySections />
-        // )
       } else {
         if (renderEmpty) {
           return renderEmpty();

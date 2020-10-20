@@ -39,12 +39,14 @@ export default class SectionIndex extends Component {
 
   detectAndScrollToSection (e) {
     let ev = e.nativeEvent;
+    const { sections } = this.props;
 
-    if (this.props.sections && this.props.sections.length) {
+    if (sections && sections.length) {
       const index = Math.floor(ev.locationY / itemHeight);
       if (this.lastSelectedIndex !== index) {
         this.lastSelectedIndex = index;
-        this.onSectionSelect(this.props.sections[index], true);
+        const sectionIndex = typeof sections[index] === 'undefined' ? null : index;
+        if (sectionIndex !== null) this.onSectionSelect(sectionIndex, true);
       }
     }
   }

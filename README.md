@@ -20,7 +20,7 @@ The original library was missing some commonly used features that are now implem
 The following picture may be helpful to understand the structure and APIs: 
 
 <p align="center">
-<img src='https://raw.githubusercontent.com/zanechua/react-native-search-list/master/screenshots/naming.jpg' />
+<img src='https://raw.githubusercontent.com/zanechua/react-native-search-list/master/screenshots/structure.jpg' />
 </p>
 
 ## Installation

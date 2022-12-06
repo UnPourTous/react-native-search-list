@@ -32,7 +32,7 @@
     "standard": "^10.0.3",
     "standardjs": "^1.0.0-alpha",
     "react": "^16.0.0",
-    "react-native": "0.51.0"
+    "react-native": "0.70.6"
   },
   "directories": {
     "example": "example"
